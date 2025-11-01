@@ -3,19 +3,11 @@ import React from 'react';
 function App() {
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <header className="bg-white shadow-sm">
-  <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-    <div className="flex items-center justify-center">
-      <img src="/logo.png" alt="Iremia" className="h-20" />
-    </div>
-  </div>
-</header>
-  <img src="/logo.png" alt="Iremia" className="h-32 mx-auto" />
-</div>
-<div className="text-center mt-2 hidden">
-              <h1 className="text-5xl font-serif text-teal-700 tracking-widest">IREMIA</h1>
-              <p className="text-teal-500 text-sm italic mt-1">Il tuo rifugio di pace</p>
-            </div>
+        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center">
+            <img src="/logo.png" alt="Iremia" className="h-24" />
           </div>
         </div>
       </header>
@@ -74,37 +66,37 @@ function App() {
         </div>
 
         {/* Galleria Foto */}
-<div className="mt-20">
-  <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
-    Scopri gli spazi
-  </h3>
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-    <div className="aspect-square rounded-lg overflow-hidden">
-      <img src="/images/soggiorno.jpg" alt="Soggiorno" className="w-full h-full object-cover" />
-    </div>
-    <div className="aspect-square rounded-lg overflow-hidden">
-      <img src="/images/camera.jpg" alt="Camera" className="w-full h-full object-cover" />
-    </div>
-    <div className="aspect-square rounded-lg overflow-hidden">
-      <img src="/images/balcone.jpg" alt="Balcone" className="w-full h-full object-cover" />
-    </div>
-    <div className="aspect-square rounded-lg overflow-hidden">
-      <img src="/images/cucina.jpg" alt="Cucina" className="w-full h-full object-cover" />
-    </div>
-    <div className="aspect-square rounded-lg overflow-hidden">
-      <img src="/images/cimone.jpg" alt="Cimone" className="w-full h-full object-cover" />
-    </div>
-    <div className="aspect-square rounded-lg overflow-hidden">
-      <img src="/images/vandelli.jpg" alt="Via Vandelli" className="w-full h-full object-cover" />
-    </div>
-    <div className="aspect-square rounded-lg overflow-hidden">
-      <img src="/images/bagno.jpg" alt="Bagno" className="w-full h-full object-cover" />
-    </div>
-    <div className="aspect-square rounded-lg overflow-hidden">
-      <img src="/images/pontedeldiavolo.jpg" alt="Ponte del Diavolo" className="w-full h-full object-cover" />
-    </div>
-  </div>
-</div>
+        <div className="mt-20">
+          <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
+            Scopri gli spazi
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/soggiorno.jpg" alt="Soggiorno" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/camera.jpg" alt="Camera" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/balcone.jpg" alt="Balcone" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/cucina.jpg" alt="Cucina" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/cimone.jpg" alt="Cimone" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/vandelli.jpg" alt="Via Vandelli" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/bagno.jpg" alt="Bagno" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/pontedeldiavolo.jpg" alt="Ponte del Diavolo" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+          </div>
+        </div>
 
         {/* L'Appartamento - Dettaglio */}
         <div className="mt-20 bg-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
@@ -242,13 +234,15 @@ function App() {
             <h3 className="text-2xl font-light text-gray-800 mb-6">
               Richiedi Informazioni
             </h3>
-            <form className="space-y-4">
+            <form className="space-y-4" action="https://formspree.io/f/xanykjeo" method="POST">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Nome e Cognome
                 </label>
                 <input
                   type="text"
+                  name="nome"
+                  required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Il tuo nome"
                 />
@@ -259,6 +253,8 @@ function App() {
                 </label>
                 <input
                   type="email"
+                  name="email"
+                  required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="tua@email.com"
                 />
@@ -268,7 +264,9 @@ function App() {
                   Messaggio
                 </label>
                 <textarea
+                  name="messaggio"
                   rows="4"
+                  required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Scrivi qui la tua richiesta..."
                 ></textarea>
@@ -360,9 +358,14 @@ function App() {
 
         {/* CTA Button */}
         <div className="mt-16 text-center">
-          <button className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors shadow-md hover:shadow-lg">
+          <a 
+            href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare%20un%20soggiorno%20a%20Iremia" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors shadow-md hover:shadow-lg"
+          >
             Prenota il tuo soggiorno
-          </button>
+          </a>
           <p className="text-gray-500 text-sm mt-4">
             Gestito con cura da Andrea e Iza · Sempre a vostra disposizione
           </p>
