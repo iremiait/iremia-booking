@@ -2,7 +2,7 @@ import React from 'react';
 
 function App() {
   return (
-    <div id="top" className="min-h-screen bg-gradient-to-b from-teal-50 via-gray-50 to-teal-50">
+    <div id="top" className="min-h-screen bg-gradient-to-b from-teal-50 via-white to-teal-50">
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
@@ -45,7 +45,7 @@ function App() {
         </div>
 
         {/* Info Box */}
-        <div className="mt-16 bg-white rounded-lg shadow-sm p-8 max-w-3xl mx-auto">
+        <div className="mt-16 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-3xl mx-auto border border-teal-100">
           <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
             Benvenuti a Iremia
           </h3>
@@ -56,7 +56,7 @@ function App() {
             <p>
               Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-teal-200">
               <div className="text-center">
                 <div className="text-3xl text-teal-600 mb-2">🏠</div>
                 <div className="font-semibold text-gray-800">55 m²</div>
@@ -109,8 +109,23 @@ function App() {
           </div>
         </div>
 
+        {/* CTA Button - Sotto le foto */}
+        <div className="mt-12 text-center">
+          <a 
+            href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare%20un%20soggiorno%20a%20Iremia" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors shadow-md hover:shadow-lg"
+          >
+            Prenota il tuo soggiorno
+          </a>
+          <p className="text-gray-500 text-sm mt-4">
+            Sempre a vostra disposizione
+          </p>
+        </div>
+
         {/* L'Appartamento - Dettaglio */}
-        <div id="appartamento" className="mt-20 bg-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
+        <div id="appartamento" className="mt-20 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
           <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
             L'Appartamento
           </h3>
@@ -137,7 +152,7 @@ function App() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Internet Detox */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🌲</div>
                 <div>
@@ -150,7 +165,7 @@ function App() {
             </div>
 
             {/* Cucina */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🍳</div>
                 <div>
@@ -163,7 +178,7 @@ function App() {
             </div>
 
             {/* Balcone */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🌅</div>
                 <div>
@@ -176,7 +191,7 @@ function App() {
             </div>
 
             {/* Zona Silenziosa */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🤫</div>
                 <div>
@@ -189,7 +204,7 @@ function App() {
             </div>
 
             {/* Parcheggio */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-teal-600 md:col-span-2">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600 md:col-span-2">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🚗</div>
                 <div>
@@ -204,7 +219,7 @@ function App() {
         </div>
 
         {/* La Zona */}
-        <div id="zona" className="mt-20 bg-gradient-to-br from-teal-50 to-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
+        <div id="zona" className="mt-20 bg-gradient-to-br from-teal-50 to-white/90 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
           <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
             La Zona
           </h3>
@@ -241,7 +256,7 @@ function App() {
         {/* Contatti & Form */}
         <div id="contatti" className="mt-20 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Form Contatto */}
-          <div className="bg-white rounded-lg shadow-sm p-8">
+          <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
             <h3 className="text-2xl font-light text-gray-800 mb-6">
               Richiedi Informazioni
             </h3>
@@ -313,7 +328,7 @@ function App() {
 
           {/* Info Contatto & Mappa */}
           <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow-sm p-8">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
               <h3 className="text-2xl font-light text-gray-800 mb-6">
                 Contattaci
               </h3>
@@ -363,8 +378,9 @@ function App() {
                   <div>
                     <div className="font-medium text-gray-800">Dove siamo</div>
                     <div className="text-gray-600 text-sm">
+                      Via per Palagano 28<br />
                       Lama Mocogno (MO)<br />
-                      Appennino Modenese, 850 m s.l.m.
+                      850 m s.l.m.
                     </div>
                   </div>
                 </div>
@@ -372,34 +388,19 @@ function App() {
             </div>
 
             {/* Google Maps */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11333.876947948766!2d10.662933!3d44.2849!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x477fd0e0e0e0e0e0%3A0x0!2sLama%20Mocogno%2C%20MO!5e0!3m2!1sit!2sit!4v1234567890"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.2!2d10.6783!3d44.2826!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x477fd86d7f8e8d8d%3A0x1234567890!2sVia%20per%20Palagano%2C%2028%2C%2041023%20Lama%20Mocogno%20MO!5e0!3m2!1sit!2sit!4v1234567890"
                 width="100%"
                 height="250"
                 style={{ border: 0 }}
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Mappa Lama Mocogno"
+                title="Mappa Iremia Lama Mocogno"
               ></iframe>
             </div>
           </div>
-        </div>
-
-        {/* CTA Button */}
-        <div className="mt-8 text-center">
-          <a 
-            href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare%20un%20soggiorno%20a%20Iremia" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors shadow-md hover:shadow-lg"
-          >
-            Prenota il tuo soggiorno
-          </a>
-          <p className="text-gray-500 text-sm mt-4">
-            Gestito con cura da Andrea e Iza · Sempre a vostra disposizione
-          </p>
         </div>
       </main>
 
@@ -407,11 +408,11 @@ function App() {
       <footer className="bg-gray-800 text-white mt-20">
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Info */}
+            {/* Logo */}
             <div>
-              <h4 className="text-xl font-serif text-teal-400 mb-4">IREMIA</h4>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                Il tuo rifugio di pace a Lama Mocogno. Gestito con cura da Andrea e Iza.
+              <img src="/logo.png" alt="Iremia" className="h-24 mb-4 brightness-0 invert" />
+              <p className="text-gray-400 text-xs mt-2">
+                Il tuo rifugio di pace a Lama Mocogno
               </p>
             </div>
             
@@ -432,7 +433,7 @@ function App() {
                   📱 @iremiait
                 </a>
                 <p className="text-gray-400 pt-2">
-                  📍 Lama Mocogno (MO) · 850 m s.l.m.
+                  📍 Via per Palagano 28, Lama Mocogno (MO)
                 </p>
               </div>
             </div>
@@ -451,6 +452,9 @@ function App() {
           <div className="border-t border-gray-700 mt-6 pt-6 text-center">
             <p className="text-gray-400 text-sm">
               © 2025 Iremia.it · Casa Vacanza Lama Mocogno
+            </p>
+            <p className="text-gray-500 text-xs mt-2">
+              CIR: 036018-AT-00002 · CIN: IT036018C2UE6SRL2D
             </p>
           </div>
         </div>
