@@ -7,8 +7,10 @@ function App() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center">
-            {/* Logo vero da inserire: <img src="/logo.png" alt="Iremia" className="h-32" /> */}
             <div className="text-center">
+  <img src="/logo.png" alt="Iremia" className="h-32 mx-auto" />
+</div>
+<div className="text-center mt-2 hidden">
               <h1 className="text-5xl font-serif text-teal-700 tracking-widest">IREMIA</h1>
               <p className="text-teal-500 text-sm italic mt-1">Il tuo rifugio di pace</p>
             </div>
