@@ -70,38 +70,37 @@ function App() {
         </div>
 
         {/* Galleria Foto */}
-        <div className="mt-20">
-          <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
-            Scopri gli spazi
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {/* Placeholder foto - sostituire con foto vere in /public/images/ */}
-            <div className="aspect-square bg-gradient-to-br from-teal-100 to-teal-200 rounded-lg flex items-center justify-center">
-              <span className="text-teal-600 text-sm">Soggiorno</span>
-            </div>
-            <div className="aspect-square bg-gradient-to-br from-teal-100 to-teal-200 rounded-lg flex items-center justify-center">
-              <span className="text-teal-600 text-sm">Camera</span>
-            </div>
-            <div className="aspect-square bg-gradient-to-br from-teal-100 to-teal-200 rounded-lg flex items-center justify-center">
-              <span className="text-teal-600 text-sm">Balcone</span>
-            </div>
-            <div className="aspect-square bg-gradient-to-br from-teal-100 to-teal-200 rounded-lg flex items-center justify-center">
-              <span className="text-teal-600 text-sm">Cucina</span>
-            </div>
-            <div className="aspect-square bg-gradient-to-br from-teal-100 to-teal-200 rounded-lg flex items-center justify-center">
-              <span className="text-teal-600 text-sm">Vista</span>
-            </div>
-            <div className="aspect-square bg-gradient-to-br from-teal-100 to-teal-200 rounded-lg flex items-center justify-center">
-              <span className="text-teal-600 text-sm">Dintorni</span>
-            </div>
-            <div className="aspect-square bg-gradient-to-br from-teal-100 to-teal-200 rounded-lg flex items-center justify-center">
-              <span className="text-teal-600 text-sm">Bagno</span>
-            </div>
-            <div className="aspect-square bg-gradient-to-br from-teal-100 to-teal-200 rounded-lg flex items-center justify-center">
-              <span className="text-teal-600 text-sm">Esterno</span>
-            </div>
-          </div>
-        </div>
+<div className="mt-20">
+  <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
+    Scopri gli spazi
+  </h3>
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div className="aspect-square rounded-lg overflow-hidden">
+      <img src="/images/soggiorno.jpg" alt="Soggiorno" className="w-full h-full object-cover" />
+    </div>
+    <div className="aspect-square rounded-lg overflow-hidden">
+      <img src="/images/camera.jpg" alt="Camera" className="w-full h-full object-cover" />
+    </div>
+    <div className="aspect-square rounded-lg overflow-hidden">
+      <img src="/images/balcone.jpg" alt="Balcone" className="w-full h-full object-cover" />
+    </div>
+    <div className="aspect-square rounded-lg overflow-hidden">
+      <img src="/images/cucina.jpg" alt="Cucina" className="w-full h-full object-cover" />
+    </div>
+    <div className="aspect-square rounded-lg overflow-hidden">
+      <img src="/images/cimone.jpg" alt="Cimone" className="w-full h-full object-cover" />
+    </div>
+    <div className="aspect-square rounded-lg overflow-hidden">
+      <img src="/images/vandelli.jpg" alt="Via Vandelli" className="w-full h-full object-cover" />
+    </div>
+    <div className="aspect-square rounded-lg overflow-hidden">
+      <img src="/images/bagno.jpg" alt="Bagno" className="w-full h-full object-cover" />
+    </div>
+    <div className="aspect-square rounded-lg overflow-hidden">
+      <img src="/images/pontedeldiavolo.jpg" alt="Ponte del Diavolo" className="w-full h-full object-cover" />
+    </div>
+  </div>
+</div>
 
         {/* L'Appartamento - Dettaglio */}
         <div className="mt-20 bg-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
