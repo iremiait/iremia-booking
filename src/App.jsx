@@ -2,12 +2,21 @@ import React from 'react';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-teal-50 via-gray-50 to-teal-50">
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center">
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
             <img src="/logo.png" alt="Iremia" className="h-40" />
+            
+            {/* Menu Navigazione */}
+            <nav className="hidden md:flex gap-6">
+              <a href="#appartamento" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">L'Appartamento</a>
+              <a href="#galleria" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Galleria</a>
+              <a href="#zona" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">La Zona</a>
+              <a href="#contatti" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Contatti</a>
+              <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">Prenota</a>
+            </nav>
           </div>
         </div>
       </header>
@@ -66,7 +75,7 @@ function App() {
         </div>
 
         {/* Galleria Foto */}
-        <div className="mt-20">
+        <div id="galleria" className="mt-20">
           <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
             Scopri gli spazi
           </h3>
@@ -99,7 +108,7 @@ function App() {
         </div>
 
         {/* L'Appartamento - Dettaglio */}
-        <div className="mt-20 bg-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
+        <div id="appartamento" className="mt-20 bg-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
           <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
             L'Appartamento
           </h3>
@@ -193,7 +202,7 @@ function App() {
         </div>
 
         {/* La Zona */}
-        <div className="mt-20 bg-gradient-to-br from-teal-50 to-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
+        <div id="zona" className="mt-20 bg-gradient-to-br from-teal-50 to-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
           <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
             La Zona
           </h3>
@@ -228,7 +237,7 @@ function App() {
         </div>
 
         {/* Contatti & Form */}
-        <div className="mt-20 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div id="contatti" className="mt-20 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Form Contatto */}
           <div className="bg-white rounded-lg shadow-sm p-8">
             <h3 className="text-2xl font-light text-gray-800 mb-6">
@@ -357,7 +366,7 @@ function App() {
         </div>
 
         {/* CTA Button */}
-        <div className="mt-16 text-center">
+        <div className="mt-8 text-center">
           <a 
             href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare%20un%20soggiorno%20a%20Iremia" 
             target="_blank"
@@ -374,7 +383,7 @@ function App() {
 
       {/* Footer */}
       <footer className="bg-gray-800 text-white mt-20">
-        <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Info */}
             <div>
@@ -417,7 +426,7 @@ function App() {
             </div>
           </div>
           
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center">
+          <div className="border-t border-gray-700 mt-6 pt-6 text-center">
             <p className="text-gray-400 text-sm">
               © 2025 Iremia.it · Casa Vacanza Lama Mocogno
             </p>
