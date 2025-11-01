@@ -8,7 +8,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <a href="#top" className="cursor-pointer">
-              <img src="/logo.png" alt="Iremia" className="h-24" />
+              <img src="/logo.png" alt="Iremia" className="h-40" />
             </a>
             
             {/* Menu Navigazione */}
