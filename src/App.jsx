@@ -3,11 +3,13 @@ import React from 'react';
 function App() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center">
-            <div className="text-center">
+  <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center">
+      <img src="/logo.png" alt="Iremia" className="h-20" />
+    </div>
+  </div>
+</header>
   <img src="/logo.png" alt="Iremia" className="h-32 mx-auto" />
 </div>
 <div className="text-center mt-2 hidden">
