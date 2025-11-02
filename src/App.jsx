@@ -264,37 +264,65 @@ function App() {
         </div>
 
         {/* Galleria Foto */}
-        <div id="galleria" className="mt-20">
-          <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
-            Scopri gli spazi
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/soggiorno.jpg" alt="Soggiorno" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/camera.jpg" alt="Camera" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/balcone.jpg" alt="Balcone" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/cucina.jpg" alt="Cucina" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/cimone.jpg" alt="Cimone" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/vandelli.jpg" alt="Via Vandelli" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/bagno.jpg" alt="Bagno" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/pontedeldiavolo.jpg" alt="Ponte del Diavolo" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-          </div>
-        </div>
+<div id="galleria" className="mt-20 max-w-7xl mx-auto px-4">
+  <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
+    Scopri gli spazi
+  </h3>
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    {[
+      { src: '/images/soggiorno.jpg', alt: 'Soggiorno' },
+      { src: '/images/camera.jpg', alt: 'Camera' },
+      { src: '/images/balcone.jpg', alt: 'Balcone' },
+      { src: '/images/cucina.jpg', alt: 'Cucina' },
+      { src: '/images/cimone.jpg', alt: 'Cimone' },
+      { src: '/images/vandelli.jpg', alt: 'Via Vandelli' },
+      { src: '/images/bagno.jpg', alt: 'Bagno' },
+      { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
+    ].map((image, index) => (
+      <div 
+        key={index}
+        className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer"
+        onClick={() => {
+          const lightbox = document.getElementById('lightbox');
+          const lightboxImg = document.getElementById('lightbox-img');
+          lightboxImg.src = image.src;
+          lightboxImg.alt = image.alt;
+          lightbox.classList.remove('hidden');
+        }}
+      >
+        <img 
+          src={image.src} 
+          alt={image.alt} 
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
+        />
+      </div>
+    ))}
+  </div>
+</div>
+
+{/* Lightbox */}
+<div 
+  id="lightbox" 
+  className="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+  onClick={(e) => {
+    if (e.target.id === 'lightbox' || e.target.id === 'lightbox-close') {
+      document.getElementById('lightbox').classList.add('hidden');
+    }
+  }}
+>
+  <button 
+    id="lightbox-close"
+    className="absolute top-4 right-4 text-white text-4xl hover:text-teal-400 transition-colors z-10"
+  >
+    ×
+  </button>
+  <img 
+    id="lightbox-img" 
+    src="" 
+    alt="" 
+    className="max-w-full max-h-[90vh] object-contain rounded-lg"
+  />
+</div>
 
         {/* CTA Button - Sotto le foto */}
         <div className="mt-12 text-center">
