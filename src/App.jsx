@@ -76,6 +76,27 @@ function App() {
           </div>
         </div>
 
+        {/* L'Appartamento - Dettaglio */}
+        <div id="appartamento" className="mt-20 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
+          <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
+            L'Appartamento
+          </h3>
+          <div className="text-gray-600 leading-relaxed space-y-4">
+            <p>
+              L'appartamento di 55 m² si trova al primo piano di una palazzina di due piani e offre tutto il comfort per un soggiorno rigenerante.
+            </p>
+            <p>
+              Gli spazi includono un ampio soggiorno con cucinotto, una camera matrimoniale, un bagno completo e un balcone con vista sul tranquillo giardino condominiale interno.
+            </p>
+            <p>
+              Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e forniamo un letto singolo che mettiamo nel soggiorno.
+            </p>
+            <p className="text-sm italic text-teal-700">
+              I bimbi sotto i due anni non pagano e possono dormire nel lettone con i genitori. Su richiesta possiamo fornire un lettino (dovrete portare lenzuoline e cuscini).
+            </p>
+          </div>
+        </div>
+        
         {/* Galleria Foto */}
         <div id="galleria" className="mt-20">
           <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
@@ -122,27 +143,6 @@ function App() {
           <p className="text-gray-500 text-sm mt-4">
             Sempre a vostra disposizione
           </p>
-        </div>
-
-        {/* L'Appartamento - Dettaglio */}
-        <div id="appartamento" className="mt-20 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
-          <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
-            L'Appartamento
-          </h3>
-          <div className="text-gray-600 leading-relaxed space-y-4">
-            <p>
-              L'appartamento di 55 m² si trova al primo piano di una palazzina di due piani e offre tutto il comfort per un soggiorno rigenerante.
-            </p>
-            <p>
-              Gli spazi includono un ampio soggiorno con cucinotto, una camera matrimoniale, un bagno completo e un balcone con vista sul tranquillo giardino condominiale interno.
-            </p>
-            <p>
-              Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e forniamo un letto singolo che mettiamo nel soggiorno.
-            </p>
-            <p className="text-sm italic text-teal-700">
-              I bimbi sotto i due anni non pagano e possono dormire nel lettone con i genitori. Su richiesta possiamo fornire un lettino (dovrete portare lenzuoline e cuscini).
-            </p>
-          </div>
         </div>
 
         {/* Servizi */}
