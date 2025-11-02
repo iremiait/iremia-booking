@@ -388,7 +388,6 @@ function App() {
             </div>
 
             {/* Google Maps */}
-            {/* Google Maps */}
 <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
   <iframe
     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sIremia%20Lama%20Mocogno!5e0!3m2!1sit!2sit!4v1730000000000"
