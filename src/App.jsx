@@ -96,54 +96,6 @@ function App() {
             </p>
           </div>
         </div>
-        
-        {/* Galleria Foto */}
-        <div id="galleria" className="mt-20">
-          <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
-            Scopri gli spazi
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/soggiorno.jpg" alt="Soggiorno" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/camera.jpg" alt="Camera" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/balcone.jpg" alt="Balcone" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/cucina.jpg" alt="Cucina" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/cimone.jpg" alt="Cimone" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/vandelli.jpg" alt="Via Vandelli" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/bagno.jpg" alt="Bagno" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src="/images/pontedeldiavolo.jpg" alt="Ponte del Diavolo" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Button - Sotto le foto */}
-        <div className="mt-12 text-center">
-          <a 
-            href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare%20un%20soggiorno%20a%20Iremia" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors shadow-md hover:shadow-lg"
-          >
-            Prenota il tuo soggiorno
-          </a>
-          <p className="text-gray-500 text-sm mt-4">
-            Sempre a vostra disposizione
-          </p>
-        </div>
 
         {/* Servizi */}
         <div className="mt-16 max-w-4xl mx-auto">
@@ -204,7 +156,7 @@ function App() {
             </div>
 
             {/* Parcheggio */}
-            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600 md:col-span-2">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🚗</div>
                 <div>
@@ -215,7 +167,68 @@ function App() {
                 </div>
               </div>
             </div>
+
+            {/* Biancheria fornita */}
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+              <div className="flex items-start gap-4">
+                <div className="text-3xl">🛏️</div>
+                <div>
+                  <h4 className="font-semibold text-gray-800 mb-2">Tutto Incluso</h4>
+                  <p className="text-gray-600 text-sm">
+                    Lenzuola, asciugamani e tutto il necessario per il tuo comfort
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Galleria Foto */}
+        <div id="galleria" className="mt-20">
+          <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
+            Scopri gli spazi
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/soggiorno.jpg" alt="Soggiorno" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/camera.jpg" alt="Camera" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/balcone.jpg" alt="Balcone" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/cucina.jpg" alt="Cucina" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/cimone.jpg" alt="Cimone" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/vandelli.jpg" alt="Via Vandelli" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/bagno.jpg" alt="Bagno" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+              <img src="/images/pontedeldiavolo.jpg" alt="Ponte del Diavolo" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Button - Sotto le foto */}
+        <div className="mt-12 text-center">
+          <a 
+            href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare%20un%20soggiorno%20a%20Iremia" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors shadow-md hover:shadow-lg"
+          >
+            Prenota il tuo soggiorno
+          </a>
+          <p className="text-gray-500 text-sm mt-4">
+            Sempre a vostra disposizione
+          </p>
         </div>
 
         {/* La Zona */}
@@ -388,18 +401,18 @@ function App() {
             </div>
 
             {/* Google Maps */}
-<div className="bg-white/80 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
-  <iframe
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sIremia%20Lama%20Mocogno!5e0!3m2!1sit!2sit!4v1730000000000"
-    width="100%"
-    height="250"
-    style={{ border: 0 }}
-    allowFullScreen=""
-    loading="lazy"
-    referrerPolicy="no-referrer-when-downgrade"
-    title="Mappa Iremia Lama Mocogno"
-  ></iframe>
-</div>
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sIremia%20Lama%20Mocogno!5e0!3m2!1sit!2sit!4v1730000000000"
+                width="100%"
+                height="250"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Mappa Iremia Lama Mocogno"
+              ></iframe>
+            </div>
           </div>
         </div>
       </main>
