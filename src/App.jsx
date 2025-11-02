@@ -23,100 +23,70 @@ function App() {
         </div>
       </header>
 
-      {/* Hero Section con Background */}
-<div className="relative -mt-16 pt-16">
-  {/* Background Image */}
-  <div className="relative h-[600px] overflow-hidden">
-    <div 
-      className="absolute inset-0 bg-cover bg-center bg-fixed"
-      style={{ backgroundImage: 'url(/images/lama.jpg)' }}
-    >
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
-    </div>
-    
-    {/* Hero Content */}
-    <div className="relative h-full flex items-center justify-center text-center px-4">
-      <div className="max-w-4xl">
-        <h2 className="text-6xl md:text-7xl font-light text-white mb-6 drop-shadow-2xl">
-          Il tuo rifugio di pace
-        </h2>
-        <p className="text-2xl md:text-3xl text-white/90 mb-8">
-          a Lama Mocogno
-        </p>
-        <div className="inline-block bg-white/95 backdrop-blur border-l-4 border-teal-600 p-6 rounded-lg shadow-2xl">
-          <p className="text-xl text-gray-700 italic">
-            <span className="font-semibold text-teal-700">Iremía</span> (ηρεμία)
-          </p>
-          <p className="text-gray-600 mt-2">
-            calma · serenità · tranquillità
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {/* Info Box - Sotto l'immagine */}
-  <div className="max-w-7xl mx-auto px-4 -mt-20 relative z-10">
-    <div className="bg-white/95 backdrop-blur rounded-lg shadow-2xl p-8 max-w-3xl mx-auto border border-teal-100">
-      <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
-        Benvenuti a Iremia
-      </h3>
-      <div className="space-y-4 text-gray-600 leading-relaxed">
-        <p>
-          Iremia è una locazione turistica a Lama Mocogno gestita a livello familiare da Andrea e Iza.
-        </p>
-        <p>
-          Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-teal-200">
-          <div className="text-center">
-            <div className="text-3xl text-teal-600 mb-2">🏠</div>
-            <div className="font-semibold text-gray-800">55 m²</div>
-            <div className="text-sm text-gray-500">Appartamento</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl text-teal-600 mb-2">👥</div>
-            <div className="font-semibold text-gray-800">Max 3 persone</div>
-            <div className="text-sm text-gray-500">Ospiti</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl text-teal-600 mb-2">⛰️</div>
-            <div className="font-semibold text-gray-800">850 m</div>
-            <div className="text-sm text-gray-500">Sul livello del mare</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-        {/* Info Box */}
-        <div className="mt-16 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-3xl mx-auto border border-teal-100">
-          <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
-            Benvenuti a Iremia
-          </h3>
-          <div className="space-y-4 text-gray-600 leading-relaxed">
-            <p>
-              Iremia è una locazione turistica a Lama Mocogno gestita a livello familiare da Andrea e Iza.
-            </p>
-            <p>
-              Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-teal-200">
-              <div className="text-center">
-                <div className="text-3xl text-teal-600 mb-2">🏠</div>
-                <div className="font-semibold text-gray-800">55 m²</div>
-                <div className="text-sm text-gray-500">Appartamento</div>
+      {/* MAIN CONTENT STARTS */}
+      <main>
+        {/* Hero Section con Background */}
+        <div className="relative -mt-16 pt-16">
+          {/* Background Image */}
+          <div className="relative h-[600px] overflow-hidden">
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-fixed"
+              style={{ backgroundImage: 'url(/images/lama.jpg)' }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
+            </div>
+            
+            {/* Hero Content */}
+            <div className="relative h-full flex items-center justify-center text-center px-4">
+              <div className="max-w-4xl">
+                <h2 className="text-6xl md:text-7xl font-light text-white mb-6 drop-shadow-2xl">
+                  Il tuo rifugio di pace
+                </h2>
+                <p className="text-2xl md:text-3xl text-white/90 mb-8">
+                  a Lama Mocogno
+                </p>
+                <div className="inline-block bg-white/95 backdrop-blur border-l-4 border-teal-600 p-6 rounded-lg shadow-2xl">
+                  <p className="text-xl text-gray-700 italic">
+                    <span className="font-semibold text-teal-700">Iremía</span> (ηρεμία)
+                  </p>
+                  <p className="text-gray-600 mt-2">
+                    calma · serenità · tranquillità
+                  </p>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl text-teal-600 mb-2">👥</div>
-                <div className="font-semibold text-gray-800">Max 3 persone</div>
-                <div className="text-sm text-gray-500">Ospiti</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl text-teal-600 mb-2">⛰️</div>
-                <div className="font-semibold text-gray-800">850 m</div>
-                <div className="text-sm text-gray-500">Sul livello del mare</div>
+            </div>
+          </div>
+
+          {/* Info Box - Sotto l'immagine */}
+          <div className="max-w-7xl mx-auto px-4 -mt-20 relative z-10">
+            <div className="bg-white/95 backdrop-blur rounded-lg shadow-2xl p-8 max-w-3xl mx-auto border border-teal-100">
+              <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
+                Benvenuti a Iremia
+              </h3>
+              <div className="space-y-4 text-gray-600 leading-relaxed">
+                <p>
+                  Iremia è una locazione turistica a Lama Mocogno gestita a livello familiare da Andrea e Iza.
+                </p>
+                <p>
+                  Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-teal-200">
+                  <div className="text-center">
+                    <div className="text-3xl text-teal-600 mb-2">🏠</div>
+                    <div className="font-semibold text-gray-800">55 m²</div>
+                    <div className="text-sm text-gray-500">Appartamento</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl text-teal-600 mb-2">👥</div>
+                    <div className="font-semibold text-gray-800">Max 3 persone</div>
+                    <div className="text-sm text-gray-500">Ospiti</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl text-teal-600 mb-2">⛰️</div>
+                    <div className="font-semibold text-gray-800">850 m</div>
+                    <div className="text-sm text-gray-500">Sul livello del mare</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -135,7 +105,7 @@ function App() {
               Gli spazi includono un ampio soggiorno con cucinotto, una camera matrimoniale, un bagno completo e un balcone con vista sul tranquillo giardino condominiale interno.
             </p>
             <p>
-              Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e forniamo un letto singolo che mettiamo nel soggiorno.
+              Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e uno nel divano letto in soggiorno.
             </p>
             <p className="text-sm italic text-teal-700">
               I bimbi sotto i due anni non pagano e possono dormire nel lettone con i genitori. Su richiesta possiamo fornire un lettino (dovrete portare lenzuoline e cuscini).
@@ -161,7 +131,6 @@ function App() {
                 </div>
               </div>
             </div>
-
             {/* Cucina */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
@@ -174,7 +143,6 @@ function App() {
                 </div>
               </div>
             </div>
-
             {/* Balcone */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
@@ -187,7 +155,6 @@ function App() {
                 </div>
               </div>
             </div>
-
             {/* Zona Silenziosa */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
@@ -200,7 +167,6 @@ function App() {
                 </div>
               </div>
             </div>
-
             {/* Parcheggio */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
@@ -213,7 +179,6 @@ function App() {
                 </div>
               </div>
             </div>
-
             {/* Biancheria fornita */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
@@ -230,78 +195,74 @@ function App() {
         </div>
 
         {/* Regole della Casa */}
-<div className="mt-16 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
-  <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
-    Regole della Casa
-  </h3>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div className="flex items-start gap-3">
-      <div className="text-2xl">🕐</div>
-      <div>
-        <h4 className="font-semibold text-gray-800 mb-1">Check-in / Check-out</h4>
-        <p className="text-gray-600 text-sm">Check-in: 16:00 - 21:00</p>
-        <p className="text-gray-600 text-sm">Check-out: entro le 11:00</p>
-      </div>
-    </div>
-    
-    <div className="flex items-start gap-3">
-      <div className="text-2xl">🚭</div>
-      <div>
-        <h4 className="font-semibold text-gray-800 mb-1">Vietato fumare</h4>
-        <p className="text-gray-600 text-sm">È vietato fumare all'interno dell'appartamento</p>
-      </div>
-    </div>
-    
-    <div className="flex items-start gap-3">
-      <div className="text-2xl">🐾</div>
-      <div>
-        <h4 className="font-semibold text-gray-800 mb-1">Animali non ammessi</h4>
-        <p className="text-gray-600 text-sm">Spiacenti, non possiamo accettare animali domestici</p>
-      </div>
-    </div>
-    
-    <div className="flex items-start gap-3">
-      <div className="text-2xl">🎉</div>
-      <div>
-        <h4 className="font-semibold text-gray-800 mb-1">Feste ed eventi</h4>
-        <p className="text-gray-600 text-sm">Non sono permesse feste o eventi</p>
-      </div>
-    </div>
-    
-    <div className="flex items-start gap-3">
-      <div className="text-2xl">🤫</div>
-      <div>
-        <h4 className="font-semibold text-gray-800 mb-1">Silenzio notturno</h4>
-        <p className="text-gray-600 text-sm">Rispetto della quiete dopo le 23:00</p>
-      </div>
-    </div>
-    
-    <div className="flex items-start gap-3">
-      <div className="text-2xl">♻️</div>
-      <div>
-        <h4 className="font-semibold text-gray-800 mb-1">Gestione rifiuti</h4>
-        <p className="text-gray-600 text-sm">Da gestire personalmente secondo le indicazioni fornite</p>
-      </div>
-    </div>
-  </div>
-  
-  {/* Pulsante Airbnb */}
-  <div className="mt-8 pt-8 border-t border-teal-200 text-center">
-    <p className="text-gray-600 mb-4">Preferisci prenotare tramite Airbnb?</p>
-    <a 
-      href="https://airbnb.it/h/iremia" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 bg-[#FF5A5F] hover:bg-[#E14348] text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-md hover:shadow-lg"
-    >
-      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm0 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"/>
-        <path d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/>
-      </svg>
-      Prenota su Airbnb
-    </a>
-  </div>
-</div>
+        <div className="mt-16 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
+          <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
+            Regole della Casa
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">🕐</div>
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-1">Check-in / Check-out</h4>
+                <p className="text-gray-600 text-sm">Check-in: 16:00 - 21:00</p>
+                <p className="text-gray-600 text-sm">Check-out: entro le 11:00</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">🚭</div>
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-1">Vietato fumare</h4>
+                <p className="text-gray-600 text-sm">È vietato fumare all'interno dell'appartamento</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">🐾</div>
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-1">Animali non ammessi</h4>
+                <p className="text-gray-600 text-sm">Spiacenti, non possiamo accettare animali domestici</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">🎉</div>
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-1">Feste ed eventi</h4>
+                <p className="text-gray-600 text-sm">Non sono permesse feste o eventi</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">🤫</div>
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-1">Silenzio notturno</h4>
+                <p className="text-gray-600 text-sm">Rispetto della quiete dopo le 23:00</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">♻️</div>
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-1">Gestione rifiuti</h4>
+                <p className="text-gray-600 text-sm">Da gestire personalmente secondo le indicazioni fornite</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Pulsante Airbnb */}
+          <div className="mt-8 pt-8 border-t border-teal-200 text-center">
+            <p className="text-gray-600 mb-4">Preferisci prenotare tramite Airbnb?</p>
+            <a 
+              href="https://airbnb.it/h/iremia" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#FF5A5F] hover:bg-[#E14348] text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-md hover:shadow-lg"
+            >
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm0 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"/>
+                <path d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/>
+              </svg>
+              Prenota su Airbnb
+            </a>
+          </div>
+        </div>
+
         {/* Galleria Foto */}
         <div id="galleria" className="mt-20">
           <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
@@ -522,7 +483,7 @@ function App() {
             {/* Google Maps */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sIremia%20Lama%20Mocogno!5e0!3m2!1sit!2sit!4v1730000000000"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sVia%20per%20Palagano%2C%2028%2C%2041040%20Lama%20Mocogno%20MO%2C%20Italy!5e0!3m2!1sit!2sus!4v1682681099904!5m2!1sit!2sus"
                 width="100%"
                 height="250"
                 style={{ border: 0 }}
@@ -535,6 +496,7 @@ function App() {
           </div>
         </div>
       </main>
+      {/* MAIN CONTENT ENDS */}
 
       {/* Footer */}
       <footer className="bg-gray-800 text-white mt-20">
@@ -547,7 +509,6 @@ function App() {
                 Il tuo rifugio di pace a Lama Mocogno
               </p>
             </div>
-            
             {/* Contatti */}
             <div>
               <h4 className="text-lg font-medium mb-4">Contatti</h4>
@@ -569,7 +530,6 @@ function App() {
                 </p>
               </div>
             </div>
-            
             {/* Link Utili */}
             <div>
               <h4 className="text-lg font-medium mb-4">Zona</h4>
@@ -580,7 +540,6 @@ function App() {
               </div>
             </div>
           </div>
-          
           <div className="border-t border-gray-700 mt-6 pt-6 text-center">
             <p className="text-gray-400 text-sm">
               © 2025 Iremia.it · Casa Vacanza Lama Mocogno
