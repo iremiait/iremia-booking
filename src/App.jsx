@@ -16,7 +16,9 @@ function App() {
               <a href="#galleria" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Galleria</a>
               <a href="#zona" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">La Zona</a>
               <a href="#contatti" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Contatti</a>
-              <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 tr[...]
+              <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">
+                Prenota
+              </a>
             </nav>
           </div>
         </div>
@@ -44,7 +46,7 @@ function App() {
                 <p className="text-2xl md:text-3xl text-white/90 mb-8">
                   a Lama Mocogno
                 </p>
-                <div className="inline-block bg-white/95 backdrop-blur border-l-4 border-teal-600 p-6 rounded-lg shadow-2xl">
+                <div className="inline-block bg-teal-50/95 backdrop-blur border-l-4 border-teal-600 p-6 rounded-lg shadow-2xl">
                   <p className="text-xl text-gray-700 italic">
                     <span className="font-semibold text-teal-700">Iremía</span> (ηρεμία)
                   </p>
@@ -67,7 +69,7 @@ function App() {
                   Iremia è una locazione turistica a Lama Mocogno gestita a livello familiare da Andrea e Iza.
                 </p>
                 <p>
-                  Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'invern[...]
+                  Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-teal-200">
                   <div className="text-center">
@@ -104,7 +106,7 @@ function App() {
               Gli spazi includono un ampio soggiorno con cucinotto, una camera matrimoniale, un bagno con vasca a seduta e un balcone con vista sul tranquillo giardino interno.
             </p>
             <p>
-              Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e[...]
+              Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e uno nel soggiorno.
             </p>
             <p className="text-sm italic text-teal-700">
               I bimbi sotto i due anni non pagano e possono dormire nel lettone con i genitori. Su richiesta possiamo fornire un lettino (dovrete portare lenzuoline e cuscini).
@@ -282,41 +284,40 @@ function App() {
                 key={index}
                 className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer"
                 onClick={() => {
-  const images = [
-    { src: '/images/soggiorno.jpg', alt: 'Soggiorno' },
-    { src: '/images/camera.jpg', alt: 'Camera' },
-    { src: '/images/balcone.jpg', alt: 'Balcone' },
-    { src: '/images/cucina.jpg', alt: 'Cucina' },
-    { src: '/images/cimone.jpg', alt: 'Cimone' },
-    { src: '/images/vandelli.jpg', alt: 'Via Vandelli' },
-    { src: '/images/bagno.jpg', alt: 'Bagno' },
-    { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
-  ];
-  
-  let currentIndex = index;
-  
-  const showImage = (idx) => {
-    const lightboxImg = document.getElementById('lightbox-img');
-    const counter = document.getElementById('lightbox-counter');
-    lightboxImg.src = images[idx].src;
-    lightboxImg.alt = images[idx].alt;
-    counter.textContent = `${idx + 1} / ${images.length}`;
-  };
-  
-  showImage(currentIndex);
-  
-  document.getElementById('lightbox-prev').onclick = () => {
-    currentIndex = (currentIndex - 1 + images.length) % images.length;
-    showImage(currentIndex);
-  };
-  
-  document.getElementById('lightbox-next').onclick = () => {
-    currentIndex = (currentIndex + 1) % images.length;
-    showImage(currentIndex);
-  };
-  
-  document.getElementById('lightbox').classList.remove('hidden');
-}}
+                  const images = [
+                    { src: '/images/soggiorno.jpg', alt: 'Soggiorno' },
+                    { src: '/images/camera.jpg', alt: 'Camera' },
+                    { src: '/images/balcone.jpg', alt: 'Balcone' },
+                    { src: '/images/cucina.jpg', alt: 'Cucina' },
+                    { src: '/images/cimone.jpg', alt: 'Cimone' },
+                    { src: '/images/vandelli.jpg', alt: 'Via Vandelli' },
+                    { src: '/images/bagno.jpg', alt: 'Bagno' },
+                    { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
+                  ];
+                  let currentIndex = index;
+
+                  const showImage = (idx) => {
+                    const lightboxImg = document.getElementById('lightbox-img');
+                    const counter = document.getElementById('lightbox-counter');
+                    lightboxImg.src = images[idx].src;
+                    lightboxImg.alt = images[idx].alt;
+                    counter.textContent = `${idx + 1} / ${images.length}`;
+                  };
+
+                  showImage(currentIndex);
+
+                  document.getElementById('lightbox-prev').onclick = () => {
+                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                    showImage(currentIndex);
+                  };
+
+                  document.getElementById('lightbox-next').onclick = () => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    showImage(currentIndex);
+                  };
+
+                  document.getElementById('lightbox').classList.remove('hidden');
+                }}
               >
                 <img 
                   src={image.src} 
@@ -329,53 +330,53 @@ function App() {
         </div>
 
         {/* Lightbox con navigazione */}
-<div 
-  id="lightbox" 
-  className="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-  onClick={(e) => {
-    if (e.target.id === 'lightbox') {
-      document.getElementById('lightbox').classList.add('hidden');
-    }
-  }}
->
-  {/* Bottone Chiudi */}
-  <button 
-    id="lightbox-close"
-    onClick={() => document.getElementById('lightbox').classList.add('hidden')}
-    className="absolute top-4 right-4 text-white text-4xl hover:text-teal-400 transition-colors z-10"
-  >
-    ×
-  </button>
-  
-  {/* Freccia Sinistra */}
-  <button 
-    id="lightbox-prev"
-    className="absolute left-4 text-white text-5xl hover:text-teal-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
-  >
-    ‹
-  </button>
-  
-  {/* Immagine */}
-  <img 
-    id="lightbox-img" 
-    src="" 
-    alt="" 
-    className="max-w-full max-h-[90vh] object-contain rounded-lg"
-  />
-  
-  {/* Freccia Destra */}
-  <button 
-    id="lightbox-next"
-    className="absolute right-4 text-white text-5xl hover:text-teal-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
-  >
-    ›
-  </button>
-  
-  {/* Contatore */}
-  <div className="absolute bottom-4 text-white text-sm bg-black/50 px-4 py-2 rounded-lg">
-    <span id="lightbox-counter">1 / 8</span>
-  </div>
-</div>
+        <div 
+          id="lightbox" 
+          className="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target.id === 'lightbox') {
+              document.getElementById('lightbox').classList.add('hidden');
+            }
+          }}
+        >
+          {/* Bottone Chiudi */}
+          <button 
+            id="lightbox-close"
+            onClick={() => document.getElementById('lightbox').classList.add('hidden')}
+            className="absolute top-4 right-4 text-white text-4xl hover:text-teal-400 transition-colors z-10"
+          >
+            ×
+          </button>
+          
+          {/* Freccia Sinistra */}
+          <button 
+            id="lightbox-prev"
+            className="absolute left-4 text-white text-5xl hover:text-teal-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
+          >
+            ‹
+          </button>
+          
+          {/* Immagine */}
+          <img 
+            id="lightbox-img" 
+            src="" 
+            alt="" 
+            className="max-w-full max-h-[90vh] object-contain rounded-lg"
+          />
+          
+          {/* Freccia Destra */}
+          <button 
+            id="lightbox-next"
+            className="absolute right-4 text-white text-5xl hover:text-teal-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
+          >
+            ›
+          </button>
+          
+          {/* Contatore */}
+          <div className="absolute bottom-4 text-white text-sm bg-black/50 px-4 py-2 rounded-lg">
+            <span id="lightbox-counter">1 / 8</span>
+          </div>
+        </div>
 
         {/* CTA Button - Sotto le foto */}
         <div className="mt-12 text-center">
@@ -399,7 +400,7 @@ function App() {
           </h3>
           <div className="text-gray-600 leading-relaxed space-y-4">
             <p>
-              Lama Mocogno è un piccolo paese dell'Appennino Modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno[...]
+              Lama Mocogno è un piccolo paese dell'Appennino Modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
               <div className="text-center">
@@ -433,7 +434,7 @@ function App() {
           <div className="mb-8">
             <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0![...]
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sVia%20per%20Palagano%2C%2028%2C%2041000%20Lama%20Mocogno%20MO%2C%20Italy!5e0!3m2!1sit!2sit!4v1686750402132!5m2!1sit!2sit"
                 width="100%"
                 height="400"
                 style={{ border: 0 }}
@@ -581,7 +582,6 @@ function App() {
         </div>
         {/* MAIN CONTENT ENDS */}
       </main>
-
       {/* Footer */}
       <footer className="bg-gray-800 text-white mt-20">
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
