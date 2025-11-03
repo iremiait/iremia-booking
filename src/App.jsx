@@ -282,12 +282,41 @@ function App() {
                 key={index}
                 className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer"
                 onClick={() => {
-                  const lightbox = document.getElementById('lightbox');
-                  const lightboxImg = document.getElementById('lightbox-img');
-                  lightboxImg.src = image.src;
-                  lightboxImg.alt = image.alt;
-                  lightbox.classList.remove('hidden');
-                }}
+  const images = [
+    { src: '/images/soggiorno.jpg', alt: 'Soggiorno' },
+    { src: '/images/camera.jpg', alt: 'Camera' },
+    { src: '/images/balcone.jpg', alt: 'Balcone' },
+    { src: '/images/cucina.jpg', alt: 'Cucina' },
+    { src: '/images/cimone.jpg', alt: 'Cimone' },
+    { src: '/images/vandelli.jpg', alt: 'Via Vandelli' },
+    { src: '/images/bagno.jpg', alt: 'Bagno' },
+    { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
+  ];
+  
+  let currentIndex = index;
+  
+  const showImage = (idx) => {
+    const lightboxImg = document.getElementById('lightbox-img');
+    const counter = document.getElementById('lightbox-counter');
+    lightboxImg.src = images[idx].src;
+    lightboxImg.alt = images[idx].alt;
+    counter.textContent = `${idx + 1} / ${images.length}`;
+  };
+  
+  showImage(currentIndex);
+  
+  document.getElementById('lightbox-prev').onclick = () => {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    showImage(currentIndex);
+  };
+  
+  document.getElementById('lightbox-next').onclick = () => {
+    currentIndex = (currentIndex + 1) % images.length;
+    showImage(currentIndex);
+  };
+  
+  document.getElementById('lightbox').classList.remove('hidden');
+}}
               >
                 <img 
                   src={image.src} 
@@ -299,29 +328,54 @@ function App() {
           </div>
         </div>
 
-        {/* Lightbox */}
-        <div 
-          id="lightbox" 
-          className="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-          onClick={(e) => {
-            if (e.target.id === 'lightbox' || e.target.id === 'lightbox-close') {
-              document.getElementById('lightbox').classList.add('hidden');
-            }
-          }}
-        >
-          <button 
-            id="lightbox-close"
-            className="absolute top-4 right-4 text-white text-4xl hover:text-teal-400 transition-colors z-10"
-          >
-            ×
-          </button>
-          <img 
-            id="lightbox-img" 
-            src="" 
-            alt="" 
-            className="max-w-full max-h-[90vh] object-contain rounded-lg"
-          />
-        </div>
+        {/* Lightbox con navigazione */}
+<div 
+  id="lightbox" 
+  className="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+  onClick={(e) => {
+    if (e.target.id === 'lightbox') {
+      document.getElementById('lightbox').classList.add('hidden');
+    }
+  }}
+>
+  {/* Bottone Chiudi */}
+  <button 
+    id="lightbox-close"
+    onClick={() => document.getElementById('lightbox').classList.add('hidden')}
+    className="absolute top-4 right-4 text-white text-4xl hover:text-teal-400 transition-colors z-10"
+  >
+    ×
+  </button>
+  
+  {/* Freccia Sinistra */}
+  <button 
+    id="lightbox-prev"
+    className="absolute left-4 text-white text-5xl hover:text-teal-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
+  >
+    ‹
+  </button>
+  
+  {/* Immagine */}
+  <img 
+    id="lightbox-img" 
+    src="" 
+    alt="" 
+    className="max-w-full max-h-[90vh] object-contain rounded-lg"
+  />
+  
+  {/* Freccia Destra */}
+  <button 
+    id="lightbox-next"
+    className="absolute right-4 text-white text-5xl hover:text-teal-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
+  >
+    ›
+  </button>
+  
+  {/* Contatore */}
+  <div className="absolute bottom-4 text-white text-sm bg-black/50 px-4 py-2 rounded-lg">
+    <span id="lightbox-counter">1 / 8</span>
+  </div>
+</div>
 
         {/* CTA Button - Sotto le foto */}
         <div className="mt-12 text-center">
