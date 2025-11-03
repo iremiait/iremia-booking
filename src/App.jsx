@@ -16,7 +16,7 @@ function App() {
               <a href="#galleria" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Galleria</a>
               <a href="#zona" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">La Zona</a>
               <a href="#contatti" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Contatti</a>
-              <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">Prenota</a>
+              <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 tr[...]
             </nav>
           </div>
         </div>
@@ -58,7 +58,7 @@ function App() {
 
           {/* Info Box - Sotto l'immagine */}
           <div className="max-w-7xl mx-auto px-4 -mt-20 relative z-10">
-            <div className="bg-white/95 backdrop-blur rounded-lg shadow-2xl p-8 max-w-3xl mx-auto border border-teal-100">
+            <div className="bg-teal-50/95 backdrop-blur rounded-lg shadow-2xl p-8 max-w-3xl mx-auto border border-teal-100">
               <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
                 Benvenuti a Iremia
               </h3>
@@ -67,7 +67,7 @@ function App() {
                   Iremia è una locazione turistica a Lama Mocogno gestita a livello familiare da Andrea e Iza.
                 </p>
                 <p>
-                  Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
+                  Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'invern[...]
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-teal-200">
                   <div className="text-center">
@@ -92,7 +92,7 @@ function App() {
         </div>
 
         {/* L'Appartamento - Dettaglio */}
-        <div id="appartamento" className="mt-20 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
+        <div id="appartamento" className="mt-20 bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
           <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
             L'Appartamento
           </h3>
@@ -104,7 +104,7 @@ function App() {
               Gli spazi includono un ampio soggiorno con cucinotto, una camera matrimoniale, un bagno con vasca a seduta e un balcone con vista sul tranquillo giardino interno.
             </p>
             <p>
-              Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e uno nel divano letto in soggiorno.
+              Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e[...]
             </p>
             <p className="text-sm italic text-teal-700">
               I bimbi sotto i due anni non pagano e possono dormire nel lettone con i genitori. Su richiesta possiamo fornire un lettino (dovrete portare lenzuoline e cuscini).
@@ -119,7 +119,7 @@ function App() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Internet Detox */}
-            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🌲</div>
                 <div>
@@ -131,7 +131,7 @@ function App() {
               </div>
             </div>
             {/* Cucina */}
-            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🍳</div>
                 <div>
@@ -143,7 +143,7 @@ function App() {
               </div>
             </div>
             {/* Balcone */}
-            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🌅</div>
                 <div>
@@ -155,7 +155,7 @@ function App() {
               </div>
             </div>
             {/* Zona Silenziosa */}
-            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🤫</div>
                 <div>
@@ -167,7 +167,7 @@ function App() {
               </div>
             </div>
             {/* Parcheggio */}
-            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🚗</div>
                 <div>
@@ -179,7 +179,7 @@ function App() {
               </div>
             </div>
             {/* Biancheria fornita */}
-            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🛏️</div>
                 <div>
@@ -194,7 +194,7 @@ function App() {
         </div>
 
         {/* Regole della Casa */}
-        <div className="mt-16 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
+        <div className="mt-16 bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
           <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
             Regole della Casa
           </h3>
@@ -399,7 +399,7 @@ function App() {
           </h3>
           <div className="text-gray-600 leading-relaxed space-y-4">
             <p>
-              Lama Mocogno è un piccolo paese dell'Appennino Modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
+              Lama Mocogno è un piccolo paese dell'Appennino Modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno[...]
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
               <div className="text-center">
@@ -431,9 +431,9 @@ function App() {
         <div id="contatti" className="mt-20 max-w-6xl mx-auto">
           {/* Google Maps - Full Width sopra */}
           <div className="mb-8">
-            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
+            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sVia%20per%20Palagano%2C%2028%2C%2041040%20Lama%20Mocogno%20MO%2C%20Italy!5e0!3m2!1sit!2sus!4v1682681099904!5m2!1sit!2sus"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0![...]
                 width="100%"
                 height="400"
                 style={{ border: 0 }}
@@ -448,7 +448,7 @@ function App() {
           {/* Form e Info sotto in 2 colonne */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Form Contatto */}
-            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
+            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
               <h3 className="text-2xl font-light text-gray-800 mb-6">
                 Richiedi Informazioni
               </h3>
@@ -519,7 +519,7 @@ function App() {
             </div>
 
             {/* Info Contatto */}
-            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
+            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
               <h3 className="text-2xl font-light text-gray-800 mb-6">
                 Contattaci
               </h3>
