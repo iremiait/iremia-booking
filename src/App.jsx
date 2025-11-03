@@ -101,7 +101,7 @@ function App() {
               L'appartamento di 55 m² si trova al primo piano di una palazzina di due piani e offre tutto il comfort per un soggiorno rigenerante.
             </p>
             <p>
-              Gli spazi includono un ampio soggiorno con cucinotto, una camera matrimoniale, un bagno completo e un balcone con vista sul tranquillo giardino condominiale interno.
+              Gli spazi includono un ampio soggiorno con cucinotto, una camera matrimoniale, un bagno con vasca a seduta e un balcone con vista sul tranquillo giardino interno.
             </p>
             <p>
               Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e uno nel divano letto in soggiorno.
