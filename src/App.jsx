@@ -2,7 +2,7 @@ import React from 'react';
 
 function App() {
   return (
-    <div id="top" className="min-h-screen bg-gradient-to-b from-teal-50 via-white to-teal-50">
+    <div id="top" className="min-h-screen bg-gradient-to-b from-teal-100 via-teal-50 to-teal-100">
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
