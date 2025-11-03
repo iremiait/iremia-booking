@@ -62,7 +62,7 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 -mt-20 relative z-10">
             <div className="bg-teal-50/95 backdrop-blur rounded-lg shadow-2xl p-8 max-w-3xl mx-auto border border-teal-100">
               <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
-                Benvenuti a Iremia
+                Iremia.it vi dà il benvenuto
               </h3>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
