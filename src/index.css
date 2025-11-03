@@ -19,5 +19,5 @@ body {
 /* Scroll offset per header fisso */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 170px;
+  scroll-padding-top: 180px;
 }
