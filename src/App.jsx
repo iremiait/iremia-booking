@@ -4,21 +4,20 @@ function App() {
   return (
     <div id="top" className="min-h-screen bg-gradient-to-b from-teal-100 via-teal-50 to-teal-100">
       {/* Header */}
-      <header className="bg-teal-50/95 shadow-sm sticky top-0 z-50">
+      <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <a href="#top" className="cursor-pointer">
               <img src="/logo.png" alt="Iremia" className="h-40" />
             </a>
+            
             {/* Menu Navigazione */}
             <nav className="hidden md:flex gap-6 items-center">
               <a href="#appartamento" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">L'Appartamento</a>
               <a href="#galleria" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Galleria</a>
               <a href="#zona" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">La Zona</a>
               <a href="#contatti" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Contatti</a>
-              <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">
-                Prenota
-              </a>
+              <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">Prenota</a>
             </nav>
           </div>
         </div>
@@ -46,7 +45,7 @@ function App() {
                 <p className="text-2xl md:text-3xl text-white/90 mb-8">
                   a Lama Mocogno
                 </p>
-                <div className="inline-block bg-teal-50/95 backdrop-blur border-l-4 border-teal-600 p-6 rounded-lg shadow-2xl">
+                <div className="inline-block bg-white/95 backdrop-blur border-l-4 border-teal-600 p-6 rounded-lg shadow-2xl">
                   <p className="text-xl text-gray-700 italic">
                     <span className="font-semibold text-teal-700">Iremía</span> (ηρεμία)
                   </p>
@@ -60,9 +59,9 @@ function App() {
 
           {/* Info Box - Sotto l'immagine */}
           <div className="max-w-7xl mx-auto px-4 -mt-20 relative z-10">
-            <div className="bg-teal-50/95 backdrop-blur rounded-lg shadow-2xl p-8 max-w-3xl mx-auto border border-teal-100">
+            <div className="bg-white/95 backdrop-blur rounded-lg shadow-2xl p-8 max-w-3xl mx-auto border border-teal-100">
               <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
-                Iremia.it vi dà il benvenuto
+                Benvenuti a Iremia
               </h3>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
@@ -94,7 +93,7 @@ function App() {
         </div>
 
         {/* L'Appartamento - Dettaglio */}
-        <div id="appartamento" className="mt-20 bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
+        <div id="appartamento" className="mt-20 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
           <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
             L'Appartamento
           </h3>
@@ -103,10 +102,10 @@ function App() {
               L'appartamento di 55 m² si trova al primo piano di una palazzina di due piani e offre tutto il comfort per un soggiorno rigenerante.
             </p>
             <p>
-              Gli spazi includono un ampio soggiorno con cucinotto, una camera matrimoniale, un bagno con vasca a seduta e un balcone con vista sul tranquillo giardino interno.
+              Gli spazi includono un ampio soggiorno con cucinotto, una camera matrimoniale, un bagno completo e un balcone con vista sul tranquillo giardino condominiale interno.
             </p>
             <p>
-              Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e uno nel soggiorno.
+              Vi forniamo tutto il necessario per il vostro soggiorno, così non dovrete "traslocare" quando verrete a trovarci. Possiamo ospitare al massimo 3 persone: due nella camera matrimoniale e uno nel divano letto in soggiorno.
             </p>
             <p className="text-sm italic text-teal-700">
               I bimbi sotto i due anni non pagano e possono dormire nel lettone con i genitori. Su richiesta possiamo fornire un lettino (dovrete portare lenzuoline e cuscini).
@@ -121,7 +120,7 @@ function App() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Internet Detox */}
-            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🌲</div>
                 <div>
@@ -133,7 +132,7 @@ function App() {
               </div>
             </div>
             {/* Cucina */}
-            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🍳</div>
                 <div>
@@ -145,7 +144,7 @@ function App() {
               </div>
             </div>
             {/* Balcone */}
-            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🌅</div>
                 <div>
@@ -157,7 +156,7 @@ function App() {
               </div>
             </div>
             {/* Zona Silenziosa */}
-            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🤫</div>
                 <div>
@@ -169,7 +168,7 @@ function App() {
               </div>
             </div>
             {/* Parcheggio */}
-            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🚗</div>
                 <div>
@@ -181,7 +180,7 @@ function App() {
               </div>
             </div>
             {/* Biancheria fornita */}
-            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🛏️</div>
                 <div>
@@ -196,7 +195,7 @@ function App() {
         </div>
 
         {/* Regole della Casa */}
-        <div className="mt-16 bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
+        <div className="mt-16 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
           <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
             Regole della Casa
           </h3>
@@ -264,7 +263,7 @@ function App() {
           </div>
         </div>
 
-        {/* Galleria Foto */}
+        {/* Galleria Foto con Lightbox e Lazy Loading */}
         <div id="galleria" className="mt-20 max-w-7xl mx-auto px-4">
           <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
             Scopri gli spazi
@@ -294,8 +293,9 @@ function App() {
                     { src: '/images/bagno.jpg', alt: 'Bagno' },
                     { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
                   ];
+                  
                   let currentIndex = index;
-
+                  
                   const showImage = (idx) => {
                     const lightboxImg = document.getElementById('lightbox-img');
                     const counter = document.getElementById('lightbox-counter');
@@ -303,25 +303,26 @@ function App() {
                     lightboxImg.alt = images[idx].alt;
                     counter.textContent = `${idx + 1} / ${images.length}`;
                   };
-
+                  
                   showImage(currentIndex);
-
+                  
                   document.getElementById('lightbox-prev').onclick = () => {
                     currentIndex = (currentIndex - 1 + images.length) % images.length;
                     showImage(currentIndex);
                   };
-
+                  
                   document.getElementById('lightbox-next').onclick = () => {
                     currentIndex = (currentIndex + 1) % images.length;
                     showImage(currentIndex);
                   };
-
+                  
                   document.getElementById('lightbox').classList.remove('hidden');
                 }}
               >
                 <img 
                   src={image.src} 
-                  alt={image.alt} 
+                  alt={image.alt}
+                  loading="lazy"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
                 />
               </div>
@@ -394,7 +395,7 @@ function App() {
         </div>
 
         {/* La Zona */}
-        <div id="zona" className="mt-20 bg-gradient-to-br from-teal-50 to-white/90 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
+        <div id="zona" className="mt-20 bg-gradient-to-br from-teal-100 to-teal-50 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-200">
           <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
             La Zona
           </h3>
@@ -429,12 +430,12 @@ function App() {
         </div>
 
         {/* Contatti & Form */}
-        <div id="contatti" className="mt-20 max-w-6xl mx-auto">
+        <div id="contatti" className="mt-20 max-w-6xl mx-auto px-4">
           {/* Google Maps - Full Width sopra */}
           <div className="mb-8">
-            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sVia%20per%20Palagano%2C%2028%2C%2041000%20Lama%20Mocogno%20MO%2C%20Italy!5e0!3m2!1sit!2sit!4v1686750402132!5m2!1sit!2sit"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sVia%20per%20Palagano%2C%2028%2C%2041040%20Lama%20Mocogno%20MO%2C%20Italy!5e0!3m2!1sit!2sus!4v1682681099904!5m2!1sit!2sus"
                 width="100%"
                 height="400"
                 style={{ border: 0 }}
@@ -449,7 +450,7 @@ function App() {
           {/* Form e Info sotto in 2 colonne */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Form Contatto */}
-            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
               <h3 className="text-2xl font-light text-gray-800 mb-6">
                 Richiedi Informazioni
               </h3>
@@ -520,7 +521,7 @@ function App() {
             </div>
 
             {/* Info Contatto */}
-            <div className="bg-teal-50/90 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
               <h3 className="text-2xl font-light text-gray-800 mb-6">
                 Contattaci
               </h3>
@@ -580,15 +581,16 @@ function App() {
             </div>
           </div>
         </div>
-        {/* MAIN CONTENT ENDS */}
       </main>
+      {/* MAIN CONTENT ENDS */}
+
       {/* Footer */}
       <footer className="bg-gray-800 text-white mt-20">
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Logo */}
             <div>
-              <img src="/logo.png" alt="Iremia" className="h-24 mb-4 brightness-0 invert" />
+              <img src="/logo.png" alt="Iremia" loading="lazy" className="h-24 mb-4 brightness-0 invert" />
               <p className="text-gray-400 text-xs mt-2">
                 Il tuo rifugio di pace a Lama Mocogno
               </p>
