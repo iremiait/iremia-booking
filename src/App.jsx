@@ -435,6 +435,149 @@ function App() {
           </div>
         </div>
 
+        {/* Recensioni Google */}
+<div className="mt-20 max-w-6xl mx-auto px-4">
+  <h3 className="text-3xl font-light text-gray-800 mb-4 text-center">
+    Cosa dicono i nostri ospiti
+  </h3>
+  <p className="text-center text-gray-600 mb-8">
+    Le recensioni dei nostri ospiti su Google
+  </p>
+  
+  {/* Grid Recensioni */}
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    
+    {/* Recensione 1 */}
+    <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex text-yellow-400">
+          {'⭐'.repeat(5)}
+        </div>
+        <span className="text-sm text-gray-500">5 mesi fa</span>
+      </div>
+      <p className="text-gray-700 text-sm leading-relaxed mb-4">
+        "Ogni volta che torno in questo luogo mi sembra di essere a casa. La casa è molto accogliente. Non gli manca nulla. Il paesaggio è rilassante come tutta la pace che circonda la casa."
+      </p>
+      <div className="flex items-center gap-2 text-sm">
+        <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
+          CG
+        </div>
+        <span className="text-gray-600 font-medium">C.G.</span>
+      </div>
+    </div>
+
+    {/* Recensione 2 */}
+    <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex text-yellow-400">
+          {'⭐'.repeat(5)}
+        </div>
+        <span className="text-sm text-gray-500">4 mesi fa</span>
+      </div>
+      <p className="text-gray-700 text-sm leading-relaxed mb-4">
+        "Appartamento pulitissimo, dotato di tutto il necessario. Andrea è una persona gentile e disponibile. Ci siamo trovati bene. Lo consiglio vivamente!"
+      </p>
+      <div className="flex items-center gap-2 text-sm">
+        <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
+          EV
+        </div>
+        <span className="text-gray-600 font-medium">E.V.</span>
+      </div>
+    </div>
+
+    {/* Recensione 3 */}
+    <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex text-yellow-400">
+          {'⭐'.repeat(5)}
+        </div>
+        <span className="text-sm text-gray-500">5 mesi fa</span>
+      </div>
+      <p className="text-gray-700 text-sm leading-relaxed mb-4">
+        "Casa accogliente, pulita e zona tranquilla. Ci siamo stati più volte e penso che ci tornerò ancora! Andrea è affabile e simpatico. Consiglio vivamente il posto."
+      </p>
+      <div className="flex items-center gap-2 text-sm">
+        <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
+          GS
+        </div>
+        <span className="text-gray-600 font-medium">G.S.</span>
+      </div>
+    </div>
+
+    {/* Recensione 4 */}
+    <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex text-yellow-400">
+          {'⭐'.repeat(5)}
+        </div>
+        <span className="text-sm text-gray-500">2 anni fa</span>
+      </div>
+      <p className="text-gray-700 text-sm leading-relaxed mb-4">
+        "Sono stata più volte a casa Iremia e sicuramente tornerò perché mi sono trovata benissimo. Andrea è davvero gentile e sempre disponibile e l'appartamento è spazioso e luminoso."
+      </p>
+      <div className="flex items-center gap-2 text-sm">
+        <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
+          FL
+        </div>
+        <span className="text-gray-600 font-medium">F.L.</span>
+      </div>
+    </div>
+
+    {/* Recensione 5 */}
+    <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex text-yellow-400">
+          {'⭐'.repeat(5)}
+        </div>
+        <span className="text-sm text-gray-500">2 anni fa</span>
+      </div>
+      <p className="text-gray-700 text-sm leading-relaxed mb-4">
+        "Il nostro cammino sulla Via Vandelli si è fermato a Lama Mocogno da Iremia dove abbiamo trovato: un appartamento delizioso, curato e pulito, un host cordiale, attento e premuroso."
+      </p>
+      <div className="flex items-center gap-2 text-sm">
+        <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
+          FP
+        </div>
+        <span className="text-gray-600 font-medium">F.P.</span>
+      </div>
+    </div>
+
+    {/* Recensione 6 */}
+    <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex text-yellow-400">
+          {'⭐'.repeat(5)}
+        </div>
+        <span className="text-sm text-gray-500">2 anni fa</span>
+      </div>
+      <p className="text-gray-700 text-sm leading-relaxed mb-4">
+        "Appartamento molto ben tenuto e dotato di ogni comfort. Andrea (e sua moglie) gentilissimo e pronto ad aiutarti. Super consigliato!"
+      </p>
+      <div className="flex items-center gap-2 text-sm">
+        <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
+          RT
+        </div>
+        <span className="text-gray-600 font-medium">R.T.</span>
+      </div>
+    </div>
+
+  </div>
+
+  {/* Link Google Business */}
+  <div className="mt-8 text-center">
+    <a 
+      href="https://maps.app.goo.gl/oZV9f4zYBXhmq1fr9" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-medium"
+    >
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+      Vedi tutte le recensioni su Google
+    </a>
+  </div>
+</div>
         {/* CTA Button - Sotto le foto */}
         <div className="mt-12 text-center">
           <a 
