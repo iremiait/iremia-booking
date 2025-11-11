@@ -4,24 +4,80 @@ function App() {
   return (
     <div id="top" className="min-h-screen bg-gradient-to-b from-teal-100 via-teal-50 to-teal-100">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <a href="#top" className="cursor-pointer">
-              <img src="/logo.png" alt="Iremia" className="h-40" />
-            </a>
-            
-            {/* Menu Navigazione */}
-            <nav className="hidden md:flex gap-6 items-center">
-              <a href="#appartamento" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">L'Appartamento</a>
-              <a href="#galleria" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Galleria</a>
-              <a href="#zona" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">La Zona</a>
-              <a href="#contatti" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Contatti</a>
-              <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">Prenota</a>
-            </nav>
-          </div>
-        </div>
-      </header>
+<header className="bg-white shadow-sm sticky top-0 z-50">
+  <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-between">
+      <a href="#top" className="cursor-pointer">
+        <img src="/logo.png" alt="Iremia" className="h-40" />
+      </a>
+      
+      {/* Menu Desktop - nascosto su mobile */}
+      <nav className="hidden md:flex gap-6 items-center">
+        <a href="#appartamento" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">L'Appartamento</a>
+        <a href="#galleria" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Galleria</a>
+        <a href="#zona" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">La Zona</a>
+        <a href="#contatti" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Contatti</a>
+        <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">Prenota</a>
+      </nav>
+
+      {/* Hamburger Button - visibile solo su mobile */}
+      <button 
+        id="mobile-menu-button"
+        className="md:hidden text-gray-700 hover:text-teal-600 focus:outline-none"
+        onClick={() => {
+          const menu = document.getElementById('mobile-menu');
+          menu.classList.toggle('hidden');
+        }}
+      >
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    {/* Menu Mobile - dropdown */}
+    <div id="mobile-menu" className="hidden md:hidden mt-4 pb-4">
+      <nav className="flex flex-col space-y-3">
+        <a 
+          href="#appartamento" 
+          className="text-gray-700 hover:text-teal-600 font-medium transition-colors py-2 border-b border-gray-200"
+          onClick={() => document.getElementById('mobile-menu').classList.add('hidden')}
+        >
+          L'Appartamento
+        </a>
+        <a 
+          href="#galleria" 
+          className="text-gray-700 hover:text-teal-600 font-medium transition-colors py-2 border-b border-gray-200"
+          onClick={() => document.getElementById('mobile-menu').classList.add('hidden')}
+        >
+          Galleria
+        </a>
+        <a 
+          href="#zona" 
+          className="text-gray-700 hover:text-teal-600 font-medium transition-colors py-2 border-b border-gray-200"
+          onClick={() => document.getElementById('mobile-menu').classList.add('hidden')}
+        >
+          La Zona
+        </a>
+        <a 
+          href="#contatti" 
+          className="text-gray-700 hover:text-teal-600 font-medium transition-colors py-2 border-b border-gray-200"
+          onClick={() => document.getElementById('mobile-menu').classList.add('hidden')}
+        >
+          Contatti
+        </a>
+        <a 
+          href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="bg-teal-600 text-white px-4 py-3 rounded-lg hover:bg-teal-700 transition-colors text-center font-medium"
+        >
+          Prenota su WhatsApp
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
 
       {/* MAIN CONTENT STARTS */}
       <main>
