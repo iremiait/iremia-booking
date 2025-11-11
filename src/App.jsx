@@ -30,9 +30,9 @@ function App() {
           {/* Background Image */}
           <div className="relative h-[600px] overflow-hidden">
             <div 
-              className="absolute inset-0 bg-cover bg-center bg-fixed"
-              style={{ backgroundImage: 'url(/images/lama.jpg)' }}
-            >
+  className="absolute inset-0 bg-cover bg-center"
+  style={{ backgroundImage: 'url(/images/lama.jpg)' }}
+>
               <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
             </div>
             
