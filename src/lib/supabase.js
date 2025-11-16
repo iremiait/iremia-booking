@@ -38,6 +38,41 @@ export const popupService = {
     return data
   },
 
+  // Upload immagine
+  async uploadImage(file) {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`
+    const filePath = `${fileName}`
+
+    const { data, error } = await supabase.storage
+      .from('popup-images')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+    if (error) throw error
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('popup-images')
+      .getPublicUrl(filePath)
+
+    return publicUrl
+  },
+
+  // Elimina immagine
+  async deleteImage(imageUrl) {
+    if (!imageUrl) return
+    
+    const fileName = imageUrl.split('/').pop()
+    
+    const { error } = await supabase.storage
+      .from('popup-images')
+      .remove([fileName])
+
+    if (error) console.error('Error deleting image:', error)
+  },
+
   // Crea nuovo popup
   async createPopup(popupData) {
     const { data, error } = await supabase
@@ -65,6 +100,17 @@ export const popupService = {
 
   // Elimina popup
   async deletePopup(id) {
+    // Prima ottieni il popup per eliminare l'immagine
+    const { data: popup } = await supabase
+      .from('popup_config')
+      .select('image_url')
+      .eq('id', id)
+      .single()
+
+    if (popup?.image_url) {
+      await this.deleteImage(popup.image_url)
+    }
+
     const { error } = await supabase
       .from('popup_config')
       .delete()
