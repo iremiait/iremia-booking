@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, ArrowLeft, Lock } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, ArrowLeft, Lock, Upload, Image as ImageIcon } from 'lucide-react';
 import { popupService } from '../lib/supabase';
 
 const AdminPopup = () => {
@@ -93,6 +93,9 @@ const DashboardContent = ({ onLogout }) => {
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -105,7 +108,8 @@ const DashboardContent = ({ onLogout }) => {
     start_date: '',
     end_date: '',
     delay_seconds: 3,
-    show_frequency_days: 7
+    show_frequency_days: 7,
+    image_url: ''
   });
 
   useEffect(() => {
@@ -138,15 +142,54 @@ const DashboardContent = ({ onLogout }) => {
     }
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Il file è troppo grande. Massimo 5MB.');
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    updateField('image_url', '');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
+    setUploading(true);
+
     try {
-      if (editingPopup) {
-        await popupService.updatePopup(editingPopup.id, formData);
-      } else {
-        await popupService.createPopup(formData);
+      let imageUrl = formData.image_url;
+
+      // Se c'è una nuova immagine, caricala
+      if (imageFile) {
+        imageUrl = await popupService.uploadImage(imageFile);
+        
+        // Se stiamo modificando e c'era una vecchia immagine, eliminala
+        if (editingPopup?.image_url) {
+          await popupService.deleteImage(editingPopup.image_url);
+        }
       }
+
+      const dataToSave = { ...formData, image_url: imageUrl };
+
+      if (editingPopup) {
+        await popupService.updatePopup(editingPopup.id, dataToSave);
+      } else {
+        await popupService.createPopup(dataToSave);
+      }
+
       await loadPopups();
       closeModal();
       alert('Popup salvato con successo!');
@@ -154,7 +197,9 @@ const DashboardContent = ({ onLogout }) => {
       console.error('Errore salvataggio:', error);
       alert('Errore: ' + error.message);
     }
+    
     setSaving(false);
+    setUploading(false);
   };
 
   const handleDelete = async (id) => {
@@ -198,8 +243,12 @@ const DashboardContent = ({ onLogout }) => {
         start_date: popup.start_date || '',
         end_date: popup.end_date || '',
         delay_seconds: popup.delay_seconds || 3,
-        show_frequency_days: popup.show_frequency_days || 7
+        show_frequency_days: popup.show_frequency_days || 7,
+        image_url: popup.image_url || ''
       });
+      if (popup.image_url) {
+        setImagePreview(popup.image_url);
+      }
     } else {
       setEditingPopup(null);
       setFormData({
@@ -213,9 +262,12 @@ const DashboardContent = ({ onLogout }) => {
         start_date: '',
         end_date: '',
         delay_seconds: 3,
-        show_frequency_days: 7
+        show_frequency_days: 7,
+        image_url: ''
       });
+      setImagePreview(null);
     }
+    setImageFile(null);
     setShowModal(true);
   };
 
@@ -223,6 +275,8 @@ const DashboardContent = ({ onLogout }) => {
     setShowModal(false);
     setEditingPopup(null);
     setShowPreview(false);
+    setImageFile(null);
+    setImagePreview(null);
   };
 
   const updateField = (field, value) => {
@@ -304,6 +358,12 @@ const DashboardContent = ({ onLogout }) => {
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${popup.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
                           {popup.is_active ? 'Attivo' : 'Disattivato'}
                         </span>
+                        {popup.image_url && (
+                          <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 flex items-center gap-1">
+                            <ImageIcon size={14} />
+                            Con immagine
+                          </span>
+                        )}
                       </div>
                       <p className="text-gray-600 mb-4">{popup.message}</p>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -376,12 +436,45 @@ const DashboardContent = ({ onLogout }) => {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Titolo *</label>
-                    <input type="text" value={formData.title} onChange={(e) => updateField('title', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" required placeholder="Es: Prenota ora" />
+                    <input type="text" value={formData.title} onChange={(e) => updateField('title', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" required placeholder="Es: Offerta Speciale" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Messaggio *</label>
                     <textarea value={formData.message} onChange={(e) => updateField('message', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent h-24" required placeholder="Descrivi l'offerta..." />
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <ImageIcon size={16} className="inline mr-1" />
+                      Immagine Popup (opzionale)
+                    </label>
+                    <div className="mt-2">
+                      {imagePreview ? (
+                        <div className="relative">
+                          <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover rounded-lg border-2 border-gray-300" />
+                          <button
+                            type="button"
+                            onClick={removeImage}
+                            className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className="w-10 h-10 mb-3 text-gray-400" />
+                            <p className="mb-2 text-sm text-gray-500">
+                              <span className="font-semibold">Clicca per caricare</span>
+                            </p>
+                            <p className="text-xs text-gray-500">PNG, JPG (MAX. 5MB)</p>
+                          </div>
+                          <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                        </label>
+                      )}
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Testo Pulsante</label>
                     <input type="text" value={formData.button_text} onChange={(e) => updateField('button_text', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" placeholder="Es: Prenota ora" />
@@ -405,6 +498,7 @@ const DashboardContent = ({ onLogout }) => {
                     </div>
                   </div>
                 </div>
+
                 <div className="space-y-6">
                   <div>
                     <label className="flex items-center gap-2 cursor-pointer">
@@ -450,6 +544,11 @@ const DashboardContent = ({ onLogout }) => {
                     <div className="rounded-2xl shadow-2xl max-w-md w-full p-8 relative" style={{ backgroundColor: formData.bg_color, color: formData.text_color }}>
                       <button className="absolute top-4 right-4 text-3xl font-light opacity-80">×</button>
                       <div className="text-center">
+                        {imagePreview && (
+                          <div className="mb-6">
+                            <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                          </div>
+                        )}
                         <h3 className="text-3xl font-light mb-4">{formData.title || 'Titolo popup'}</h3>
                         <p className="text-lg mb-6 opacity-90">{formData.message || 'Messaggio popup'}</p>
                         {formData.button_text && (
@@ -469,7 +568,7 @@ const DashboardContent = ({ onLogout }) => {
                   {saving ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      Salvataggio...
+                      {uploading ? 'Caricamento...' : 'Salvataggio...'}
                     </>
                   ) : (
                     <>
