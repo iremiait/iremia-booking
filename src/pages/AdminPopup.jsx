@@ -1,8 +1,103 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, ArrowLeft } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, ArrowLeft, Lock } from 'lucide-react';
 import { popupService } from '../lib/supabase';
 
 const AdminPopup = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  // Password admin - CAMBIA QUESTA PASSWORD!
+  const ADMIN_PASSWORD = 'iremia2025';
+
+  // Controlla se già autenticato
+  useEffect(() => {
+    const auth = sessionStorage.getItem('admin_authenticated');
+    if (auth === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (password === ADMIN_PASSWORD) {
+      sessionStorage.setItem('admin_authenticated', 'true');
+      setIsAuthenticated(true);
+      setError('');
+    } else {
+      setError('Password errata!');
+      setPassword('');
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('admin_authenticated');
+    setIsAuthenticated(false);
+    setPassword('');
+  };
+
+  // Schermata di login
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full border border-teal-100">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-teal-100 rounded-full mb-4">
+              <Lock size={32} className="text-teal-600" />
+            </div>
+            <h2 className="text-2xl font-light text-gray-900 mb-2">Admin Dashboard</h2>
+            <p className="text-gray-600">Inserisci la password per accedere</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                placeholder="Inserisci la password"
+                required
+              />
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full bg-teal-600 text-white py-3 rounded-lg hover:bg-teal-700 transition font-medium"
+            >
+              Accedi
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            
+              href="/"
+              className="text-sm text-teal-600 hover:text-teal-700 inline-flex items-center gap-1"
+            >
+              <ArrowLeft size={16} />
+              Torna alla homepage
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Dashboard completa (codice esistente)
+  return <DashboardContent onLogout={handleLogout} />;
+};
+
+// Componente Dashboard (il codice che avevi prima)
+const DashboardContent = ({ onLogout }) => {
   const [popups, setPopups] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -189,13 +284,22 @@ const AdminPopup = () => {
                 <p className="text-gray-600 mt-1">Iremia Booking Dashboard</p>
               </div>
             </div>
-            <button
-              onClick={() => openModal()}
-              className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition flex items-center gap-2 shadow-md"
-            >
-              <Plus size={20} />
-              Nuovo Popup
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={onLogout}
+                className="px-4 py-2 text-gray-600 hover:text-gray-900 transition"
+                title="Logout"
+              >
+                Esci
+              </button>
+              <button
+                onClick={() => openModal()}
+                className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition flex items-center gap-2 shadow-md"
+              >
+                <Plus size={20} />
+                Nuovo Popup
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -336,49 +440,39 @@ const AdminPopup = () => {
               <h2 className="text-2xl font-light text-gray-900">
                 {editingPopup ? 'Modifica Popup' : 'Nuovo Popup'}
               </h2>
-              <button
-                onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600 transition"
-              >
+              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition">
                 <X size={24} />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid md:grid-cols-2 gap-6">
-                {/* Colonna Sinistra */}
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Titolo *
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Titolo *</label>
                     <input
                       type="text"
                       value={formData.title}
                       onChange={(e) => updateField('title', e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                       required
-                      placeholder="Es: Prenota ora il tuo trattamento"
+                      placeholder="Es: Prenota ora il tuo soggiorno"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Messaggio *
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Messaggio *</label>
                     <textarea
                       value={formData.message}
                       onChange={(e) => updateField('message', e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent h-24"
                       required
-                      placeholder="Descrivi l'offerta o il messaggio..."
+                      placeholder="Descrivi l'offerta..."
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Testo Pulsante
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Testo Pulsante</label>
                     <input
                       type="text"
                       value={formData.button_text}
@@ -389,9 +483,7 @@ const AdminPopup = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Link Pulsante
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Link Pulsante</label>
                     <input
                       type="url"
                       value={formData.button_link}
@@ -429,7 +521,6 @@ const AdminPopup = () => {
                   </div>
                 </div>
 
-                {/* Colonna Destra */}
                 <div className="space-y-6">
                   <div>
                     <label className="flex items-center gap-2 cursor-pointer">
@@ -439,9 +530,7 @@ const AdminPopup = () => {
                         onChange={(e) => updateField('is_active', e.target.checked)}
                         className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500"
                       />
-                      <span className="text-sm font-medium text-gray-700">
-                        Attiva popup immediatamente
-                      </span>
+                      <span className="text-sm font-medium text-gray-700">Attiva popup immediatamente</span>
                     </label>
                   </div>
 
@@ -487,9 +576,7 @@ const AdminPopup = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Frequenza Visualizzazione (giorni)
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Frequenza Visualizzazione (giorni)</label>
                     <input
                       type="number"
                       min="1"
@@ -498,9 +585,7 @@ const AdminPopup = () => {
                       onChange={(e) => updateField('show_frequency_days', parseInt(e.target.value))}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Il popup verrà mostrato ogni N giorni allo stesso utente
-                    </p>
+                    <p className="text-xs text-gray-500 mt-1">Il popup verrà mostrato ogni N giorni allo stesso utente</p>
                   </div>
 
                   <div>
@@ -516,7 +601,6 @@ const AdminPopup = () => {
                 </div>
               </div>
 
-              {/* Anteprima Popup */}
               {showPreview && (
                 <div className="mt-6 p-6 bg-gray-100 rounded-xl">
                   <p className="text-sm text-gray-600 mb-4 text-center">Anteprima Live</p>
@@ -570,86 +654,3 @@ const AdminPopup = () => {
           </div>
         </div>
       )}
-
-      {/* Modal Statistiche */}
-      {showStats && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-2xl font-light text-gray-900">Statistiche Popup</h2>
-              <button
-                onClick={() => setShowStats(null)}
-                className="text-gray-400 hover:text-gray-600 transition"
-              >
-                <X size={24} />
-              </button>
-            </div>
-
-            <div className="p-6">
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="bg-blue-50 rounded-lg p-4 text-center">
-                  <p className="text-sm text-blue-600 mb-1">Visualizzazioni Totali</p>
-                  <p className="text-3xl font-bold text-blue-700">{getTotalViews()}</p>
-                </div>
-                <div className="bg-green-50 rounded-lg p-4 text-center">
-                  <p className="text-sm text-green-600 mb-1">Click Totali</p>
-                  <p className="text-3xl font-bold text-green-700">{getTotalClicks()}</p>
-                </div>
-                <div className="bg-purple-50 rounded-lg p-4 text-center">
-                  <p className="text-sm text-purple-600 mb-1">Tasso Conversione</p>
-                  <p className="text-3xl font-bold text-purple-700">{getConversionRate()}%</p>
-                </div>
-              </div>
-
-              <div className="border border-gray-200 rounded-lg overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Data</th>
-                      <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Visualizzazioni</th>
-                      <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Click</th>
-                      <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Conversione</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {stats.length === 0 ? (
-                      <tr>
-                        <td colSpan="4" className="px-4 py-8 text-center text-gray-500">
-                          Nessun dato disponibile
-                        </td>
-                      </tr>
-                    ) : (
-                      stats.map((stat, index) => {
-                        const rate = stat.views > 0 ? ((stat.clicks / stat.views) * 100).toFixed(1) : 0;
-                        return (
-                          <tr key={index} className="hover:bg-gray-50">
-                            <td className="px-4 py-3 text-sm text-gray-900">
-                              {new Date(stat.date).toLocaleDateString('it-IT')}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-center text-gray-900">{stat.views}</td>
-                            <td className="px-4 py-3 text-sm text-center text-gray-900">{stat.clicks}</td>
-                            <td className="px-4 py-3 text-sm text-center">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                rate > 5 ? 'bg-green-100 text-green-700' :
-                                rate > 2 ? 'bg-yellow-100 text-yellow-700' :
-                                'bg-red-100 text-red-700'
-                              }`}>
-                                {rate}%
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default AdminPopup;
