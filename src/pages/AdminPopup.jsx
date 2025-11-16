@@ -654,3 +654,82 @@ const DashboardContent = ({ onLogout }) => {
           </div>
         </div>
       )}
+{/* Modal Statistiche */}
+      {showStats && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+              <h2 className="text-2xl font-light text-gray-900">Statistiche Popup</h2>
+              <button onClick={() => setShowStats(null)} className="text-gray-400 hover:text-gray-600 transition">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="bg-blue-50 rounded-lg p-4 text-center">
+                  <p className="text-sm text-blue-600 mb-1">Visualizzazioni Totali</p>
+                  <p className="text-3xl font-bold text-blue-700">{getTotalViews()}</p>
+                </div>
+                <div className="bg-green-50 rounded-lg p-4 text-center">
+                  <p className="text-sm text-green-600 mb-1">Click Totali</p>
+                  <p className="text-3xl font-bold text-green-700">{getTotalClicks()}</p>
+                </div>
+                <div className="bg-purple-50 rounded-lg p-4 text-center">
+                  <p className="text-sm text-purple-600 mb-1">Tasso Conversione</p>
+                  <p className="text-3xl font-bold text-purple-700">{getConversionRate()}%</p>
+                </div>
+              </div>
+
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Data</th>
+                      <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Visualizzazioni</th>
+                      <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Click</th>
+                      <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Conversione</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {stats.length === 0 ? (
+                      <tr>
+                        <td colSpan="4" className="px-4 py-8 text-center text-gray-500">
+                          Nessun dato disponibile
+                        </td>
+                      </tr>
+                    ) : (
+                      stats.map((stat, index) => {
+                        const rate = stat.views > 0 ? ((stat.clicks / stat.views) * 100).toFixed(1) : 0;
+                        return (
+                          <tr key={index} className="hover:bg-gray-50">
+                            <td className="px-4 py-3 text-sm text-gray-900">
+                              {new Date(stat.date).toLocaleDateString('it-IT')}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-center text-gray-900">{stat.views}</td>
+                            <td className="px-4 py-3 text-sm text-center text-gray-900">{stat.clicks}</td>
+                            <td className="px-4 py-3 text-sm text-center">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                rate > 5 ? 'bg-green-100 text-green-700' :
+                                rate > 2 ? 'bg-yellow-100 text-yellow-700' :
+                                'bg-red-100 text-red-700'
+                              }`}>
+                                {rate}%
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AdminPopup;
