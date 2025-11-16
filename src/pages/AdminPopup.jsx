@@ -7,10 +7,8 @@ const AdminPopup = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  // Password admin - CAMBIA QUESTA PASSWORD!
   const ADMIN_PASSWORD = 'iremia2025';
 
-  // Controlla se già autenticato
   useEffect(() => {
     const auth = sessionStorage.getItem('admin_authenticated');
     if (auth === 'true') {
@@ -36,7 +34,6 @@ const AdminPopup = () => {
     setPassword('');
   };
 
-  // Schermata di login
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-50 flex items-center justify-center p-4">
@@ -51,9 +48,7 @@ const AdminPopup = () => {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
               <input
                 type="password"
                 value={password}
@@ -70,19 +65,13 @@ const AdminPopup = () => {
               </div>
             )}
 
-            <button
-              type="submit"
-              className="w-full bg-teal-600 text-white py-3 rounded-lg hover:bg-teal-700 transition font-medium"
-            >
+            <button type="submit" className="w-full bg-teal-600 text-white py-3 rounded-lg hover:bg-teal-700 transition font-medium">
               Accedi
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            
-              href="/"
-              className="text-sm text-teal-600 hover:text-teal-700 inline-flex items-center gap-1"
-            >
+            <a href="/" className="text-sm text-teal-600 hover:text-teal-700 inline-flex items-center gap-1">
               <ArrowLeft size={16} />
               Torna alla homepage
             </a>
@@ -92,11 +81,9 @@ const AdminPopup = () => {
     );
   }
 
-  // Dashboard completa (codice esistente)
   return <DashboardContent onLogout={handleLogout} />;
 };
 
-// Componente Dashboard (il codice che avevi prima)
 const DashboardContent = ({ onLogout }) => {
   const [popups, setPopups] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -138,7 +125,6 @@ const DashboardContent = ({ onLogout }) => {
       setPopups(data || []);
     } catch (error) {
       console.error('Errore caricamento popup:', error);
-      alert('Errore nel caricamento dei popup');
     }
     setLoading(false);
   };
@@ -166,7 +152,7 @@ const DashboardContent = ({ onLogout }) => {
       alert('Popup salvato con successo!');
     } catch (error) {
       console.error('Errore salvataggio:', error);
-      alert('Errore nel salvataggio: ' + error.message);
+      alert('Errore: ' + error.message);
     }
     setSaving(false);
   };
@@ -176,10 +162,8 @@ const DashboardContent = ({ onLogout }) => {
       try {
         await popupService.deletePopup(id);
         await loadPopups();
-        alert('Popup eliminato!');
       } catch (error) {
         console.error('Errore eliminazione:', error);
-        alert('Errore nell\'eliminazione');
       }
     }
   };
@@ -196,8 +180,7 @@ const DashboardContent = ({ onLogout }) => {
       await popupService.updatePopup(popup.id, { is_active: !popup.is_active });
       await loadPopups();
     } catch (error) {
-      console.error('Errore toggle active:', error);
-      alert('Errore nell\'attivazione/disattivazione');
+      console.error('Errore toggle:', error);
     }
   };
 
@@ -267,16 +250,11 @@ const DashboardContent = ({ onLogout }) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
-              <a 
-                href="/" 
-                className="text-gray-600 hover:text-teal-600 transition"
-                title="Torna alla homepage"
-              >
+              <a href="/" className="text-gray-600 hover:text-teal-600 transition">
                 <ArrowLeft size={24} />
               </a>
               <div>
@@ -285,17 +263,10 @@ const DashboardContent = ({ onLogout }) => {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <button
-                onClick={onLogout}
-                className="px-4 py-2 text-gray-600 hover:text-gray-900 transition"
-                title="Logout"
-              >
+              <button onClick={onLogout} className="px-4 py-2 text-gray-600 hover:text-gray-900 transition">
                 Esci
               </button>
-              <button
-                onClick={() => openModal()}
-                className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition flex items-center gap-2 shadow-md"
-              >
+              <button onClick={() => openModal()} className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition flex items-center gap-2 shadow-md">
                 <Plus size={20} />
                 Nuovo Popup
               </button>
@@ -304,7 +275,6 @@ const DashboardContent = ({ onLogout }) => {
         </div>
       </div>
 
-      {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
           <div className="text-center py-12">
@@ -317,10 +287,7 @@ const DashboardContent = ({ onLogout }) => {
             </div>
             <h3 className="text-xl font-light text-gray-900 mb-2">Nessun popup configurato</h3>
             <p className="text-gray-600 mb-6">Inizia creando il tuo primo popup</p>
-            <button
-              onClick={() => openModal()}
-              className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition inline-flex items-center gap-2"
-            >
+            <button onClick={() => openModal()} className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition inline-flex items-center gap-2">
               <Plus size={20} />
               Crea Popup
             </button>
@@ -334,16 +301,11 @@ const DashboardContent = ({ onLogout }) => {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-xl font-medium text-gray-900">{popup.title}</h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          popup.is_active 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-gray-100 text-gray-600'
-                        }`}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${popup.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
                           {popup.is_active ? 'Attivo' : 'Disattivato'}
                         </span>
                       </div>
                       <p className="text-gray-600 mb-4">{popup.message}</p>
-                      
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div>
                           <span className="text-gray-500">Inizio:</span>
@@ -363,65 +325,33 @@ const DashboardContent = ({ onLogout }) => {
                         </div>
                       </div>
                     </div>
-
                     <div className="flex items-center gap-2 ml-4">
-                      <button
-                        onClick={() => toggleActive(popup)}
-                        className={`p-2 rounded-lg transition ${
-                          popup.is_active
-                            ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        }`}
-                        title={popup.is_active ? 'Disattiva' : 'Attiva'}
-                      >
+                      <button onClick={() => toggleActive(popup)} className={`p-2 rounded-lg transition ${popup.is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
                         {popup.is_active ? <Eye size={20} /> : <EyeOff size={20} />}
                       </button>
-                      <button
-                        onClick={() => setShowStats(popup.id)}
-                        className="p-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition"
-                        title="Statistiche"
-                      >
+                      <button onClick={() => setShowStats(popup.id)} className="p-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition">
                         <BarChart3 size={20} />
                       </button>
-                      <button
-                        onClick={() => openModal(popup)}
-                        className="p-2 bg-teal-100 text-teal-700 rounded-lg hover:bg-teal-200 transition"
-                        title="Modifica"
-                      >
+                      <button onClick={() => openModal(popup)} className="p-2 bg-teal-100 text-teal-700 rounded-lg hover:bg-teal-200 transition">
                         <Edit2 size={20} />
                       </button>
-                      <button
-                        onClick={() => handleDelete(popup.id)}
-                        className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition"
-                        title="Elimina"
-                      >
+                      <button onClick={() => handleDelete(popup.id)} className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition">
                         <Trash2 size={20} />
                       </button>
                     </div>
                   </div>
                 </div>
-                
                 <div className="border-t border-gray-200 p-4 bg-gray-50">
                   <div className="flex items-center gap-4">
                     <span className="text-sm text-gray-600">Colori:</span>
                     <div className="flex items-center gap-2">
-                      <div 
-                        className="w-8 h-8 rounded border-2 border-gray-300"
-                        style={{ backgroundColor: popup.bg_color }}
-                        title="Sfondo"
-                      />
-                      <div 
-                        className="w-8 h-8 rounded border-2 border-gray-300"
-                        style={{ backgroundColor: popup.text_color }}
-                        title="Testo"
-                      />
+                      <div className="w-8 h-8 rounded border-2 border-gray-300" style={{ backgroundColor: popup.bg_color }} />
+                      <div className="w-8 h-8 rounded border-2 border-gray-300" style={{ backgroundColor: popup.text_color }} />
                     </div>
                     {popup.button_text && (
                       <>
                         <span className="text-gray-300">|</span>
-                        <span className="text-sm text-gray-600">
-                          CTA: <span className="font-medium">{popup.button_text}</span>
-                        </span>
+                        <span className="text-sm text-gray-600">CTA: <span className="font-medium">{popup.button_text}</span></span>
                       </>
                     )}
                   </div>
@@ -432,168 +362,80 @@ const DashboardContent = ({ onLogout }) => {
         )}
       </div>
 
-      {/* Modal Crea/Modifica */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full my-8">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center rounded-t-2xl">
-              <h2 className="text-2xl font-light text-gray-900">
-                {editingPopup ? 'Modifica Popup' : 'Nuovo Popup'}
-              </h2>
+              <h2 className="text-2xl font-light text-gray-900">{editingPopup ? 'Modifica Popup' : 'Nuovo Popup'}</h2>
               <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition">
                 <X size={24} />
               </button>
             </div>
-
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Titolo *</label>
-                    <input
-                      type="text"
-                      value={formData.title}
-                      onChange={(e) => updateField('title', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                      required
-                      placeholder="Es: Prenota ora il tuo soggiorno"
-                    />
+                    <input type="text" value={formData.title} onChange={(e) => updateField('title', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" required placeholder="Es: Prenota ora" />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Messaggio *</label>
-                    <textarea
-                      value={formData.message}
-                      onChange={(e) => updateField('message', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent h-24"
-                      required
-                      placeholder="Descrivi l'offerta..."
-                    />
+                    <textarea value={formData.message} onChange={(e) => updateField('message', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent h-24" required placeholder="Descrivi l'offerta..." />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Testo Pulsante</label>
-                    <input
-                      type="text"
-                      value={formData.button_text}
-                      onChange={(e) => updateField('button_text', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                      placeholder="Es: Prenota ora"
-                    />
+                    <input type="text" value={formData.button_text} onChange={(e) => updateField('button_text', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" placeholder="Es: Prenota ora" />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Link Pulsante</label>
-                    <input
-                      type="url"
-                      value={formData.button_link}
-                      onChange={(e) => updateField('button_link', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                      placeholder="https://..."
-                    />
+                    <input type="url" value={formData.button_link} onChange={(e) => updateField('button_link', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" placeholder="https://..." />
                   </div>
-
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <Palette size={16} className="inline mr-1" />
-                        Colore Sfondo
+                        <Palette size={16} className="inline mr-1" />Colore Sfondo
                       </label>
-                      <input
-                        type="color"
-                        value={formData.bg_color}
-                        onChange={(e) => updateField('bg_color', e.target.value)}
-                        className="w-full h-10 rounded-lg cursor-pointer"
-                      />
+                      <input type="color" value={formData.bg_color} onChange={(e) => updateField('bg_color', e.target.value)} className="w-full h-10 rounded-lg cursor-pointer" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <Palette size={16} className="inline mr-1" />
-                        Colore Testo
+                        <Palette size={16} className="inline mr-1" />Colore Testo
                       </label>
-                      <input
-                        type="color"
-                        value={formData.text_color}
-                        onChange={(e) => updateField('text_color', e.target.value)}
-                        className="w-full h-10 rounded-lg cursor-pointer"
-                      />
+                      <input type="color" value={formData.text_color} onChange={(e) => updateField('text_color', e.target.value)} className="w-full h-10 rounded-lg cursor-pointer" />
                     </div>
                   </div>
                 </div>
-
                 <div className="space-y-6">
                   <div>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.is_active}
-                        onChange={(e) => updateField('is_active', e.target.checked)}
-                        className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500"
-                      />
+                      <input type="checkbox" checked={formData.is_active} onChange={(e) => updateField('is_active', e.target.checked)} className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" />
                       <span className="text-sm font-medium text-gray-700">Attiva popup immediatamente</span>
                     </label>
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Calendar size={16} className="inline mr-1" />
-                      Data Inizio
+                      <Calendar size={16} className="inline mr-1" />Data Inizio
                     </label>
-                    <input
-                      type="date"
-                      value={formData.start_date}
-                      onChange={(e) => updateField('start_date', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    />
+                    <input type="date" value={formData.start_date} onChange={(e) => updateField('start_date', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Calendar size={16} className="inline mr-1" />
-                      Data Fine
+                      <Calendar size={16} className="inline mr-1" />Data Fine
                     </label>
-                    <input
-                      type="date"
-                      value={formData.end_date}
-                      onChange={(e) => updateField('end_date', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    />
+                    <input type="date" value={formData.end_date} onChange={(e) => updateField('end_date', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Clock size={16} className="inline mr-1" />
-                      Delay Visualizzazione (secondi)
+                      <Clock size={16} className="inline mr-1" />Delay (secondi)
                     </label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="30"
-                      value={formData.delay_seconds}
-                      onChange={(e) => updateField('delay_seconds', parseInt(e.target.value))}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    />
+                    <input type="number" min="0" max="30" value={formData.delay_seconds} onChange={(e) => updateField('delay_seconds', parseInt(e.target.value))} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
                   </div>
-
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Frequenza Visualizzazione (giorni)</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="365"
-                      value={formData.show_frequency_days}
-                      onChange={(e) => updateField('show_frequency_days', parseInt(e.target.value))}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">Il popup verrà mostrato ogni N giorni allo stesso utente</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Frequenza (giorni)</label>
+                    <input type="number" min="1" max="365" value={formData.show_frequency_days} onChange={(e) => updateField('show_frequency_days', parseInt(e.target.value))} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
                   </div>
-
                   <div>
-                    <button
-                      type="button"
-                      onClick={() => setShowPreview(!showPreview)}
-                      className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center justify-center gap-2"
-                    >
+                    <button type="button" onClick={() => setShowPreview(!showPreview)} className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center justify-center gap-2">
                       <Eye size={18} />
                       {showPreview ? 'Nascondi' : 'Mostra'} Anteprima
                     </button>
@@ -605,18 +447,13 @@ const DashboardContent = ({ onLogout }) => {
                 <div className="mt-6 p-6 bg-gray-100 rounded-xl">
                   <p className="text-sm text-gray-600 mb-4 text-center">Anteprima Live</p>
                   <div className="flex justify-center">
-                    <div 
-                      className="rounded-2xl shadow-2xl max-w-md w-full p-8 relative"
-                      style={{ backgroundColor: formData.bg_color, color: formData.text_color }}
-                    >
+                    <div className="rounded-2xl shadow-2xl max-w-md w-full p-8 relative" style={{ backgroundColor: formData.bg_color, color: formData.text_color }}>
                       <button className="absolute top-4 right-4 text-3xl font-light opacity-80">×</button>
                       <div className="text-center">
                         <h3 className="text-3xl font-light mb-4">{formData.title || 'Titolo popup'}</h3>
                         <p className="text-lg mb-6 opacity-90">{formData.message || 'Messaggio popup'}</p>
                         {formData.button_text && (
-                          <button className="bg-white text-teal-700 px-8 py-3 rounded-lg font-medium">
-                            {formData.button_text}
-                          </button>
+                          <button className="bg-white text-teal-700 px-8 py-3 rounded-lg font-medium">{formData.button_text}</button>
                         )}
                       </div>
                     </div>
@@ -625,18 +462,10 @@ const DashboardContent = ({ onLogout }) => {
               )}
 
               <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
-                >
+                <button type="button" onClick={closeModal} className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
                   Annulla
                 </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2 disabled:opacity-50"
-                >
+                <button type="submit" disabled={saving} className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2 disabled:opacity-50">
                   {saving ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
@@ -654,7 +483,7 @@ const DashboardContent = ({ onLogout }) => {
           </div>
         </div>
       )}
-      {/* Modal Statistiche */}
+
       {showStats && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
@@ -664,7 +493,6 @@ const DashboardContent = ({ onLogout }) => {
                 <X size={24} />
               </button>
             </div>
-
             <div className="p-6">
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="bg-blue-50 rounded-lg p-4 text-center">
@@ -680,7 +508,6 @@ const DashboardContent = ({ onLogout }) => {
                   <p className="text-3xl font-bold text-purple-700">{getConversionRate()}%</p>
                 </div>
               </div>
-
               <div className="border border-gray-200 rounded-lg overflow-hidden">
                 <table className="w-full">
                   <thead className="bg-gray-50">
@@ -694,26 +521,18 @@ const DashboardContent = ({ onLogout }) => {
                   <tbody className="divide-y divide-gray-200">
                     {stats.length === 0 ? (
                       <tr>
-                        <td colSpan="4" className="px-4 py-8 text-center text-gray-500">
-                          Nessun dato disponibile
-                        </td>
+                        <td colSpan="4" className="px-4 py-8 text-center text-gray-500">Nessun dato disponibile</td>
                       </tr>
                     ) : (
                       stats.map((stat, index) => {
                         const rate = stat.views > 0 ? ((stat.clicks / stat.views) * 100).toFixed(1) : 0;
                         return (
                           <tr key={index} className="hover:bg-gray-50">
-                            <td className="px-4 py-3 text-sm text-gray-900">
-                              {new Date(stat.date).toLocaleDateString('it-IT')}
-                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-900">{new Date(stat.date).toLocaleDateString('it-IT')}</td>
                             <td className="px-4 py-3 text-sm text-center text-gray-900">{stat.views}</td>
                             <td className="px-4 py-3 text-sm text-center text-gray-900">{stat.clicks}</td>
                             <td className="px-4 py-3 text-sm text-center">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                rate > 5 ? 'bg-green-100 text-green-700' :
-                                rate > 2 ? 'bg-yellow-100 text-yellow-700' :
-                                'bg-red-100 text-red-700'
-                              }`}>
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${rate > 5 ? 'bg-green-100 text-green-700' : rate > 2 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
                                 {rate}%
                               </span>
                             </td>
