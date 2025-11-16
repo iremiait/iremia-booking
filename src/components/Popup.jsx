@@ -76,18 +76,23 @@ const Popup = () => {
               <div className="mb-6">
                 <img 
                   src={popupData.image_url} 
-                  alt={popupData.title}
+                  alt={popupData.title || 'Popup'}
                   className="w-full h-48 object-cover rounded-lg"
                 />
               </div>
             )}
 
-            <h3 className="text-3xl font-light mb-4">
-              {popupData.title}
-            </h3>
-            <p className="text-lg mb-6 opacity-90">
-              {popupData.message}
-            </p>
+            {popupData.title && (
+              <h3 className="text-3xl font-light mb-4">
+                {popupData.title}
+              </h3>
+            )}
+
+            {popupData.message && (
+              <p className="text-lg mb-6 opacity-90">
+                {popupData.message}
+              </p>
+            )}
             
             {popupData.button_text && (
               <button
