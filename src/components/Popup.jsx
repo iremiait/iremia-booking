@@ -7,28 +7,24 @@ const Popup = () => {
 
   useEffect(() => {
     const checkPopup = async () => {
-      // Controlla se popup già mostrato (cookie)
       const lastShown = localStorage.getItem('iremia_popup_last_shown');
       if (lastShown) {
         const daysSinceShown = Math.floor((Date.now() - parseInt(lastShown)) / (1000 * 60 * 60 * 24));
         const popup = await popupService.getActivePopup();
         
         if (!popup || daysSinceShown < (popup.show_frequency_days || 7)) {
-          return; // Non mostrare
+          return;
         }
       }
 
-      // Carica popup attivo
       const popup = await popupService.getActivePopup();
       
       if (!popup) return;
 
-      // Controlla date validità
       const now = new Date();
       if (popup.start_date && new Date(popup.start_date) > now) return;
       if (popup.end_date && new Date(popup.end_date) < now) return;
 
-      // Mostra popup dopo delay
       setTimeout(() => {
         setPopupData(popup);
         setIsVisible(true);
@@ -58,28 +54,34 @@ const Popup = () => {
 
   return (
     <>
-      {/* Overlay */}
       <div 
         className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-fadeIn"
         onClick={handleClose}
       >
-        {/* Popup */}
         <div 
           className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative animate-slideUp"
           style={{ backgroundColor: popupData.bg_color || '#1B7B7E' }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Close Button */}
           <button
             onClick={handleClose}
-            className="absolute top-4 right-4 text-white/80 hover:text-white text-3xl font-light transition-colors"
+            className="absolute top-4 right-4 text-white/80 hover:text-white text-3xl font-light transition-colors z-10"
             style={{ color: popupData.text_color || '#FFFFFF' }}
           >
             ×
           </button>
 
-          {/* Content */}
           <div className="text-center" style={{ color: popupData.text_color || '#FFFFFF' }}>
+            {popupData.image_url && (
+              <div className="mb-6">
+                <img 
+                  src={popupData.image_url} 
+                  alt={popupData.title}
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+              </div>
+            )}
+
             <h3 className="text-3xl font-light mb-4">
               {popupData.title}
             </h3>
@@ -98,7 +100,6 @@ const Popup = () => {
           </div>
         </div>
       </div>
-
       <style jsx>{`
         @keyframes fadeIn {
           from { opacity: 0; }
