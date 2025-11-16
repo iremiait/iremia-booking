@@ -166,17 +166,22 @@ const DashboardContent = ({ onLogout }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validazione: almeno immagine O titolo devono essere presenti
+    if (!imageFile && !imagePreview && !formData.title.trim()) {
+      alert('Devi inserire almeno un\'immagine O un titolo!');
+      return;
+    }
+
     setSaving(true);
     setUploading(true);
 
     try {
       let imageUrl = formData.image_url;
 
-      // Se c'è una nuova immagine, caricala
       if (imageFile) {
         imageUrl = await popupService.uploadImage(imageFile);
         
-        // Se stiamo modificando e c'era una vecchia immagine, eliminala
         if (editingPopup?.image_url) {
           await popupService.deleteImage(editingPopup.image_url);
         }
@@ -354,7 +359,7 @@ const DashboardContent = ({ onLogout }) => {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-medium text-gray-900">{popup.title}</h3>
+                        <h3 className="text-xl font-medium text-gray-900">{popup.title || 'Popup con immagine'}</h3>
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${popup.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
                           {popup.is_active ? 'Attivo' : 'Disattivato'}
                         </span>
@@ -365,7 +370,7 @@ const DashboardContent = ({ onLogout }) => {
                           </span>
                         )}
                       </div>
-                      <p className="text-gray-600 mb-4">{popup.message}</p>
+                      {popup.message && <p className="text-gray-600 mb-4">{popup.message}</p>}
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div>
                           <span className="text-gray-500">Inizio:</span>
@@ -425,167 +430,6 @@ const DashboardContent = ({ onLogout }) => {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full my-8">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center rounded-t-2xl">
-              <h2 className="text-2xl font-light text-gray-900">{editingPopup ? 'Modifica Popup' : 'Nuovo Popup'}</h2>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition">
-                <X size={24} />
-              </button>
-            </div>
-            <form onSubmit={handleSubmit} className="p-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Titolo *</label>
-                    <input type="text" value={formData.title} onChange={(e) => updateField('title', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" required placeholder="Es: Offerta Speciale" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Messaggio *</label>
-                    <textarea value={formData.message} onChange={(e) => updateField('message', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent h-24" required placeholder="Descrivi l'offerta..." />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <ImageIcon size={16} className="inline mr-1" />
-                      Immagine Popup (opzionale)
-                    </label>
-                    <div className="mt-2">
-                      {imagePreview ? (
-                        <div className="relative">
-                          <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover rounded-lg border-2 border-gray-300" />
-                          <button
-                            type="button"
-                            onClick={removeImage}
-                            className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition"
-                          >
-                            <X size={16} />
-                          </button>
-                        </div>
-                      ) : (
-                        <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                            <Upload className="w-10 h-10 mb-3 text-gray-400" />
-                            <p className="mb-2 text-sm text-gray-500">
-                              <span className="font-semibold">Clicca per caricare</span>
-                            </p>
-                            <p className="text-xs text-gray-500">PNG, JPG (MAX. 5MB)</p>
-                          </div>
-                          <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-                        </label>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Testo Pulsante</label>
-                    <input type="text" value={formData.button_text} onChange={(e) => updateField('button_text', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" placeholder="Es: Prenota ora" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Link Pulsante</label>
-                    <input type="url" value={formData.button_link} onChange={(e) => updateField('button_link', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" placeholder="https://..." />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <Palette size={16} className="inline mr-1" />Colore Sfondo
-                      </label>
-                      <input type="color" value={formData.bg_color} onChange={(e) => updateField('bg_color', e.target.value)} className="w-full h-10 rounded-lg cursor-pointer" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <Palette size={16} className="inline mr-1" />Colore Testo
-                      </label>
-                      <input type="color" value={formData.text_color} onChange={(e) => updateField('text_color', e.target.value)} className="w-full h-10 rounded-lg cursor-pointer" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <div>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={formData.is_active} onChange={(e) => updateField('is_active', e.target.checked)} className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" />
-                      <span className="text-sm font-medium text-gray-700">Attiva popup immediatamente</span>
-                    </label>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Calendar size={16} className="inline mr-1" />Data Inizio
-                    </label>
-                    <input type="date" value={formData.start_date} onChange={(e) => updateField('start_date', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Calendar size={16} className="inline mr-1" />Data Fine
-                    </label>
-                    <input type="date" value={formData.end_date} onChange={(e) => updateField('end_date', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Clock size={16} className="inline mr-1" />Delay (secondi)
-                    </label>
-                    <input type="number" min="0" max="30" value={formData.delay_seconds} onChange={(e) => updateField('delay_seconds', parseInt(e.target.value))} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Frequenza (giorni)</label>
-                    <input type="number" min="1" max="365" value={formData.show_frequency_days} onChange={(e) => updateField('show_frequency_days', parseInt(e.target.value))} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
-                  </div>
-                  <div>
-                    <button type="button" onClick={() => setShowPreview(!showPreview)} className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center justify-center gap-2">
-                      <Eye size={18} />
-                      {showPreview ? 'Nascondi' : 'Mostra'} Anteprima
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {showPreview && (
-                <div className="mt-6 p-6 bg-gray-100 rounded-xl">
-                  <p className="text-sm text-gray-600 mb-4 text-center">Anteprima Live</p>
-                  <div className="flex justify-center">
-                    <div className="rounded-2xl shadow-2xl max-w-md w-full p-8 relative" style={{ backgroundColor: formData.bg_color, color: formData.text_color }}>
-                      <button className="absolute top-4 right-4 text-3xl font-light opacity-80">×</button>
-                      <div className="text-center">
-                        {imagePreview && (
-                          <div className="mb-6">
-                            <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
-                          </div>
-                        )}
-                        <h3 className="text-3xl font-light mb-4">{formData.title || 'Titolo popup'}</h3>
-                        <p className="text-lg mb-6 opacity-90">{formData.message || 'Messaggio popup'}</p>
-                        {formData.button_text && (
-                          <button className="bg-white text-teal-700 px-8 py-3 rounded-lg font-medium">{formData.button_text}</button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
-                <button type="button" onClick={closeModal} className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
-                  Annulla
-                </button>
-                <button type="submit" disabled={saving} className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2 disabled:opacity-50">
-                  {saving ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      {uploading ? 'Caricamento...' : 'Salvataggio...'}
-                    </>
-                  ) : (
-                    <>
-                      <Save size={18} />
-                      Salva Popup
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {showStats && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
               <h2 className="text-2xl font-light text-gray-900">Statistiche Popup</h2>
               <button onClick={() => setShowStats(null)} className="text-gray-400 hover:text-gray-600 transition">
@@ -650,4 +494,178 @@ const DashboardContent = ({ onLogout }) => {
   );
 };
 
-export default AdminPopup;
+export default AdminPopup;-white border-b border-gray-200 px-6 py-4 flex justify-between items-center rounded-t-2xl">
+              <h2 className="text-2xl font-light text-gray-900">{editingPopup ? 'Modifica Popup' : 'Nuovo Popup'}</h2>
+              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition">
+                <X size={24} />
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="p-6">
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  💡 <strong>Puoi creare:</strong> Popup solo con immagine, solo con testo, oppure entrambi!
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <ImageIcon size={16} className="inline mr-1" />
+                      Immagine Popup
+                    </label>
+                    <div className="mt-2">
+                      {imagePreview ? (
+                        <div className="relative">
+                          <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover rounded-lg border-2 border-gray-300" />
+                          <button
+                            type="button"
+                            onClick={removeImage}
+                            className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className="w-10 h-10 mb-3 text-gray-400" />
+                            <p className="mb-2 text-sm text-gray-500">
+                              <span className="font-semibold">Clicca per caricare un'immagine</span>
+                            </p>
+                            <p className="text-xs text-gray-500">PNG, JPG (MAX. 5MB)</p>
+                          </div>
+                          <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                        </label>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Titolo (opzionale se hai immagine)</label>
+                    <input type="text" value={formData.title} onChange={(e) => updateField('title', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" placeholder="Es: Offerta Speciale" />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Messaggio (opzionale)</label>
+                    <textarea value={formData.message} onChange={(e) => updateField('message', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent h-24" placeholder="Descrivi l'offerta..." />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Testo Pulsante</label>
+                    <input type="text" value={formData.button_text} onChange={(e) => updateField('button_text', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" placeholder="Es: Prenota ora" />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Link Pulsante</label>
+                    <input type="url" value={formData.button_link} onChange={(e) => updateField('button_link', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" placeholder="https://..." />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Palette size={16} className="inline mr-1" />Colore Sfondo
+                      </label>
+                      <input type="color" value={formData.bg_color} onChange={(e) => updateField('bg_color', e.target.value)} className="w-full h-10 rounded-lg cursor-pointer" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Palette size={16} className="inline mr-1" />Colore Testo
+                      </label>
+                      <input type="color" value={formData.text_color} onChange={(e) => updateField('text_color', e.target.value)} className="w-full h-10 rounded-lg cursor-pointer" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={formData.is_active} onChange={(e) => updateField('is_active', e.target.checked)} className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" />
+                      <span className="text-sm font-medium text-gray-700">Attiva popup immediatamente</span>
+                    </label>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Calendar size={16} className="inline mr-1" />Data Inizio
+                    </label>
+                    <input type="date" value={formData.start_date} onChange={(e) => updateField('start_date', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Calendar size={16} className="inline mr-1" />Data Fine
+                    </label>
+                    <input type="date" value={formData.end_date} onChange={(e) => updateField('end_date', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Clock size={16} className="inline mr-1" />Delay (secondi)
+                    </label>
+                    <input type="number" min="0" max="30" value={formData.delay_seconds} onChange={(e) => updateField('delay_seconds', parseInt(e.target.value))} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Frequenza (giorni)</label>
+                    <input type="number" min="1" max="365" value={formData.show_frequency_days} onChange={(e) => updateField('show_frequency_days', parseInt(e.target.value))} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
+                  </div>
+                  <div>
+                    <button type="button" onClick={() => setShowPreview(!showPreview)} className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center justify-center gap-2">
+                      <Eye size={18} />
+                      {showPreview ? 'Nascondi' : 'Mostra'} Anteprima
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {showPreview && (
+                <div className="mt-6 p-6 bg-gray-100 rounded-xl">
+                  <p className="text-sm text-gray-600 mb-4 text-center">Anteprima Live</p>
+                  <div className="flex justify-center">
+                    <div className="rounded-2xl shadow-2xl max-w-md w-full p-8 relative" style={{ backgroundColor: formData.bg_color, color: formData.text_color }}>
+                      <button className="absolute top-4 right-4 text-3xl font-light opacity-80 z-10">×</button>
+                      <div className="text-center">
+                        {imagePreview && (
+                          <div className="mb-6">
+                            <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                          </div>
+                        )}
+                        {formData.title && (
+                          <h3 className="text-3xl font-light mb-4">{formData.title}</h3>
+                        )}
+                        {formData.message && (
+                          <p className="text-lg mb-6 opacity-90">{formData.message}</p>
+                        )}
+                        {formData.button_text && (
+                          <button className="bg-white text-teal-700 px-8 py-3 rounded-lg font-medium">{formData.button_text}</button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
+                <button type="button" onClick={closeModal} className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+                  Annulla
+                </button>
+                <button type="submit" disabled={saving} className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2 disabled:opacity-50">
+                  {saving ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                      {uploading ? 'Caricamento...' : 'Salvataggio...'}
+                    </>
+                  ) : (
+                    <>
+                      <Save size={18} />
+                      Salva Popup
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showStats && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg
