@@ -1,15 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Popup from './components/Popup';
 
 function App() {
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <div id="top" className="min-h-screen bg-gradient-to-b from-teal-100 via-teal-50 to-teal-100">
       <Popup />
@@ -22,7 +14,7 @@ function App() {
               <img src="/logo.png" alt="Iremia" className="h-40" />
             </a>
             
-            {/* Menu Desktop */}
+            {/* Menu Desktop - nascosto su mobile */}
             <nav className="hidden md:flex gap-6 items-center">
               <a href="#appartamento" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">L'Appartamento</a>
               <a href="#galleria" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Galleria</a>
@@ -31,7 +23,7 @@ function App() {
               <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">Prenota</a>
             </nav>
 
-            {/* Hamburger Button */}
+            {/* Hamburger Button - visibile solo su mobile */}
             <button 
               id="mobile-menu-button"
               className="md:hidden text-gray-700 hover:text-teal-600 focus:outline-none"
@@ -46,7 +38,7 @@ function App() {
             </button>
           </div>
 
-          {/* Menu Mobile */}
+          {/* Menu Mobile - dropdown */}
           <div id="mobile-menu" className="hidden md:hidden mt-4 pb-4">
             <nav className="flex flex-col space-y-3">
               <a 
@@ -92,100 +84,65 @@ function App() {
 
       {/* MAIN CONTENT STARTS */}
       <main>
-      {/* Hero Section MIGLIORATA */}
+        {/* Hero Section con Background */}
         <div className="relative -mt-16 pt-16">
-          {/* Background Image con Parallax */}
-          <div className="relative h-[85vh] min-h-[600px] overflow-hidden">
+          {/* Background Image */}
+          <div className="relative h-[600px] overflow-hidden">
             <div 
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-100"
-              style={{ 
-                backgroundImage: 'url(/images/lama.jpg)',
-                transform: `translateY(${scrollY * 0.5}px)`
-              }}
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: 'url(/images/lama.jpg)' }}
             >
-              {/* Gradient Overlay più ricco */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-teal-900/40 to-black/70"></div>
-              {/* Gradient radiale dal centro */}
-              <div className="absolute inset-0 bg-radial-gradient from-transparent via-transparent to-black/30"></div>
+              <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
             </div>
             
-            {/* Hero Content con Animazioni */}
-            <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
-              <div className="max-w-5xl space-y-8 animate-fadeIn">
-                {/* Titolo principale */}
-                <h1 className="text-7xl md:text-8xl lg:text-9xl font-light text-white mb-4 drop-shadow-2xl tracking-tight animate-slideUp">
-                  Il tuo rifugio
-                </h1>
-                <h2 className="text-6xl md:text-7xl lg:text-8xl font-light text-white mb-8 drop-shadow-2xl tracking-tight animate-slideUp" style={{ animationDelay: '0.2s' }}>
-                  di pace
+            {/* Hero Content */}
+            <div className="relative h-full flex items-center justify-center text-center px-4">
+              <div className="max-w-4xl">
+                <h2 className="text-6xl md:text-7xl font-light text-white mb-6 drop-shadow-2xl">
+                  Il tuo rifugio di pace
                 </h2>
-                
-                {/* Sottotitolo */}
-                <p className="text-3xl md:text-4xl text-white/95 mb-12 font-light animate-slideUp" style={{ animationDelay: '0.4s' }}>
+                <p className="text-2xl md:text-3xl text-white/90 mb-8">
                   a Lama Mocogno
                 </p>
-                
-                {/* Box Significato con animazione ritardata */}
-                <div className="inline-block bg-white/95 backdrop-blur-md border-l-4 border-teal-500 p-8 rounded-2xl shadow-2xl animate-slideUp hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.6s' }}>
-                  <p className="text-2xl text-gray-700 italic mb-2">
-                    <span className="font-semibold text-teal-700 text-3xl">Iremía</span>
-                    <span className="text-gray-500 ml-2">(ηρεμία)</span>
+                <div className="inline-block bg-white/95 backdrop-blur border-l-4 border-teal-600 p-6 rounded-lg shadow-2xl">
+                  <p className="text-xl text-gray-700 italic">
+                    <span className="font-semibold text-teal-700">Iremía</span> (ηρεμία)
                   </p>
-                  <p className="text-gray-600 text-lg">
+                  <p className="text-gray-600 mt-2">
                     calma · serenità · tranquillità
                   </p>
                 </div>
-
-                {/* CTA Button con animazione */}
-                <div className="pt-8 animate-slideUp" style={{ animationDelay: '0.8s' }}>
-                  <a 
-                    href="#contatti"
-                    className="inline-block bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white px-10 py-5 rounded-full text-xl font-medium transition-all duration-300 shadow-2xl hover:shadow-teal-500/50 hover:scale-110 transform"
-                  >
-                    Scopri Disponibilità e Prezzi
-                  </a>
-                  <p className="text-white/80 text-sm mt-4">
-                    Contattaci per info e prenotazioni
-                  </p>
-                </div>
-              </div>
-
-              {/* Scroll indicator */}
-              <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                <svg className="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
               </div>
             </div>
           </div>
 
-          {/* Info Box - Sotto l'immagine con animazione */}
-          <div className="max-w-7xl mx-auto px-4 -mt-24 relative z-10 animate-slideUp" style={{ animationDelay: '1s' }}>
-            <div className="bg-white/98 backdrop-blur-lg rounded-2xl shadow-2xl p-10 max-w-4xl mx-auto border border-teal-100 hover:shadow-teal-200/50 transition-shadow duration-300">
-              <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
+          {/* Info Box - Sotto l'immagine */}
+          <div className="max-w-7xl mx-auto px-4 -mt-20 relative z-10">
+            <div className="bg-white/95 backdrop-blur rounded-lg shadow-2xl p-8 max-w-3xl mx-auto border border-teal-100">
+              <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
                 Benvenuti a Iremia
               </h3>
-              <div className="space-y-5 text-gray-600 leading-relaxed text-lg">
+              <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
                   Iremia è una locazione turistica a Lama Mocogno gestita a livello familiare da Andrea e Iza.
                 </p>
                 <p>
                   Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 pt-10 border-t border-teal-200">
-                  <div className="text-center group">
-                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🏠</div>
-                    <div className="font-semibold text-gray-800 text-xl">55 m²</div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-teal-200">
+                  <div className="text-center">
+                    <div className="text-3xl text-teal-600 mb-2">🏠</div>
+                    <div className="font-semibold text-gray-800">55 m²</div>
                     <div className="text-sm text-gray-500">Appartamento</div>
                   </div>
-                  <div className="text-center group">
-                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">👥</div>
-                    <div className="font-semibold text-gray-800 text-xl">Max 3 persone</div>
+                  <div className="text-center">
+                    <div className="text-3xl text-teal-600 mb-2">👥</div>
+                    <div className="font-semibold text-gray-800">Max 3 persone</div>
                     <div className="text-sm text-gray-500">Ospiti</div>
                   </div>
-                  <div className="text-center group">
-                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">⛰️</div>
-                    <div className="font-semibold text-gray-800 text-xl">850 m</div>
+                  <div className="text-center">
+                    <div className="text-3xl text-teal-600 mb-2">⛰️</div>
+                    <div className="font-semibold text-gray-800">850 m</div>
                     <div className="text-sm text-gray-500">Sul livello del mare</div>
                   </div>
                 </div>
@@ -193,6 +150,7 @@ function App() {
             </div>
           </div>
         </div>
+
         {/* L'Appartamento - Dettaglio */}
         <div id="appartamento" className="mt-20 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
           <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
@@ -220,6 +178,7 @@ function App() {
             Cosa troverai
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Internet Detox */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🌲</div>
@@ -231,6 +190,7 @@ function App() {
                 </div>
               </div>
             </div>
+            {/* Cucina */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🍳</div>
@@ -242,6 +202,7 @@ function App() {
                 </div>
               </div>
             </div>
+            {/* Balcone */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🌅</div>
@@ -253,6 +214,7 @@ function App() {
                 </div>
               </div>
             </div>
+            {/* Zona Silenziosa */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🤫</div>
@@ -264,6 +226,7 @@ function App() {
                 </div>
               </div>
             </div>
+            {/* Parcheggio */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🚗</div>
@@ -275,6 +238,7 @@ function App() {
                 </div>
               </div>
             </div>
+            {/* Biancheria fornita */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-6 border-l-4 border-teal-600">
               <div className="flex items-start gap-4">
                 <div className="text-3xl">🛏️</div>
@@ -357,6 +321,7 @@ function App() {
             </a>
           </div>
         </div>
+
         {/* Galleria Foto con Lightbox e Lazy Loading */}
         <div id="galleria" className="mt-20 max-w-7xl mx-auto px-4">
           <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
@@ -434,6 +399,7 @@ function App() {
             }
           }}
         >
+          {/* Bottone Chiudi */}
           <button 
             id="lightbox-close"
             onClick={() => document.getElementById('lightbox').classList.add('hidden')}
@@ -442,6 +408,7 @@ function App() {
             ×
           </button>
           
+          {/* Freccia Sinistra */}
           <button 
             id="lightbox-prev"
             className="absolute left-4 text-white text-5xl hover:text-teal-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
@@ -449,6 +416,7 @@ function App() {
             ‹
           </button>
           
+          {/* Immagine */}
           <img 
             id="lightbox-img" 
             src="" 
@@ -456,6 +424,7 @@ function App() {
             className="max-w-full max-h-[90vh] object-contain rounded-lg"
           />
           
+          {/* Freccia Destra */}
           <button 
             id="lightbox-next"
             className="absolute right-4 text-white text-5xl hover:text-teal-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
@@ -463,6 +432,7 @@ function App() {
             ›
           </button>
           
+          {/* Contatore */}
           <div className="absolute bottom-4 text-white text-sm bg-black/50 px-4 py-2 rounded-lg">
             <span id="lightbox-counter">1 / 8</span>
           </div>
@@ -477,17 +447,19 @@ function App() {
             Le recensioni dei nostri ospiti su Google
           </p>
           
+          {/* Grid Recensioni */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
+            {/* Recensione 1 */}
             <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
+                  {'⭐'.repeat(5)}
                 </div>
                 <span className="text-sm text-gray-500">5 mesi fa</span>
               </div>
               <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Ogni volta che torno in questo luogo mi sembra di essere a casa. La casa è molto accogliente. Non gli manca nulla. Il paesaggio è rilassante come tutta la pace che circonda la casa.
+                "Ogni volta che torno in questo luogo mi sembra di essere a casa. La casa è molto accogliente. Non gli manca nulla. Il paesaggio è rilassante come tutta la pace che circonda la casa."
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
@@ -497,15 +469,16 @@ function App() {
               </div>
             </div>
 
+            {/* Recensione 2 */}
             <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
+                  {'⭐'.repeat(5)}
                 </div>
                 <span className="text-sm text-gray-500">4 mesi fa</span>
               </div>
               <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Appartamento pulitissimo, dotato di tutto il necessario. Andrea è una persona gentile e disponibile. Ci siamo trovati bene. Lo consiglio vivamente!
+                "Appartamento pulitissimo, dotato di tutto il necessario. Andrea è una persona gentile e disponibile. Ci siamo trovati bene. Lo consiglio vivamente!"
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
@@ -515,15 +488,16 @@ function App() {
               </div>
             </div>
 
+            {/* Recensione 3 */}
             <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
+                  {'⭐'.repeat(5)}
                 </div>
                 <span className="text-sm text-gray-500">5 mesi fa</span>
               </div>
               <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Casa accogliente, pulita e zona tranquilla. Ci siamo stati più volte e penso che ci tornerò ancora! Andrea è affabile e simpatico. Consiglio vivamente il posto.
+                "Casa accogliente, pulita e zona tranquilla. Ci siamo stati più volte e penso che ci tornerò ancora! Andrea è affabile e simpatico. Consiglio vivamente il posto."
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
@@ -533,15 +507,16 @@ function App() {
               </div>
             </div>
 
+            {/* Recensione 4 */}
             <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
+                  {'⭐'.repeat(5)}
                 </div>
                 <span className="text-sm text-gray-500">2 anni fa</span>
               </div>
               <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Sono stata più volte a casa Iremia e sicuramente tornerò perché mi sono trovata benissimo. Andrea è davvero gentile e sempre disponibile e l'appartamento è spazioso e luminoso.
+                "Sono stata più volte a casa Iremia e sicuramente tornerò perché mi sono trovata benissimo. Andrea è davvero gentile e sempre disponibile e l'appartamento è spazioso e luminoso."
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
@@ -551,15 +526,16 @@ function App() {
               </div>
             </div>
 
+            {/* Recensione 5 */}
             <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
+                  {'⭐'.repeat(5)}
                 </div>
                 <span className="text-sm text-gray-500">2 anni fa</span>
               </div>
               <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Il nostro cammino sulla Via Vandelli si è fermato a Lama Mocogno da Iremia dove abbiamo trovato: un appartamento delizioso, curato e pulito, un host cordiale, attento e premuroso.
+                "Il nostro cammino sulla Via Vandelli si è fermato a Lama Mocogno da Iremia dove abbiamo trovato: un appartamento delizioso, curato e pulito, un host cordiale, attento e premuroso."
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
@@ -569,15 +545,16 @@ function App() {
               </div>
             </div>
 
+            {/* Recensione 6 */}
             <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
+                  {'⭐'.repeat(5)}
                 </div>
                 <span className="text-sm text-gray-500">2 anni fa</span>
               </div>
               <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Appartamento molto ben tenuto e dotato di ogni comfort. Andrea (e sua moglie) gentilissimo e pronto ad aiutarti. Super consigliato!
+                "Appartamento molto ben tenuto e dotato di ogni comfort. Andrea (e sua moglie) gentilissimo e pronto ad aiutarti. Super consigliato!"
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
@@ -589,6 +566,7 @@ function App() {
 
           </div>
 
+          {/* Link Google Business */}
           <div className="mt-8 text-center">
             <a 
               href="https://maps.app.goo.gl/oZV9f4zYBXhmq1fr9" 
@@ -604,7 +582,7 @@ function App() {
           </div>
         </div>
 
-        {/* CTA Button */}
+        {/* CTA Button - Sotto le foto */}
         <div className="mt-12 text-center">
           <a 
             href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare%20un%20soggiorno%20a%20Iremia" 
@@ -618,6 +596,7 @@ function App() {
             Sempre a vostra disposizione
           </p>
         </div>
+
         {/* La Zona */}
         <div id="zona" className="mt-20 bg-gradient-to-br from-teal-100 to-teal-50 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-200">
           <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
@@ -655,6 +634,7 @@ function App() {
 
         {/* Contatti & Form */}
         <div id="contatti" className="mt-20 max-w-6xl mx-auto px-4">
+          {/* Google Maps - Full Width sopra */}
           <div className="mb-8">
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
               <iframe
@@ -670,7 +650,9 @@ function App() {
             </div>
           </div>
 
+          {/* Form e Info sotto in 2 colonne */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Form Contatto */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
               <h3 className="text-2xl font-light text-gray-800 mb-6">
                 Richiedi Informazioni
@@ -741,6 +723,7 @@ function App() {
               </form>
             </div>
 
+            {/* Info Contatto */}
             <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
               <h3 className="text-2xl font-light text-gray-800 mb-6">
                 Contattaci
@@ -802,17 +785,20 @@ function App() {
           </div>
         </div>
       </main>
+      {/* MAIN CONTENT ENDS */}
 
       {/* Footer */}
       <footer className="bg-gray-800 text-white mt-20">
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Logo */}
             <div>
               <img src="/logo.png" alt="Iremia" loading="lazy" className="h-24 mb-4 brightness-0 invert" />
               <p className="text-gray-400 text-xs mt-2">
                 Il tuo rifugio di pace a Lama Mocogno
               </p>
             </div>
+            {/* Contatti */}
             <div>
               <h4 className="text-lg font-medium mb-4">Contatti</h4>
               <div className="space-y-2 text-sm">
@@ -833,6 +819,7 @@ function App() {
                 </p>
               </div>
             </div>
+            {/* Link Utili */}
             <div>
               <h4 className="text-lg font-medium mb-4">Zona</h4>
               <div className="space-y-2 text-sm text-gray-300">
