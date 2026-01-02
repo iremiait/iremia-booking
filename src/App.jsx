@@ -618,264 +618,242 @@ function App() {
             Sempre a vostra disposizione
           </p>
         </div>
-        {/* Galleria Foto con Lightbox e Lazy Loading */}
-        <div id="galleria" className="mt-20 max-w-7xl mx-auto px-4">
-          <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
-            Scopri gli spazi
+        {/* La Zona */}
+        <div id="zona" className="mt-20 bg-gradient-to-br from-teal-100 to-teal-50 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-200">
+          <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
+            La Zona
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { src: '/images/soggiorno.jpg', alt: 'Soggiorno' },
-              { src: '/images/camera.jpg', alt: 'Camera' },
-              { src: '/images/balcone.jpg', alt: 'Balcone' },
-              { src: '/images/cucina.jpg', alt: 'Cucina' },
-              { src: '/images/cimone.jpg', alt: 'Cimone' },
-              { src: '/images/vandelli.jpg', alt: 'Via Vandelli' },
-              { src: '/images/bagno.jpg', alt: 'Bagno' },
-              { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
-            ].map((image, index) => (
-              <div 
-                key={index}
-                className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer"
-                onClick={() => {
-                  const images = [
-                    { src: '/images/soggiorno.jpg', alt: 'Soggiorno' },
-                    { src: '/images/camera.jpg', alt: 'Camera' },
-                    { src: '/images/balcone.jpg', alt: 'Balcone' },
-                    { src: '/images/cucina.jpg', alt: 'Cucina' },
-                    { src: '/images/cimone.jpg', alt: 'Cimone' },
-                    { src: '/images/vandelli.jpg', alt: 'Via Vandelli' },
-                    { src: '/images/bagno.jpg', alt: 'Bagno' },
-                    { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
-                  ];
-                  
-                  let currentIndex = index;
-                  
-                  const showImage = (idx) => {
-                    const lightboxImg = document.getElementById('lightbox-img');
-                    const counter = document.getElementById('lightbox-counter');
-                    lightboxImg.src = images[idx].src;
-                    lightboxImg.alt = images[idx].alt;
-                    counter.textContent = `${idx + 1} / ${images.length}`;
-                  };
-                  
-                  showImage(currentIndex);
-                  
-                  document.getElementById('lightbox-prev').onclick = () => {
-                    currentIndex = (currentIndex - 1 + images.length) % images.length;
-                    showImage(currentIndex);
-                  };
-                  
-                  document.getElementById('lightbox-next').onclick = () => {
-                    currentIndex = (currentIndex + 1) % images.length;
-                    showImage(currentIndex);
-                  };
-                  
-                  document.getElementById('lightbox').classList.remove('hidden');
-                }}
-              >
-                <img 
-                  src={image.src} 
-                  alt={image.alt}
-                  loading="lazy"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
-                />
+          <div className="text-gray-600 leading-relaxed space-y-4">
+            <p>
+              Lama Mocogno è un piccolo paese dell'Appennino Modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              <div className="text-center">
+                <div className="text-4xl mb-3">⛷️</div>
+                <h4 className="font-semibold text-gray-800 mb-2">Piste da Sci</h4>
+                <p className="text-sm text-gray-600">
+                  Vicinissimi alle Piane di Mocogno e a 30' dal comprensorio del Cimone
+                </p>
               </div>
-            ))}
+              <div className="text-center">
+                <div className="text-4xl mb-3">🥾</div>
+                <h4 className="font-semibold text-gray-800 mb-2">Via Vandelli</h4>
+                <p className="text-sm text-gray-600">
+                  Sulla storica Via Vandelli del 1738, da Modena a Massa
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl mb-3">🏔️</div>
+                <h4 className="font-semibold text-gray-800 mb-2">Frignano</h4>
+                <p className="text-sm text-gray-600">
+                  Nel cuore del territorio del Frignano, tra natura e tradizione
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Lightbox con navigazione */}
-        <div 
-          id="lightbox" 
-          className="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-          onClick={(e) => {
-            if (e.target.id === 'lightbox') {
-              document.getElementById('lightbox').classList.add('hidden');
-            }
-          }}
-        >
-          <button 
-            id="lightbox-close"
-            onClick={() => document.getElementById('lightbox').classList.add('hidden')}
-            className="absolute top-4 right-4 text-white text-4xl hover:text-teal-400 transition-colors z-10"
-          >
-            ×
-          </button>
-          
-          <button 
-            id="lightbox-prev"
-            className="absolute left-4 text-white text-5xl hover:text-teal-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
-          >
-            ‹
-          </button>
-          
-          <img 
-            id="lightbox-img" 
-            src="" 
-            alt="" 
-            className="max-w-full max-h-[90vh] object-contain rounded-lg"
-          />
-          
-          <button 
-            id="lightbox-next"
-            className="absolute right-4 text-white text-5xl hover:text-teal-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
-          >
-            ›
-          </button>
-          
-          <div className="absolute bottom-4 text-white text-sm bg-black/50 px-4 py-2 rounded-lg">
-            <span id="lightbox-counter">1 / 8</span>
-          </div>
-        </div>
-
-        {/* Recensioni Google */}
-        <div className="mt-20 max-w-6xl mx-auto px-4">
-          <h3 className="text-3xl font-light text-gray-800 mb-4 text-center">
-            Cosa dicono i nostri ospiti
-          </h3>
-          <p className="text-center text-gray-600 mb-8">
-            Le recensioni dei nostri ospiti su Google
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
-                </div>
-                <span className="text-sm text-gray-500">5 mesi fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Ogni volta che torno in questo luogo mi sembra di essere a casa. La casa è molto accogliente. Non gli manca nulla. Il paesaggio è rilassante come tutta la pace che circonda la casa.
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  CG
-                </div>
-                <span className="text-gray-600 font-medium">C.G.</span>
-              </div>
+        {/* Contatti & Form */}
+        <div id="contatti" className="mt-20 max-w-6xl mx-auto px-4">
+          <div className="mb-8">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sVia%20per%20Palagano%2C%2028%2C%2041040%20Lama%20Mocogno%20MO%2C%20Italy!5e0!3m2!1sit!2sus!4v1682681099904!5m2!1sit!2sus"
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Mappa Iremia Lama Mocogno"
+              ></iframe>
             </div>
-
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
-                </div>
-                <span className="text-sm text-gray-500">4 mesi fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Appartamento pulitissimo, dotato di tutto il necessario. Andrea è una persona gentile e disponibile. Ci siamo trovati bene. Lo consiglio vivamente!
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  EV
-                </div>
-                <span className="text-gray-600 font-medium">E.V.</span>
-              </div>
-            </div>
-
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
-                </div>
-                <span className="text-sm text-gray-500">5 mesi fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Casa accogliente, pulita e zona tranquilla. Ci siamo stati più volte e penso che ci tornerò ancora! Andrea è affabile e simpatico. Consiglio vivamente il posto.
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  GS
-                </div>
-                <span className="text-gray-600 font-medium">G.S.</span>
-              </div>
-            </div>
-
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
-                </div>
-                <span className="text-sm text-gray-500">2 anni fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Sono stata più volte a casa Iremia e sicuramente tornerò perché mi sono trovata benissimo. Andrea è davvero gentile e sempre disponibile e l'appartamento è spazioso e luminoso.
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  FL
-                </div>
-                <span className="text-gray-600 font-medium">F.L.</span>
-              </div>
-            </div>
-
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
-                </div>
-                <span className="text-sm text-gray-500">2 anni fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Il nostro cammino sulla Via Vandelli si è fermato a Lama Mocogno da Iremia dove abbiamo trovato: un appartamento delizioso, curato e pulito, un host cordiale, attento e premuroso.
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  FP
-                </div>
-                <span className="text-gray-600 font-medium">F.P.</span>
-              </div>
-            </div>
-
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  ⭐⭐⭐⭐⭐
-                </div>
-                <span className="text-sm text-gray-500">2 anni fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                Appartamento molto ben tenuto e dotato di ogni comfort. Andrea (e sua moglie) gentilissimo e pronto ad aiutarti. Super consigliato!
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  RT
-                </div>
-                <span className="text-gray-600 font-medium">R.T.</span>
-              </div>
-            </div>
-
           </div>
 
-          <div className="mt-8 text-center">
-            <a 
-              href="https://maps.app.goo.gl/oZV9f4zYBXhmq1fr9" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-medium"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-              </svg>
-              Vedi tutte le recensioni su Google
-            </a>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
+              <h3 className="text-2xl font-light text-gray-800 mb-6">
+                Richiedi Informazioni
+              </h3>
+              <form className="space-y-4" onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.target;
+                const btn = form.querySelector('button[type="submit"]');
+                const originalText = btn.textContent;
+                btn.textContent = 'Invio in corso...';
+                btn.disabled = true;
+                
+                window.emailjs.sendForm('service_7hmscff', 'template_molmw8x', form, 'GF7_kONoo8HL9IqWX')
+                  .then(() => {
+                    alert('✅ Messaggio inviato con successo!');
+                    form.reset();
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                  })
+                  .catch(() => {
+                    alert('❌ Errore nell\'invio. Riprova o contattaci via WhatsApp.');
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                  });
+              }}>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nome e Cognome
+                  </label>
+                  <input
+                    type="text"
+                    name="nome"
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    placeholder="Il tuo nome"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    placeholder="tua@email.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Messaggio
+                  </label>
+                  <textarea
+                    name="messaggio"
+                    rows="4"
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    placeholder="Scrivi qui la tua richiesta..."
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg font-medium transition-colors"
+                >
+                  Invia Richiesta
+                </button>
+              </form>
+            </div>
+
+            <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
+              <h3 className="text-2xl font-light text-gray-800 mb-6">
+                Contattaci
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl text-teal-600">📧</div>
+                  <div>
+                    <div className="font-medium text-gray-800">Email</div>
+                    <a href="mailto:iremiait@gmail.com" className="text-teal-600 hover:text-teal-700">
+                      iremiait@gmail.com
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl text-teal-600">📞</div>
+                  <div>
+                    <div className="font-medium text-gray-800">Telefono / WhatsApp</div>
+                    <a href="tel:+393474160611" className="text-teal-600 hover:text-teal-700 block">
+                      +39 347 416 0611
+                    </a>
+                    <a 
+                      href="https://wa.me/393474160611" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-teal-500 hover:text-teal-600 inline-flex items-center gap-1 mt-1"
+                    >
+                      💬 Scrivici su WhatsApp
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl text-teal-600">📱</div>
+                  <div>
+                    <div className="font-medium text-gray-800">Instagram</div>
+                    <a 
+                      href="https://www.instagram.com/iremiait/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-teal-600 hover:text-teal-700"
+                    >
+                      @iremiait
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl text-teal-600">📍</div>
+                  <div>
+                    <div className="font-medium text-gray-800">Dove siamo</div>
+                    <div className="text-gray-600 text-sm">
+                      Via per Palagano 28<br />
+                      Lama Mocogno (MO)<br />
+                      850 m s.l.m.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </main>
 
-        {/* CTA Button */}
-        <div className="mt-12 text-center">
-          <a 
-            href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare%20un%20soggiorno%20a%20Iremia" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors shadow-md hover:shadow-lg"
-          >
-            Prenota il tuo soggiorno
-          </a>
-          <p className="text-gray-500 text-sm mt-4">
-            Sempre a vostra disposizione
-          </p>
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white mt-20">
+        <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <img src="/logo.png" alt="Iremia" loading="lazy" className="h-24 mb-4 brightness-0 invert" />
+              <p className="text-gray-400 text-xs mt-2">
+                Il tuo rifugio di pace a Lama Mocogno
+              </p>
+            </div>
+            <div>
+              <h4 className="text-lg font-medium mb-4">Contatti</h4>
+              <div className="space-y-2 text-sm">
+                <a href="mailto:iremiait@gmail.com" className="text-gray-300 hover:text-teal-400 block">
+                  📧 iremiait@gmail.com
+                </a>
+                <a href="tel:+393474160611" className="text-gray-300 hover:text-teal-400 block">
+                  📞 +39 347 416 0611
+                </a>
+                <a href="https://wa.me/393474160611" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-teal-400 block">
+                  💬 WhatsApp
+                </a>
+                <a href="https://www.instagram.com/iremiait/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-teal-400 block">
+                  📱 @iremiait
+                </a>
+                <p className="text-gray-400 pt-2">
+                  📍 Via per Palagano 28, Lama Mocogno (MO)
+                </p>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-lg font-medium mb-4">Zona</h4>
+              <div className="space-y-2 text-sm text-gray-300">
+                <p>⛷️ Piane di Mocogno</p>
+                <p>🏔️ Cimone (30 min)</p>
+                <p>🥾 Via Vandelli</p>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-6 pt-6 text-center">
+            <p className="text-gray-400 text-sm">
+              © 2025 Iremia.it · Casa Vacanza Lama Mocogno
+            </p>
+            <p className="text-gray-500 text-xs mt-2">
+              CIR: 036018-AT-00002 · CIN: IT036018C2UE6SRL2D
+            </p>
+          </div>
         </div>
+      </footer>
+    </div>
+  );
+}
+
+export default App;
