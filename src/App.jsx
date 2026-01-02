@@ -91,7 +91,7 @@ function App() {
       </header>
 
       {/* MAIN CONTENT STARTS */}
-      <main></main>
+      <main>
       {/* Hero Section MIGLIORATA */}
         <div className="relative -mt-16 pt-16">
           {/* Background Image con Parallax */}
