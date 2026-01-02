@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Popup from './components/Popup';
 
 function App() {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div id="top" className="min-h-screen bg-gradient-to-b from-teal-100 via-teal-50 to-teal-100">
       <Popup />
@@ -84,65 +92,100 @@ function App() {
 
       {/* MAIN CONTENT STARTS */}
       <main>
-        {/* Hero Section con Background */}
+        {/* Hero Section MIGLIORATA con Background e Parallax */}
         <div className="relative -mt-16 pt-16">
-          {/* Background Image */}
-          <div className="relative h-[600px] overflow-hidden">
+          {/* Background Image con Parallax */}
+          <div className="relative h-[85vh] min-h-[600px] overflow-hidden">
             <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: 'url(/images/lama.jpg)' }}
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-100"
+              style={{ 
+                backgroundImage: 'url(/images/lama.jpg)',
+                transform: `translateY(${scrollY * 0.5}px)`
+              }}
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
+              {/* Gradient Overlay più ricco */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-teal-900/40 to-black/70"></div>
+              {/* Gradient radiale dal centro */}
+              <div className="absolute inset-0 bg-radial-gradient from-transparent via-transparent to-black/30"></div>
             </div>
             
-            {/* Hero Content */}
-            <div className="relative h-full flex items-center justify-center text-center px-4">
-              <div className="max-w-4xl">
-                <h2 className="text-6xl md:text-7xl font-light text-white mb-6 drop-shadow-2xl">
-                  Il tuo rifugio di pace
+            {/* Hero Content con Animazioni */}
+            <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
+              <div className="max-w-5xl space-y-8 animate-fadeIn">
+                {/* Titolo principale */}
+                <h1 className="text-7xl md:text-8xl lg:text-9xl font-light text-white mb-4 drop-shadow-2xl tracking-tight animate-slideUp">
+                  Il tuo rifugio
+                </h1>
+                <h2 className="text-6xl md:text-7xl lg:text-8xl font-light text-white mb-8 drop-shadow-2xl tracking-tight animate-slideUp" style={{ animationDelay: '0.2s' }}>
+                  di pace
                 </h2>
-                <p className="text-2xl md:text-3xl text-white/90 mb-8">
+                
+                {/* Sottotitolo */}
+                <p className="text-3xl md:text-4xl text-white/95 mb-12 font-light animate-slideUp" style={{ animationDelay: '0.4s' }}>
                   a Lama Mocogno
                 </p>
-                <div className="inline-block bg-white/95 backdrop-blur border-l-4 border-teal-600 p-6 rounded-lg shadow-2xl">
-                  <p className="text-xl text-gray-700 italic">
-                    <span className="font-semibold text-teal-700">Iremía</span> (ηρεμία)
+                
+                {/* Box Significato con animazione ritardata */}
+                <div className="inline-block bg-white/95 backdrop-blur-md border-l-4 border-teal-500 p-8 rounded-2xl shadow-2xl animate-slideUp hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.6s' }}>
+                  <p className="text-2xl text-gray-700 italic mb-2">
+                    <span className="font-semibold text-teal-700 text-3xl">Iremía</span>
+                    <span className="text-gray-500 ml-2">(ηρεμία)</span>
                   </p>
-                  <p className="text-gray-600 mt-2">
+                  <p className="text-gray-600 text-lg">
                     calma · serenità · tranquillità
                   </p>
                 </div>
+
+                {/* CTA Button con animazione */}
+                <div className="pt-8 animate-slideUp" style={{ animationDelay: '0.8s' }}>
+                  <a 
+                    href="#contatti"
+                    className="inline-block bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white px-10 py-5 rounded-full text-xl font-medium transition-all duration-300 shadow-2xl hover:shadow-teal-500/50 hover:scale-110 transform"
+                  >
+                    Scopri Disponibilità e Prezzi
+                  </a>
+                  <p className="text-white/80 text-sm mt-4">
+                    Contattaci per info e prenotazioni
+                  </p>
+                </div>
+              </div>
+
+              {/* Scroll indicator */}
+              <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                <svg className="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
               </div>
             </div>
           </div>
 
-          {/* Info Box - Sotto l'immagine */}
-          <div className="max-w-7xl mx-auto px-4 -mt-20 relative z-10">
-            <div className="bg-white/95 backdrop-blur rounded-lg shadow-2xl p-8 max-w-3xl mx-auto border border-teal-100">
-              <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
+          {/* Info Box - Sotto l'immagine con animazione */}
+          <div className="max-w-7xl mx-auto px-4 -mt-24 relative z-10 animate-slideUp" style={{ animationDelay: '1s' }}>
+            <div className="bg-white/98 backdrop-blur-lg rounded-2xl shadow-2xl p-10 max-w-4xl mx-auto border border-teal-100 hover:shadow-teal-200/50 transition-shadow duration-300">
+              <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
                 Benvenuti a Iremia
               </h3>
-              <div className="space-y-4 text-gray-600 leading-relaxed">
+              <div className="space-y-5 text-gray-600 leading-relaxed text-lg">
                 <p>
                   Iremia è una locazione turistica a Lama Mocogno gestita a livello familiare da Andrea e Iza.
                 </p>
                 <p>
                   Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-teal-200">
-                  <div className="text-center">
-                    <div className="text-3xl text-teal-600 mb-2">🏠</div>
-                    <div className="font-semibold text-gray-800">55 m²</div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 pt-10 border-t border-teal-200">
+                  <div className="text-center group">
+                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🏠</div>
+                    <div className="font-semibold text-gray-800 text-xl">55 m²</div>
                     <div className="text-sm text-gray-500">Appartamento</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl text-teal-600 mb-2">👥</div>
-                    <div className="font-semibold text-gray-800">Max 3 persone</div>
+                  <div className="text-center group">
+                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">👥</div>
+                    <div className="font-semibold text-gray-800 text-xl">Max 3 persone</div>
                     <div className="text-sm text-gray-500">Ospiti</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl text-teal-600 mb-2">⛰️</div>
-                    <div className="font-semibold text-gray-800">850 m</div>
+                  <div className="text-center group">
+                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">⛰️</div>
+                    <div className="font-semibold text-gray-800 text-xl">850 m</div>
                     <div className="text-sm text-gray-500">Sul livello del mare</div>
                   </div>
                 </div>
@@ -151,6 +194,7 @@ function App() {
           </div>
         </div>
 
+        {/* Resto del contenuto identico... */}
         {/* L'Appartamento - Dettaglio */}
         <div id="appartamento" className="mt-20 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
           <h3 className="text-3xl font-light text-gray-800 mb-6 text-center">
@@ -457,25 +501,6 @@ function App() {
                   {'⭐'.repeat(5)}
                 </div>
                 <span className="text-sm text-gray-500">5 mesi fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                "Ogni volta che torno in questo luogo mi sembra di essere a casa. La casa è molto accogliente. Non gli manca nulla. Il paesaggio è rilassante come tutta la pace che circonda la casa."
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  CG
-                </div>
-                <span className="text-gray-600 font-medium">C.G.</span>
-              </div>
-            </div>
-
-            {/* Recensione 2 */}
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  {'⭐'.repeat(5)}
-                </div>
-                <span className="text-sm text-gray-500">4 mesi fa</span>
               </div>
               <p className="text-gray-700 text-sm leading-relaxed mb-4">
                 "Appartamento pulitissimo, dotato di tutto il necessario. Andrea è una persona gentile e disponibile. Ci siamo trovati bene. Lo consiglio vivamente!"
@@ -844,3 +869,22 @@ function App() {
 }
 
 export default App;
+                "Ogni volta che torno in questo luogo mi sembra di essere a casa. La casa è molto accogliente. Non gli manca nulla. Il paesaggio è rilassante come tutta la pace che circonda la casa."
+              </p>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
+                  CG
+                </div>
+                <span className="text-gray-600 font-medium">C.G.</span>
+              </div>
+            </div>
+
+            {/* Recensione 2 */}
+            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="flex text-yellow-400">
+                  {'⭐'.repeat(5)}
+                </div>
+                <span className="text-sm text-gray-500">4 mesi fa</span>
+              </div>
+              <p className="text-gray-700 text-sm leading-relaxed mb-4">
