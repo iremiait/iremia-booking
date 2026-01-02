@@ -831,7 +831,7 @@ function App() {
           </div>
           <div className="border-t border-gray-700 mt-6 pt-6 text-center">
             <p className="text-gray-400 text-sm">
-              © 2025 Iremia.it · Casa Vacanza Lama Mocogno
+              © 2026 Iremia.it · Casa Vacanza Lama Mocogno
             </p>
             <p className="text-gray-500 text-xs mt-2">
               CIR: 036018-AT-00002 · CIN: IT036018C2UE6SRL2D
