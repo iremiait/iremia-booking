@@ -4,7 +4,7 @@ import { popupService } from '../../lib/supabase';
 import ImageManager from './ImageManager';
 
 const PopupDashboard = () => {
-  const [activeTab, setActiveTab] = useState('popups'); // 'popups' o 'images'
+  const [activeTab, setActiveTab] = useState('popups');
   const [popups, setPopups] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -93,7 +93,6 @@ const PopupDashboard = () => {
 
   const toggleActive = async (popup) => {
     try {
-      // Se stiamo attivando questo popup, disattiviamo tutti gli altri
       if (!popup.is_active) {
         for (const p of popups) {
           if (p.is_active && p.id !== popup.id) {
@@ -180,20 +179,21 @@ const PopupDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-light text-gray-900">Gestione Popup</h1>
-              <p className="text-gray-600 mt-1">Iremia Booking Dashboard</p>
+              <h1 className="text-3xl font-light text-gray-900">Gestione Dashboard</h1>
+              <p className="text-gray-600 mt-1">Iremia Booking</p>
             </div>
-            <button
-              onClick={() => openModal()}
-              className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition flex items-center gap-2 shadow-md"
-            >
-              <Plus size={20} />
-              Nuovo Popup
-            </button>
+            {activeTab === 'popups' && (
+              <button
+                onClick={() => openModal()}
+                className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition flex items-center gap-2 shadow-md"
+              >
+                <Plus size={20} />
+                Nuovo Popup
+              </button>
+            )}
           </div>
         </div>
       </div>
-      </header>
 
       {/* Tab Navigation */}
       <div className="bg-white border-b border-gray-200">
@@ -228,11 +228,7 @@ const PopupDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'images' ? (
           <ImageManager />
-        ) : (
-
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loading ? (
+        ) : loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-teal-600 border-t-transparent"></div>
           </div>
@@ -327,7 +323,6 @@ const PopupDashboard = () => {
                   </div>
                 </div>
                 
-                {/* Anteprima colori */}
                 <div className="border-t border-gray-200 p-4 bg-gray-50">
                   <div className="flex items-center gap-4">
                     <span className="text-sm text-gray-600">Colori:</span>
@@ -358,6 +353,8 @@ const PopupDashboard = () => {
           </div>
         )}
       </div>
+
+      {/* Modal e resto del codice rimane IDENTICO */}
 
       {/* Modal Crea/Modifica */}
       {showModal && (
@@ -683,7 +680,7 @@ const PopupDashboard = () => {
      </div>
         )}
       </div>
-    </div>
+ </div>
   );
 };
 
