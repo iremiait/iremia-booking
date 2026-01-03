@@ -354,8 +354,6 @@ const PopupDashboard = () => {
         )}
       </div>
 
-      {/* Modal e resto del codice rimane IDENTICO */}
-
       {/* Modal Crea/Modifica */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -677,10 +675,10 @@ const PopupDashboard = () => {
                 </table>
               </div>
             </div>
-     </div>
-        )}
-      </div>
- </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
