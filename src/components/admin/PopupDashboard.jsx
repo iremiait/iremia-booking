@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon } from 'lucide-react';
 import { popupService } from '../../lib/supabase';
+import ImageManager from './ImageManager';
 
 const PopupDashboard = () => {
+  const [activeTab, setActiveTab] = useState('popups'); // 'popups' o 'images'
   const [popups, setPopups] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -191,6 +193,42 @@ const PopupDashboard = () => {
           </div>
         </div>
       </div>
+      </header>
+
+      {/* Tab Navigation */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex gap-8">
+            <button
+              onClick={() => setActiveTab('popups')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition ${
+                activeTab === 'popups'
+                  ? 'border-teal-600 text-teal-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Gestione Popup
+            </button>
+            <button
+              onClick={() => setActiveTab('images')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 ${
+                activeTab === 'images'
+                  ? 'border-teal-600 text-teal-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <ImageIcon size={18} />
+              Gestione Immagini
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {activeTab === 'images' ? (
+          <ImageManager />
+        ) : (
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -642,9 +680,9 @@ const PopupDashboard = () => {
                 </table>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+     </div>
+        )}
+      </div>
     </div>
   );
 };
