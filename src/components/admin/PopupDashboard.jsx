@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon, LogOut } from 'lucide-react';
 import { popupService } from '../../lib/supabase';
 import ImageManager from './ImageManager';
 
-const PopupDashboard = () => {
+const PopupDashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('popups');
   const [popups, setPopups] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -182,15 +182,24 @@ const PopupDashboard = () => {
               <h1 className="text-3xl font-light text-gray-900">Gestione Dashboard</h1>
               <p className="text-gray-600 mt-1">Iremia Booking</p>
             </div>
-            {activeTab === 'popups' && (
+            <div className="flex items-center gap-3">
+              {activeTab === 'popups' && (
+                <button
+                  onClick={() => openModal()}
+                  className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition flex items-center gap-2 shadow-md"
+                >
+                  <Plus size={20} />
+                  Nuovo Popup
+                </button>
+              )}
               <button
-                onClick={() => openModal()}
-                className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition flex items-center gap-2 shadow-md"
+                onClick={onLogout}
+                className="px-4 py-2 text-gray-600 hover:text-gray-900 transition flex items-center gap-2"
               >
-                <Plus size={20} />
-                Nuovo Popup
+                <LogOut size={18} />
+                Esci
               </button>
-            )}
+            </div>
           </div>
         </div>
       </div>
@@ -353,8 +362,6 @@ const PopupDashboard = () => {
           </div>
         )}
       </div>
-
-      {/* Modal e resto del codice rimane IDENTICO */}
 
       {/* Modal Crea/Modifica */}
       {showModal && (
@@ -677,10 +684,10 @@ const PopupDashboard = () => {
                 </table>
               </div>
             </div>
-     </div>
-        )}
-      </div>
- </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
