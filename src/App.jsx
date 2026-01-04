@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Popup from './components/Popup';
 import { supabase } from './lib/supabase';
+import { reviewService } from './lib/reviewService';
 
 function App() {
   // Stati per immagini dinamiche da Supabase
@@ -17,6 +18,10 @@ function App() {
     { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
   ]);
 
+  // Stati per recensioni dinamiche
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+
   // Carica immagini da Supabase all'avvio
   useEffect(() => {
     const loadImages = async () => {
@@ -32,17 +37,12 @@ function App() {
         }
 
         if (data) {
-          // Aggiorna hero se presente
           if (data.hero_url) {
             setHeroImage(data.hero_url);
           }
-
-          // Aggiorna logo se presente
           if (data.logo_url) {
             setLogoImage(data.logo_url);
           }
-
-          // Aggiorna galleria se presente
           if (data.gallery_urls && data.gallery_urls.length > 0) {
             const dynamicGallery = data.gallery_urls.map((url, index) => ({
               src: url,
@@ -53,11 +53,26 @@ function App() {
         }
       } catch (error) {
         console.error('Errore nel caricamento immagini:', error);
-        // Mantiene le immagini di default in caso di errore
       }
     };
 
     loadImages();
+  }, []);
+
+  // Carica recensioni da Supabase
+  useEffect(() => {
+    const loadReviews = async () => {
+      setReviewsLoading(true);
+      try {
+        const data = await reviewService.getActiveReviews();
+        setReviews(data);
+      } catch (error) {
+        console.error('Errore caricamento recensioni:', error);
+      }
+      setReviewsLoading(false);
+    };
+
+    loadReviews();
   }, []);
 
   return (
@@ -311,8 +326,7 @@ function App() {
           </div>
         </div>
 
-{/* FINE PARTE 1 - Continua con PARTE 2 */}
-{/* Regole della Casa */}
+        {/* Regole della Casa */}
         <div className="mt-16 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
           <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
             Regole della Casa
@@ -381,17 +395,18 @@ function App() {
           </div>
         </div>
 
-        {/* Galleria Foto con Lightbox e Lazy Loading - DINAMICA */}
+{/* FINE PARTE 1 - Continua con PARTE 2 */}
+{/* Galleria Foto con Lightbox e Lazy Loading - DINAMICA */}
         <div id="galleria" className="mt-20 max-w-7xl mx-auto px-4">
           <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
             Scopri gli spazi
           </h3>
           <div className={`grid gap-3 justify-center ${
-  galleryImages.length === 9 ? 'grid-cols-3 md:grid-cols-3 max-w-4xl mx-auto' :
-  galleryImages.length === 10 ? 'grid-cols-2 md:grid-cols-5 max-w-6xl mx-auto' :
-  galleryImages.length === 6 ? 'grid-cols-2 md:grid-cols-3 max-w-4xl mx-auto' :
-  'grid-cols-2 md:grid-cols-4'
-}`}>
+            galleryImages.length === 9 ? 'grid-cols-3 md:grid-cols-3 max-w-4xl mx-auto' :
+            galleryImages.length === 10 ? 'grid-cols-2 md:grid-cols-5 max-w-6xl mx-auto' :
+            galleryImages.length === 6 ? 'grid-cols-2 md:grid-cols-3 max-w-4xl mx-auto' :
+            'grid-cols-2 md:grid-cols-4'
+          }`}>
             {galleryImages.map((image, index) => (
               <div 
                 key={index}
@@ -482,7 +497,7 @@ function App() {
           </div>
         </div>
 
-        {/* Recensioni Google */}
+        {/* Recensioni Google - DINAMICHE DA SUPABASE */}
         <div className="mt-20 max-w-6xl mx-auto px-4">
           <h3 className="text-3xl font-light text-gray-800 mb-4 text-center">
             Cosa dicono i nostri ospiti
@@ -492,123 +507,38 @@ function App() {
           </p>
           
           {/* Grid Recensioni */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            {/* Recensione 1 */}
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  {'⭐'.repeat(5)}
-                </div>
-                <span className="text-sm text-gray-500">5 mesi fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                "Ogni volta che torno in questo luogo mi sembra di essere a casa. La casa è molto accogliente. Non gli manca nulla. Il paesaggio è rilassante come tutta la pace che circonda la casa."
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  CG
-                </div>
-                <span className="text-gray-600 font-medium">C.G.</span>
-              </div>
+          {reviewsLoading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-teal-600 border-t-transparent"></div>
+              <p className="text-gray-600 mt-4">Caricamento recensioni...</p>
             </div>
-
-            {/* Recensione 2 */}
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  {'⭐'.repeat(5)}
-                </div>
-                <span className="text-sm text-gray-500">4 mesi fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                "Appartamento pulitissimo, dotato di tutto il necessario. Andrea è una persona gentile e disponibile. Ci siamo trovati bene. Lo consiglio vivamente!"
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  EV
-                </div>
-                <span className="text-gray-600 font-medium">E.V.</span>
-              </div>
+          ) : reviews.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500">Nessuna recensione disponibile al momento.</p>
             </div>
-
-            {/* Recensione 3 */}
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  {'⭐'.repeat(5)}
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {reviews.map((review) => (
+                <div key={review.id} className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="flex text-yellow-400">
+                      {'⭐'.repeat(review.rating)}
+                    </div>
+                    <span className="text-sm text-gray-500">{review.time_ago}</span>
+                  </div>
+                  <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                    "{review.review_text}"
+                  </p>
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
+                      {review.author_initials}
+                    </div>
+                    <span className="text-gray-600 font-medium">{review.author_name}</span>
+                  </div>
                 </div>
-                <span className="text-sm text-gray-500">5 mesi fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                "Casa accogliente, pulita e zona tranquilla. Ci siamo stati più volte e penso che ci tornerò ancora! Andrea è affabile e simpatico. Consiglio vivamente il posto."
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  GS
-                </div>
-                <span className="text-gray-600 font-medium">G.S.</span>
-              </div>
+              ))}
             </div>
-
-            {/* Recensione 4 */}
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  {'⭐'.repeat(5)}
-                </div>
-                <span className="text-sm text-gray-500">2 anni fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                "Sono stata più volte a casa Iremia e sicuramente tornerò perché mi sono trovata benissimo. Andrea è davvero gentile e sempre disponibile e l'appartamento è spazioso e luminoso."
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  FL
-                </div>
-                <span className="text-gray-600 font-medium">F.L.</span>
-              </div>
-            </div>
-
-            {/* Recensione 5 */}
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  {'⭐'.repeat(5)}
-                </div>
-                <span className="text-sm text-gray-500">2 anni fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                "Il nostro cammino sulla Via Vandelli si è fermato a Lama Mocogno da Iremia dove abbiamo trovato: un appartamento delizioso, curato e pulito, un host cordiale, attento e premuroso."
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  FP
-                </div>
-                <span className="text-gray-600 font-medium">F.P.</span>
-              </div>
-            </div>
-
-            {/* Recensione 6 */}
-            <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm p-6 border border-teal-100">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-yellow-400">
-                  {'⭐'.repeat(5)}
-                </div>
-                <span className="text-sm text-gray-500">2 anni fa</span>
-              </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                "Appartamento molto ben tenuto e dotato di ogni comfort. Andrea (e sua moglie) gentilissimo e pronto ad aiutarti. Super consigliato!"
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  RT
-                </div>
-                <span className="text-gray-600 font-medium">R.T.</span>
-              </div>
-            </div>
-
-          </div>
+          )}
 
           {/* Link Google Business */}
           <div className="mt-8 text-center">
@@ -626,7 +556,7 @@ function App() {
           </div>
         </div>
 
-        {/* CTA Button - Sotto le foto */}
+        {/* CTA Button - Sotto le recensioni */}
         <div className="mt-12 text-center">
           <a 
             href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare%20un%20soggiorno%20a%20Iremia" 
@@ -676,7 +606,8 @@ function App() {
           </div>
         </div>
 
-        {/* Contatti & Form */}
+{/* FINE PARTE 2 - Continua con PARTE 3 */}
+{/* Contatti & Form */}
         <div id="contatti" className="mt-20 max-w-6xl mx-auto px-4">
           {/* Google Maps - Full Width sopra */}
           <div className="mb-8">
