@@ -386,13 +386,11 @@ function App() {
           <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
             Scopri gli spazi
           </h3>
-          <div className={`grid gap-3 ${
-  galleryImages.length === 9 ? 'grid-cols-3' :
-  galleryImages.length === 10 ? 'grid-cols-2 md:grid-cols-5' :
-  galleryImages.length === 6 ? 'grid-cols-2 md:grid-cols-3' :
-  galleryImages.length === 12 ? 'grid-cols-2 md:grid-cols-4' :
-  'grid-cols-2 md:grid-cols-4'
-}`}>
+          <div className="flex flex-wrap gap-3 justify-center">
+  {galleryImages.map((image, index) => (
+    <div 
+      key={index}
+      className="w-[calc(25%-0.75rem)] md:w-[calc(25%-0.75rem)] aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer"
             {galleryImages.map((image, index) => (
               <div 
                 key={index}
