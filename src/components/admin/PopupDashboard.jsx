@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon, LogOut, Star } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon, LogOut, Star, Settings } from 'lucide-react';
 import { popupService } from '../../lib/supabase';
 import ImageManager from './ImageManager';
 import ReviewManager from './ReviewManager';
+import ContentVisibilityManager from './ContentVisibilityManager';
 
 const PopupDashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('popups');
@@ -208,10 +209,10 @@ const PopupDashboard = ({ onLogout }) => {
       {/* Tab Navigation */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-8">
+          <div className="flex gap-8 overflow-x-auto">
             <button
               onClick={() => setActiveTab('popups')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm transition ${
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition whitespace-nowrap ${
                 activeTab === 'popups'
                   ? 'border-teal-600 text-teal-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -221,7 +222,7 @@ const PopupDashboard = ({ onLogout }) => {
             </button>
             <button
               onClick={() => setActiveTab('images')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 ${
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'images'
                   ? 'border-teal-600 text-teal-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -232,7 +233,7 @@ const PopupDashboard = ({ onLogout }) => {
             </button>
             <button
               onClick={() => setActiveTab('reviews')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 ${
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'reviews'
                   ? 'border-teal-600 text-teal-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -240,6 +241,17 @@ const PopupDashboard = ({ onLogout }) => {
             >
               <Star size={18} />
               Gestione Recensioni
+            </button>
+            <button
+              onClick={() => setActiveTab('visibility')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
+                activeTab === 'visibility'
+                  ? 'border-teal-600 text-teal-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <Settings size={18} />
+              Visibilità Sezioni
             </button>
           </div>
         </div>
