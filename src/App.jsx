@@ -1,7 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Popup from './components/Popup';
+import { supabase } from './lib/supabase';
 
 function App() {
+  // Stati per immagini dinamiche da Supabase
+  const [heroImage, setHeroImage] = useState('/images/lama.jpg');
+  const [logoImage, setLogoImage] = useState('/logo.png');
+  const [galleryImages, setGalleryImages] = useState([
+    { src: '/images/soggiorno.jpg', alt: 'Soggiorno' },
+    { src: '/images/camera.jpg', alt: 'Camera' },
+    { src: '/images/balcone.jpg', alt: 'Balcone' },
+    { src: '/images/cucina.jpg', alt: 'Cucina' },
+    { src: '/images/cimone.jpg', alt: 'Cimone' },
+    { src: '/images/vandelli.jpg', alt: 'Via Vandelli' },
+    { src: '/images/bagno.jpg', alt: 'Bagno' },
+    { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
+  ]);
+
+  // Carica immagini da Supabase all'avvio
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('site_images')
+          .select('*')
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Errore caricamento immagini:', error);
+          return;
+        }
+
+        if (data) {
+          // Aggiorna hero se presente
+          if (data.hero_url) {
+            setHeroImage(data.hero_url);
+          }
+
+          // Aggiorna logo se presente
+          if (data.logo_url) {
+            setLogoImage(data.logo_url);
+          }
+
+          // Aggiorna galleria se presente
+          if (data.gallery_urls && data.gallery_urls.length > 0) {
+            const dynamicGallery = data.gallery_urls.map((url, index) => ({
+              src: url,
+              alt: `Foto ${index + 1}`
+            }));
+            setGalleryImages(dynamicGallery);
+          }
+        }
+      } catch (error) {
+        console.error('Errore nel caricamento immagini:', error);
+        // Mantiene le immagini di default in caso di errore
+      }
+    };
+
+    loadImages();
+  }, []);
+
   return (
     <div id="top" className="min-h-screen bg-gradient-to-b from-teal-100 via-teal-50 to-teal-100">
       <Popup />
@@ -11,7 +69,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <a href="#top" className="cursor-pointer">
-              <img src="/logo.png" alt="Iremia" className="h-40" />
+              <img src={logoImage} alt="Iremia" className="h-40" />
             </a>
             
             {/* Menu Desktop - nascosto su mobile */}
@@ -90,7 +148,7 @@ function App() {
           <div className="relative h-[600px] overflow-hidden">
             <div 
               className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: 'url(/images/lama.jpg)' }}
+              style={{ backgroundImage: `url(${heroImage})` }}
             >
               <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
             </div>
@@ -253,7 +311,8 @@ function App() {
           </div>
         </div>
 
-        {/* Regole della Casa */}
+{/* FINE PARTE 1 - Continua con PARTE 2 */}
+{/* Regole della Casa */}
         <div className="mt-16 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
           <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
             Regole della Casa
@@ -322,56 +381,36 @@ function App() {
           </div>
         </div>
 
-        {/* Galleria Foto con Lightbox e Lazy Loading */}
+        {/* Galleria Foto con Lightbox e Lazy Loading - DINAMICA */}
         <div id="galleria" className="mt-20 max-w-7xl mx-auto px-4">
           <h3 className="text-3xl font-light text-gray-800 mb-8 text-center">
             Scopri gli spazi
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { src: '/images/soggiorno.jpg', alt: 'Soggiorno' },
-              { src: '/images/camera.jpg', alt: 'Camera' },
-              { src: '/images/balcone.jpg', alt: 'Balcone' },
-              { src: '/images/cucina.jpg', alt: 'Cucina' },
-              { src: '/images/cimone.jpg', alt: 'Cimone' },
-              { src: '/images/vandelli.jpg', alt: 'Via Vandelli' },
-              { src: '/images/bagno.jpg', alt: 'Bagno' },
-              { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
-            ].map((image, index) => (
+            {galleryImages.map((image, index) => (
               <div 
                 key={index}
                 className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer"
                 onClick={() => {
-                  const images = [
-                    { src: '/images/soggiorno.jpg', alt: 'Soggiorno' },
-                    { src: '/images/camera.jpg', alt: 'Camera' },
-                    { src: '/images/balcone.jpg', alt: 'Balcone' },
-                    { src: '/images/cucina.jpg', alt: 'Cucina' },
-                    { src: '/images/cimone.jpg', alt: 'Cimone' },
-                    { src: '/images/vandelli.jpg', alt: 'Via Vandelli' },
-                    { src: '/images/bagno.jpg', alt: 'Bagno' },
-                    { src: '/images/pontedeldiavolo.jpg', alt: 'Ponte del Diavolo' }
-                  ];
-                  
                   let currentIndex = index;
                   
                   const showImage = (idx) => {
                     const lightboxImg = document.getElementById('lightbox-img');
                     const counter = document.getElementById('lightbox-counter');
-                    lightboxImg.src = images[idx].src;
-                    lightboxImg.alt = images[idx].alt;
-                    counter.textContent = `${idx + 1} / ${images.length}`;
+                    lightboxImg.src = galleryImages[idx].src;
+                    lightboxImg.alt = galleryImages[idx].alt;
+                    counter.textContent = `${idx + 1} / ${galleryImages.length}`;
                   };
                   
                   showImage(currentIndex);
                   
                   document.getElementById('lightbox-prev').onclick = () => {
-                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                    currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
                     showImage(currentIndex);
                   };
                   
                   document.getElementById('lightbox-next').onclick = () => {
-                    currentIndex = (currentIndex + 1) % images.length;
+                    currentIndex = (currentIndex + 1) % galleryImages.length;
                     showImage(currentIndex);
                   };
                   
@@ -434,7 +473,7 @@ function App() {
           
           {/* Contatore */}
           <div className="absolute bottom-4 text-white text-sm bg-black/50 px-4 py-2 rounded-lg">
-            <span id="lightbox-counter">1 / 8</span>
+            <span id="lightbox-counter">1 / {galleryImages.length}</span>
           </div>
         </div>
 
@@ -793,7 +832,7 @@ function App() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Logo */}
             <div>
-              <img src="/logo.png" alt="Iremia" loading="lazy" className="h-24 mb-4 brightness-0 invert" />
+              <img src={logoImage} alt="Iremia" loading="lazy" className="h-24 mb-4 brightness-0 invert" />
               <p className="text-gray-400 text-xs mt-2">
                 Il tuo rifugio di pace a Lama Mocogno
               </p>
