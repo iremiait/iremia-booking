@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Trash2, Image as ImageIcon, Save, X, GripVertical } from 'lucide-react';
+import { Upload, Trash2, Image as ImageIcon, GripVertical } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const ImageManager = () => {
@@ -17,13 +17,22 @@ const ImageManager = () => {
   const loadImages = async () => {
     setLoading(true);
     try {
-      // Carica configurazione immagini da Supabase
+      console.log('🔍 Caricamento immagini da Supabase...');
+      
       const { data, error } = await supabase
         .from('site_images')
         .select('*')
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error) {
+        console.error('❌ Errore caricamento:', error);
+        if (error.code !== 'PGRST116') {
+          alert('Errore nel caricamento: ' + error.message);
+        }
+        return;
+      }
+
+      console.log('✅ Dati caricati:', data);
 
       if (data) {
         setHeroImage(data.hero_url);
@@ -31,7 +40,8 @@ const ImageManager = () => {
         setLogoImage(data.logo_url);
       }
     } catch (error) {
-      console.error('Errore caricamento immagini:', error);
+      console.error('❌ Errore catch:', error);
+      alert('Errore nel caricamento immagini');
     }
     setLoading(false);
   };
@@ -39,13 +49,11 @@ const ImageManager = () => {
   const uploadImage = async (file, type) => {
     if (!file) return null;
 
-    // Valida dimensione file (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('File troppo grande. Max 5MB');
       return null;
     }
 
-    // Valida tipo file
     if (!file.type.startsWith('image/')) {
       alert('Seleziona un\'immagine valida');
       return null;
@@ -53,25 +61,29 @@ const ImageManager = () => {
 
     setUploading(true);
     try {
+      console.log('📤 Upload file:', file.name);
+      
       const fileExt = file.name.split('.').pop();
       const fileName = `${type}_${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      // Upload su Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from('popup-images')
         .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('❌ Errore upload:', uploadError);
+        throw uploadError;
+      }
 
-      // Ottieni URL pubblico
       const { data: { publicUrl } } = supabase.storage
         .from('popup-images')
         .getPublicUrl(filePath);
 
+      console.log('✅ Upload completato:', publicUrl);
       return publicUrl;
     } catch (error) {
-      console.error('Errore upload:', error);
+      console.error('❌ Errore upload:', error);
       alert('Errore durante l\'upload: ' + error.message);
       return null;
     } finally {
@@ -128,33 +140,62 @@ const ImageManager = () => {
 
   const saveImages = async (updates) => {
     try {
-      // Controlla se esiste già un record
-      const { data: existing } = await supabase
+      console.log('💾 Salvataggio su Supabase...', updates);
+
+      // Prima controlla se esiste già un record
+      const { data: existing, error: checkError } = await supabase
         .from('site_images')
         .select('id')
-        .single();
+        .maybeSingle();
 
-      if (existing) {
-        // Update
-        const { error } = await supabase
-          .from('site_images')
-          .update(updates)
-          .eq('id', existing.id);
-        
-        if (error) throw error;
-      } else {
-        // Insert
-        const { error } = await supabase
-          .from('site_images')
-          .insert([updates]);
-        
-        if (error) throw error;
+      console.log('🔍 Record esistente:', existing);
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.error('❌ Errore check:', checkError);
+        throw checkError;
       }
 
-      alert('✅ Immagini salvate!');
+      if (existing) {
+        // UPDATE del record esistente
+        console.log('🔄 Aggiorno record esistente:', existing.id);
+        
+        const { data: updated, error: updateError } = await supabase
+          .from('site_images')
+          .update(updates)
+          .eq('id', existing.id)
+          .select();
+        
+        if (updateError) {
+          console.error('❌ Errore update:', updateError);
+          throw updateError;
+        }
+        
+        console.log('✅ Update completato:', updated);
+      } else {
+        // INSERT nuovo record
+        console.log('➕ Creo nuovo record');
+        
+        const { data: inserted, error: insertError } = await supabase
+          .from('site_images')
+          .insert([updates])
+          .select();
+        
+        if (insertError) {
+          console.error('❌ Errore insert:', insertError);
+          throw insertError;
+        }
+        
+        console.log('✅ Insert completato:', inserted);
+      }
+
+      alert('✅ Immagini salvate con successo!');
+      
+      // Ricarica per verificare
+      await loadImages();
+      
     } catch (error) {
-      console.error('Errore salvataggio:', error);
-      alert('Errore nel salvataggio: ' + error.message);
+      console.error('❌ Errore salvataggio:', error);
+      alert('❌ Errore nel salvataggio: ' + error.message);
     }
   };
 
@@ -269,7 +310,6 @@ const ImageManager = () => {
               >
                 <img src={url} alt={`Gallery ${index + 1}`} className="w-full h-full object-cover" />
                 
-                {/* Overlay con azioni */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
                   <button
                     onClick={() => deleteGalleryImage(index)}
@@ -282,7 +322,6 @@ const ImageManager = () => {
                   </div>
                 </div>
 
-                {/* Numero ordine */}
                 <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                   #{index + 1}
                 </div>
