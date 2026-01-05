@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon, LogOut, Star, Settings } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon, LogOut, Star, Settings, HelpCircle } from 'lucide-react';
 import { popupService } from '../../lib/supabase';
 import ImageManager from './ImageManager';
 import ReviewManager from './ReviewManager';
 import ContentVisibilityManager from './ContentVisibilityManager';
+import FAQManager from './FAQManager';
 
 const PopupDashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('popups');
@@ -253,6 +254,17 @@ const PopupDashboard = ({ onLogout }) => {
               <Settings size={18} />
               Visibilità Sezioni
             </button>
+            <button
+              onClick={() => setActiveTab('faqs')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
+                activeTab === 'faqs'
+                  ? 'border-teal-600 text-teal-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <HelpCircle size={18} />
+              Gestione FAQ
+            </button>
           </div>
         </div>
       </div>
@@ -260,12 +272,12 @@ const PopupDashboard = ({ onLogout }) => {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'images' ? (
-  <ImageManager />
-) : activeTab === 'reviews' ? (
-  <ReviewManager />
-) : activeTab === 'visibility' ? (
-  <ContentVisibilityManager />
-) : loading ? (
+          <ImageManager />
+        ) : activeTab === 'reviews' ? (
+          <ReviewManager />
+        ) : activeTab === 'visibility' ? (
+          <ContentVisibilityManager />
+        ) : loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-teal-600 border-t-transparent"></div>
           </div>
