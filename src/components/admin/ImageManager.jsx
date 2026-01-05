@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Trash2, Image as ImageIcon, GripVertical } from 'lucide-react';
+import { Upload, Trash2, Image as ImageIcon, GripVertical, Check } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const ImageManager = () => {
   const [heroImage, setHeroImage] = useState(null);
+  const [heroHistory, setHeroHistory] = useState([]);
   const [galleryImages, setGalleryImages] = useState([]);
   const [logoImage, setLogoImage] = useState(null);
+  const [logoHistory, setLogoHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState(null);
@@ -36,8 +38,10 @@ const ImageManager = () => {
 
       if (data) {
         setHeroImage(data.hero_url);
+        setHeroHistory(data.hero_history || []);
         setGalleryImages(data.gallery_urls || []);
         setLogoImage(data.logo_url);
+        setLogoHistory(data.logo_history || []);
       }
     } catch (error) {
       console.error('❌ Errore catch:', error);
@@ -97,9 +101,74 @@ const ImageManager = () => {
 
     const url = await uploadImage(file, 'hero');
     if (url) {
+      // Aggiungi URL corrente allo storico (se esiste)
+      const newHistory = heroImage ? [...heroHistory, heroImage] : heroHistory;
+      
       setHeroImage(url);
-      await saveImages({ hero_url: url });
+      setHeroHistory(newHistory);
+      await saveImages({ 
+        hero_url: url,
+        hero_history: newHistory
+      });
     }
+  };
+
+  const selectHeroFromHistory = async (url) => {
+    // Aggiungi hero corrente allo storico
+    const newHistory = heroImage ? [...heroHistory.filter(h => h !== url), heroImage] : heroHistory.filter(h => h !== url);
+    
+    setHeroImage(url);
+    setHeroHistory(newHistory);
+    await saveImages({ 
+      hero_url: url,
+      hero_history: newHistory
+    });
+  };
+
+  const deleteHeroFromHistory = async (urlToDelete) => {
+    if (!confirm('Eliminare questa immagine dallo storico?')) return;
+    
+    const newHistory = heroHistory.filter(url => url !== urlToDelete);
+    setHeroHistory(newHistory);
+    await saveImages({ hero_history: newHistory });
+  };
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const url = await uploadImage(file, 'logo');
+    if (url) {
+      // Aggiungi logo corrente allo storico (se esiste)
+      const newHistory = logoImage ? [...logoHistory, logoImage] : logoHistory;
+      
+      setLogoImage(url);
+      setLogoHistory(newHistory);
+      await saveImages({ 
+        logo_url: url,
+        logo_history: newHistory
+      });
+    }
+  };
+
+  const selectLogoFromHistory = async (url) => {
+    // Aggiungi logo corrente allo storico
+    const newHistory = logoImage ? [...logoHistory.filter(l => l !== url), logoImage] : logoHistory.filter(l => l !== url);
+    
+    setLogoImage(url);
+    setLogoHistory(newHistory);
+    await saveImages({ 
+      logo_url: url,
+      logo_history: newHistory
+    });
+  };
+
+  const deleteLogoFromHistory = async (urlToDelete) => {
+    if (!confirm('Eliminare questo logo dallo storico?')) return;
+    
+    const newHistory = logoHistory.filter(url => url !== urlToDelete);
+    setLogoHistory(newHistory);
+    await saveImages({ logo_history: newHistory });
   };
 
   const handleGalleryUpload = async (e) => {
@@ -119,17 +188,6 @@ const ImageManager = () => {
     }
   };
 
-  const handleLogoUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const url = await uploadImage(file, 'logo');
-    if (url) {
-      setLogoImage(url);
-      await saveImages({ logo_url: url });
-    }
-  };
-
   const deleteGalleryImage = async (index) => {
     if (!confirm('Eliminare questa immagine?')) return;
 
@@ -142,7 +200,6 @@ const ImageManager = () => {
     try {
       console.log('💾 Salvataggio su Supabase...', updates);
 
-      // Prima controlla se esiste già un record
       const { data: existing, error: checkError } = await supabase
         .from('site_images')
         .select('id')
@@ -156,7 +213,6 @@ const ImageManager = () => {
       }
 
       if (existing) {
-        // UPDATE del record esistente
         console.log('🔄 Aggiorno record esistente:', existing.id);
         
         const { data: updated, error: updateError } = await supabase
@@ -172,7 +228,6 @@ const ImageManager = () => {
         
         console.log('✅ Update completato:', updated);
       } else {
-        // INSERT nuovo record
         console.log('➕ Creo nuovo record');
         
         const { data: inserted, error: insertError } = await supabase
@@ -189,8 +244,6 @@ const ImageManager = () => {
       }
 
       alert('✅ Immagini salvate con successo!');
-      
-      // Ricarica per verificare
       await loadImages();
       
     } catch (error) {
@@ -222,6 +275,22 @@ const ImageManager = () => {
     await saveImages({ gallery_urls: galleryImages });
   };
 
+  const formatDate = (url) => {
+    // Estrai timestamp dal nome file (es: hero_1234567890.jpg)
+    const match = url.match(/_([\d]+)\./);
+    if (match) {
+      const timestamp = parseInt(match[1]);
+      return new Date(timestamp).toLocaleDateString('it-IT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    return 'Data sconosciuta';
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -232,7 +301,7 @@ const ImageManager = () => {
 
   return (
     <div className="space-y-8">
-      {/* Hero Image */}
+      {/* Hero Image con Storico */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-2">
           <ImageIcon size={24} className="text-teal-600" />
@@ -240,30 +309,71 @@ const ImageManager = () => {
         </h3>
         
         <div className="space-y-4">
+          {/* Hero Corrente */}
           {heroImage && (
-            <div className="relative rounded-lg overflow-hidden aspect-video">
-              <img src={heroImage} alt="Hero" className="w-full h-full object-cover" />
+            <div className="border-2 border-teal-500 rounded-lg overflow-hidden">
+              <div className="bg-teal-50 px-3 py-2 flex items-center gap-2">
+                <Check size={16} className="text-teal-600" />
+                <span className="text-sm font-medium text-teal-900">Immagine Attuale</span>
+              </div>
+              <div className="relative aspect-video">
+                <img src={heroImage} alt="Hero corrente" className="w-full h-full object-cover" />
+              </div>
+            </div>
+          )}
+
+          {/* Storico Hero */}
+          {heroHistory.length > 0 && (
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-3">
+                Storico Immagini ({heroHistory.length})
+              </p>
+              <div className="space-y-2">
+                {heroHistory.map((url, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:border-teal-500 hover:bg-teal-50 transition cursor-pointer group"
+                    onClick={() => selectHeroFromHistory(url)}
+                  >
+                    <div className="w-4 h-4 rounded-full border-2 border-gray-300 flex-shrink-0 group-hover:border-teal-600"></div>
+                    <div className="w-32 h-20 rounded overflow-hidden flex-shrink-0">
+                      <img src={url} alt={`Hero ${index + 1}`} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-600">Caricata il {formatDate(url)}</p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteHeroFromHistory(url);
+                      }}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition opacity-0 group-hover:opacity-100"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           
-          <div className="flex gap-3">
-            <label className="flex-1 cursor-pointer">
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 hover:border-teal-500 transition text-center">
-                <Upload className="mx-auto mb-2 text-gray-400" size={32} />
-                <p className="text-sm text-gray-600">
-                  {uploading ? 'Caricamento...' : 'Clicca per caricare nuova foto Hero'}
-                </p>
-                <p className="text-xs text-gray-400 mt-1">JPG, PNG (max 5MB)</p>
-              </div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleHeroUpload}
-                className="hidden"
-                disabled={uploading}
-              />
-            </label>
-          </div>
+          {/* Upload Nuova Hero */}
+          <label className="block cursor-pointer">
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 hover:border-teal-500 transition text-center">
+              <Upload className="mx-auto mb-2 text-gray-400" size={32} />
+              <p className="text-sm text-gray-600">
+                {uploading ? 'Caricamento...' : 'Clicca per caricare nuova foto Hero'}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">JPG, PNG (max 5MB)</p>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleHeroUpload}
+              className="hidden"
+              disabled={uploading}
+            />
+          </label>
         </div>
       </div>
 
@@ -335,7 +445,7 @@ const ImageManager = () => {
         </p>
       </div>
 
-      {/* Logo */}
+      {/* Logo con Storico */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-2">
           <ImageIcon size={24} className="text-teal-600" />
@@ -343,12 +453,55 @@ const ImageManager = () => {
         </h3>
         
         <div className="space-y-4">
+          {/* Logo Corrente */}
           {logoImage && (
-            <div className="relative rounded-lg overflow-hidden bg-gray-100 p-8 flex justify-center">
-              <img src={logoImage} alt="Logo" className="h-32 object-contain" />
+            <div className="border-2 border-teal-500 rounded-lg overflow-hidden">
+              <div className="bg-teal-50 px-3 py-2 flex items-center gap-2">
+                <Check size={16} className="text-teal-600" />
+                <span className="text-sm font-medium text-teal-900">Logo Attuale</span>
+              </div>
+              <div className="relative bg-gray-100 p-8 flex justify-center">
+                <img src={logoImage} alt="Logo corrente" className="h-32 object-contain" />
+              </div>
+            </div>
+          )}
+
+          {/* Storico Logo */}
+          {logoHistory.length > 0 && (
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-3">
+                Storico Logo ({logoHistory.length})
+              </p>
+              <div className="space-y-2">
+                {logoHistory.map((url, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:border-teal-500 hover:bg-teal-50 transition cursor-pointer group"
+                    onClick={() => selectLogoFromHistory(url)}
+                  >
+                    <div className="w-4 h-4 rounded-full border-2 border-gray-300 flex-shrink-0 group-hover:border-teal-600"></div>
+                    <div className="w-24 h-20 rounded overflow-hidden flex-shrink-0 bg-gray-50 flex items-center justify-center">
+                      <img src={url} alt={`Logo ${index + 1}`} className="max-w-full max-h-full object-contain" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-600">Caricato il {formatDate(url)}</p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteLogoFromHistory(url);
+                      }}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition opacity-0 group-hover:opacity-100"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           
+          {/* Upload Nuovo Logo */}
           <label className="block cursor-pointer">
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 hover:border-teal-500 transition text-center">
               <Upload className="mx-auto mb-2 text-gray-400" size={32} />
