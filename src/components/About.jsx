@@ -91,7 +91,7 @@ const About = () => {
             {/* CTA opzionale */}
             {aboutData.cta_text && aboutData.cta_link && (
               <div className="mt-8">
-                
+                <a
                   href={aboutData.cta_link}
                   className="inline-block bg-teal-600 text-white px-8 py-3 rounded-lg hover:bg-teal-700 transition shadow-md"
                 >
