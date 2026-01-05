@@ -682,6 +682,7 @@ const PopupDashboard = ({ onLogout }) => {
                   className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
                 >
                   Annulla
+                </button>
                 <button
                   type="submit"
                   disabled={saving}
