@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon, LogOut, Star, Settings, HelpCircle } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon, LogOut, Star, Settings, HelpCircle, Users, Mountain, Utensils, MapPin } from 'lucide-react';
 import { popupService } from '../../lib/supabase';
 import ImageManager from './ImageManager';
 import ReviewManager from './ReviewManager';
 import ContentVisibilityManager from './ContentVisibilityManager';
 import FAQManager from './FAQManager';
+import AboutManager from './AboutManager';
+import ActivityManager from './ActivityManager';
+import RestaurantManager from './RestaurantManager';
+import POIManager from './POIManager';
 
 const PopupDashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('popups');
@@ -219,7 +223,7 @@ const PopupDashboard = ({ onLogout }) => {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Gestione Popup
+              Popup
             </button>
             <button
               onClick={() => setActiveTab('images')}
@@ -230,7 +234,7 @@ const PopupDashboard = ({ onLogout }) => {
               }`}
             >
               <ImageIcon size={18} />
-              Gestione Immagini
+              Immagini
             </button>
             <button
               onClick={() => setActiveTab('reviews')}
@@ -241,18 +245,51 @@ const PopupDashboard = ({ onLogout }) => {
               }`}
             >
               <Star size={18} />
-              Gestione Recensioni
+              Recensioni
             </button>
             <button
-              onClick={() => setActiveTab('visibility')}
+              onClick={() => setActiveTab('about')}
               className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
-                activeTab === 'visibility'
+                activeTab === 'about'
                   ? 'border-teal-600 text-teal-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              <Settings size={18} />
-              Visibilità Sezioni
+              <Users size={18} />
+              Chi Siamo
+            </button>
+            <button
+              onClick={() => setActiveTab('activities')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
+                activeTab === 'activities'
+                  ? 'border-teal-600 text-teal-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <Mountain size={18} />
+              Attività
+            </button>
+            <button
+              onClick={() => setActiveTab('restaurants')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
+                activeTab === 'restaurants'
+                  ? 'border-teal-600 text-teal-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <Utensils size={18} />
+              Ristoranti
+            </button>
+            <button
+              onClick={() => setActiveTab('poi')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
+                activeTab === 'poi'
+                  ? 'border-teal-600 text-teal-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <MapPin size={18} />
+              Punti di Interesse
             </button>
             <button
               onClick={() => setActiveTab('faqs')}
@@ -263,7 +300,18 @@ const PopupDashboard = ({ onLogout }) => {
               }`}
             >
               <HelpCircle size={18} />
-              Gestione FAQ
+              FAQ
+            </button>
+            <button
+              onClick={() => setActiveTab('visibility')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
+                activeTab === 'visibility'
+                  ? 'border-teal-600 text-teal-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <Settings size={18} />
+              Visibilità
             </button>
           </div>
         </div>
@@ -275,10 +323,18 @@ const PopupDashboard = ({ onLogout }) => {
           <ImageManager />
         ) : activeTab === 'reviews' ? (
           <ReviewManager />
-        ) : activeTab === 'visibility' ? (
-          <ContentVisibilityManager />
+        ) : activeTab === 'about' ? (
+          <AboutManager />
+        ) : activeTab === 'activities' ? (
+          <ActivityManager />
+        ) : activeTab === 'restaurants' ? (
+          <RestaurantManager />
+        ) : activeTab === 'poi' ? (
+          <POIManager />
         ) : activeTab === 'faqs' ? (
           <FAQManager />
+        ) : activeTab === 'visibility' ? (
+          <ContentVisibilityManager />
         ) : loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-teal-600 border-t-transparent"></div>
@@ -635,7 +691,7 @@ const PopupDashboard = ({ onLogout }) => {
                   {saving ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      Salvataggio...
+                     Salvataggio...
                     </>
                   ) : (
                     <>
