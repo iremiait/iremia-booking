@@ -318,7 +318,6 @@ const AboutManager = () => {
                     ))}
                   </div>
                 )}
-
                 {formData.cta_text && formData.cta_link && (
                   
                     href={formData.cta_link}
