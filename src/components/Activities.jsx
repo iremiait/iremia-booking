@@ -166,7 +166,7 @@ const Activities = () => {
                   {/* Link */}
                   {activity.link && (
                     <div className="mt-6">
-                      
+                      <a
                         href={activity.link}
                         target="_blank"
                         rel="noopener noreferrer"
