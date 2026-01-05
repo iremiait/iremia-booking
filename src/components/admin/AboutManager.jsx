@@ -318,8 +318,9 @@ const AboutManager = () => {
                     ))}
                   </div>
                 )}
+
                 {formData.cta_text && formData.cta_link && (
-                  
+                  <a
                     href={formData.cta_link}
                     className="inline-block bg-teal-600 text-white px-8 py-3 rounded-lg hover:bg-teal-700 transition shadow-md"
                   >
