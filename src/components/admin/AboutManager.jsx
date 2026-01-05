@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, X, Image as ImageIcon, Trash2, Plus } from 'lucide-react';
+import { Save, Image as ImageIcon, Trash2, Plus } from 'lucide-react';
 import { contentService } from '../../lib/contentService';
 
 const AboutManager = () => {
@@ -97,7 +97,6 @@ const AboutManager = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h3 className="text-2xl font-light text-gray-900 mb-2">
           Gestione Sezione "Chi Siamo"
@@ -107,11 +106,9 @@ const AboutManager = () => {
         </p>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="space-y-6">
-            {/* Titolo */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Titolo *
@@ -126,7 +123,6 @@ const AboutManager = () => {
               />
             </div>
 
-            {/* Sottotitolo */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Sottotitolo
@@ -140,7 +136,6 @@ const AboutManager = () => {
               />
             </div>
 
-            {/* Descrizione */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Descrizione *
@@ -157,7 +152,6 @@ const AboutManager = () => {
               </p>
             </div>
 
-            {/* URL Immagine */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <ImageIcon size={16} className="inline mr-1" />
@@ -181,13 +175,11 @@ const AboutManager = () => {
               )}
             </div>
 
-            {/* Highlights */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Punti Chiave (opzionale)
               </label>
               
-              {/* Lista Highlights */}
               {formData.highlights.length > 0 && (
                 <div className="space-y-2 mb-4">
                   {formData.highlights.map((highlight, index) => (
@@ -208,7 +200,6 @@ const AboutManager = () => {
                 </div>
               )}
 
-              {/* Aggiungi Highlight */}
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -229,7 +220,6 @@ const AboutManager = () => {
               </div>
             </div>
 
-            {/* CTA */}
             <div className="grid md:grid-cols-2 gap-4 pt-4 border-t">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -259,7 +249,6 @@ const AboutManager = () => {
           </div>
         </div>
 
-        {/* Preview Toggle */}
         <div className="flex justify-between items-center">
           <button
             type="button"
@@ -288,7 +277,6 @@ const AboutManager = () => {
           </button>
         </div>
 
-        {/* Anteprima */}
         {showPreview && (
           <div className="bg-gradient-to-br from-teal-50 via-white to-teal-50 rounded-xl p-8 border border-gray-200">
             <p className="text-sm text-gray-600 mb-6 text-center">Anteprima Live</p>
