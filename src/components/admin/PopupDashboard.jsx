@@ -682,7 +682,6 @@ const PopupDashboard = ({ onLogout }) => {
                   className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
                 >
                   Annulla
-                </button>
                 <button
                   type="submit"
                   disabled={saving}
@@ -691,7 +690,7 @@ const PopupDashboard = ({ onLogout }) => {
                   {saving ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                     Salvataggio...
+                      Salvataggio...
                     </>
                   ) : (
                     <>
