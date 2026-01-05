@@ -260,10 +260,12 @@ const PopupDashboard = ({ onLogout }) => {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'images' ? (
-          <ImageManager />
-        ) : activeTab === 'reviews' ? (
-          <ReviewManager />
-        ) : loading ? (
+  <ImageManager />
+) : activeTab === 'reviews' ? (
+  <ReviewManager />
+) : activeTab === 'visibility' ? (
+  <ContentVisibilityManager />
+) : loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-teal-600 border-t-transparent"></div>
           </div>
