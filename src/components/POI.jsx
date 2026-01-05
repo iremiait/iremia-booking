@@ -171,7 +171,7 @@ const POI = () => {
                   {/* Link */}
                   {poi.link && (
                     <div className="pt-4 border-t border-gray-100">
-                      
+                      <a
                         href={poi.link}
                         target="_blank"
                         rel="noopener noreferrer"
