@@ -7,6 +7,7 @@ import About from './components/About';
 import Activities from './components/Activities';
 import Restaurants from './components/Restaurants';
 import POI from './components/POI';
+import FAQs from './components/FAQs';
 import Gallery from './components/Gallery';
 import Reviews from './components/Reviews';
 import Contact from './components/Contact';
@@ -43,7 +44,8 @@ function App() {
     'about': About,
     'activities': Activities,
     'restaurants': Restaurants,
-    'poi': POI
+    'poi': POI,
+    'faqs': FAQs
   };
 
   // Carica immagini da Supabase all'avvio
