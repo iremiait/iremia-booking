@@ -4,160 +4,46 @@ export const contentService = {
   // ==========================================
   // ABOUT SECTION (Chi Siamo)
   // ==========================================
-  async getAboutSection() {
+  async getAbout() {
     try {
       const { data, error } = await supabase
         .from('about_section')
         .select('*')
-        .single();
+        .maybeSingle(); // Usa maybeSingle invece di single
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error && error.code !== 'PGRST116') {
+        console.error('Errore caricamento about section:', error);
+        // Non fare alert, solo log
+        return null;
+      }
       return data;
     } catch (error) {
       console.error('Errore caricamento about section:', error);
-      return null;
+      return null; // Ritorna null invece di mostrare errore
     }
   },
 
-  async updateAboutSection(aboutData) {
+  async createAbout(aboutData) {
     try {
-      const { data: existing } = await supabase
+      const { data, error } = await supabase
         .from('about_section')
-        .select('id')
-        .single();
-
-      if (existing) {
-        const { data, error } = await supabase
-          .from('about_section')
-          .update({ ...aboutData, updated_at: new Date().toISOString() })
-          .eq('id', existing.id)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return data;
-      } else {
-        const { data, error } = await supabase
-          .from('about_section')
-          .insert([aboutData])
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return data;
-      }
-    } catch (error) {
-      console.error('Errore aggiornamento about:', error);
-      throw error;
-    }
-  },
-
-  // ==========================================
-  // APARTMENT DETAILS
-  // ==========================================
-  async getApartmentDetails() {
-    try {
-      const { data, error } = await supabase
-        .from('apartment_details')
-        .select('*')
-        .single();
-
-      if (error && error.code !== 'PGRST116') throw error;
-      return data;
-    } catch (error) {
-      console.error('Errore caricamento apartment:', error);
-      return null;
-    }
-  },
-
-  async updateApartmentDetails(apartmentData) {
-    try {
-      const { data: existing } = await supabase
-        .from('apartment_details')
-        .select('id')
-        .single();
-
-      if (existing) {
-        const { data, error } = await supabase
-          .from('apartment_details')
-          .update({ ...apartmentData, updated_at: new Date().toISOString() })
-          .eq('id', existing.id)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return data;
-      } else {
-        const { data, error } = await supabase
-          .from('apartment_details')
-          .insert([apartmentData])
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return data;
-      }
-    } catch (error) {
-      console.error('Errore aggiornamento apartment:', error);
-      throw error;
-    }
-  },
-
-  // ==========================================
-  // SERVICES (Servizi)
-  // ==========================================
-  async getAllServices() {
-    try {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .order('order_position', { ascending: true });
-
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento servizi:', error);
-      return [];
-    }
-  },
-
-  async getActiveServices() {
-    try {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('is_active', true)
-        .order('order_position', { ascending: true });
-
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento servizi attivi:', error);
-      return [];
-    }
-  },
-
-  async createService(serviceData) {
-    try {
-      const { data, error } = await supabase
-        .from('services')
-        .insert([serviceData])
+        .insert([aboutData])
         .select()
         .single();
 
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error('Errore creazione servizio:', error);
+      console.error('Errore creazione about:', error);
       throw error;
     }
   },
 
-  async updateService(id, serviceData) {
+  async updateAbout(id, aboutData) {
     try {
       const { data, error } = await supabase
-        .from('services')
-        .update({ ...serviceData, updated_at: new Date().toISOString() })
+        .from('about_section')
+        .update({ ...aboutData, updated_at: new Date().toISOString() })
         .eq('id', id)
         .select()
         .single();
@@ -165,22 +51,7 @@ export const contentService = {
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error('Errore aggiornamento servizio:', error);
-      throw error;
-    }
-  },
-
-  async deleteService(id) {
-    try {
-      const { error } = await supabase
-        .from('services')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      return true;
-    } catch (error) {
-      console.error('Errore eliminazione servizio:', error);
+      console.error('Errore aggiornamento about:', error);
       throw error;
     }
   },
@@ -188,7 +59,7 @@ export const contentService = {
   // ==========================================
   // ACTIVITIES (Attività)
   // ==========================================
-  async getAllActivities() {
+  async getActivities() {
     try {
       const { data, error } = await supabase
         .from('activities')
@@ -196,27 +67,13 @@ export const contentService = {
         .order('season', { ascending: true })
         .order('order_position', { ascending: true });
 
-      if (error) throw error;
+      if (error && error.code !== 'PGRST116') {
+        console.error('Errore caricamento attività:', error);
+        return []; // Ritorna array vuoto invece di mostrare errore
+      }
       return data || [];
     } catch (error) {
       console.error('Errore caricamento attività:', error);
-      return [];
-    }
-  },
-
-  async getActiveActivities() {
-    try {
-      const { data, error } = await supabase
-        .from('activities')
-        .select('*')
-        .eq('is_active', true)
-        .order('season', { ascending: true })
-        .order('order_position', { ascending: true });
-
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento attività attive:', error);
       return [];
     }
   },
@@ -272,33 +129,20 @@ export const contentService = {
   // ==========================================
   // RESTAURANTS (Ristoranti)
   // ==========================================
-  async getAllRestaurants() {
+  async getRestaurants() {
     try {
       const { data, error } = await supabase
         .from('restaurants')
         .select('*')
         .order('order_position', { ascending: true });
 
-      if (error) throw error;
+      if (error && error.code !== 'PGRST116') {
+        console.error('Errore caricamento ristoranti:', error);
+        return [];
+      }
       return data || [];
     } catch (error) {
       console.error('Errore caricamento ristoranti:', error);
-      return [];
-    }
-  },
-
-  async getActiveRestaurants() {
-    try {
-      const { data, error } = await supabase
-        .from('restaurants')
-        .select('*')
-        .eq('is_active', true)
-        .order('order_position', { ascending: true });
-
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento ristoranti attivi:', error);
       return [];
     }
   },
@@ -354,33 +198,20 @@ export const contentService = {
   // ==========================================
   // POI (Punti di Interesse)
   // ==========================================
-  async getAllPOI() {
+  async getPOIs() {
     try {
       const { data, error } = await supabase
         .from('poi')
         .select('*')
         .order('order_position', { ascending: true });
 
-      if (error) throw error;
+      if (error && error.code !== 'PGRST116') {
+        console.error('Errore caricamento POI:', error);
+        return [];
+      }
       return data || [];
     } catch (error) {
       console.error('Errore caricamento POI:', error);
-      return [];
-    }
-  },
-
-  async getActivePOI() {
-    try {
-      const { data, error } = await supabase
-        .from('poi')
-        .select('*')
-        .eq('is_active', true)
-        .order('order_position', { ascending: true });
-
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento POI attivi:', error);
       return [];
     }
   },
@@ -444,27 +275,13 @@ export const contentService = {
         .order('category', { ascending: true })
         .order('order_position', { ascending: true });
 
-      if (error) throw error;
+      if (error && error.code !== 'PGRST116') {
+        console.error('Errore caricamento FAQ:', error);
+        return [];
+      }
       return data || [];
     } catch (error) {
       console.error('Errore caricamento FAQ:', error);
-      return [];
-    }
-  },
-
-  async getActiveFAQs() {
-    try {
-      const { data, error } = await supabase
-        .from('faqs')
-        .select('*')
-        .eq('is_active', true)
-        .order('category', { ascending: true })
-        .order('order_position', { ascending: true });
-
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento FAQ attive:', error);
       return [];
     }
   },
@@ -526,7 +343,10 @@ export const contentService = {
         .from('section_visibility')
         .select('*');
 
-      if (error) throw error;
+      if (error && error.code !== 'PGRST116') {
+        console.error('Errore caricamento visibilità sezioni:', error);
+        return [];
+      }
       return data || [];
     } catch (error) {
       console.error('Errore caricamento visibilità sezioni:', error);
@@ -550,27 +370,6 @@ export const contentService = {
       return data;
     } catch (error) {
       console.error('Errore aggiornamento visibilità:', error);
-      throw error;
-    }
-  },
-
-  // Helper per riordinare elementi
-  async reorderItems(tableName, itemsWithNewOrder) {
-    try {
-      const updates = itemsWithNewOrder.map((item, index) => 
-        supabase
-          .from(tableName)
-          .update({ 
-            order_position: index,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', item.id)
-      );
-
-      await Promise.all(updates);
-      return true;
-    } catch (error) {
-      console.error('Errore riordinamento:', error);
       throw error;
     }
   }
