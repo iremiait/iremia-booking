@@ -277,6 +277,8 @@ const PopupDashboard = ({ onLogout }) => {
           <ReviewManager />
         ) : activeTab === 'visibility' ? (
           <ContentVisibilityManager />
+        ) : activeTab === 'faqs' ? (
+          <FAQManager />
         ) : loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-teal-600 border-t-transparent"></div>
