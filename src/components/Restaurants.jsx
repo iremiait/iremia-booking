@@ -180,7 +180,7 @@ const Restaurants = () => {
                   {/* Link Sito Web */}
                   {restaurant.website && (
                     <div className="pt-4 border-t border-gray-100">
-                      
+                      <a
                         href={restaurant.website}
                         target="_blank"
                         rel="noopener noreferrer"
