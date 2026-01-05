@@ -3,12 +3,17 @@ import Popup from './components/Popup';
 import Hero from './components/Hero';
 import Apartment from './components/Apartment';
 import HouseRules from './components/HouseRules';
+import About from './components/About';
+import Activities from './components/Activities';
+import Restaurants from './components/Restaurants';
+import POI from './components/POI';
 import Gallery from './components/Gallery';
 import Reviews from './components/Reviews';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import { supabase } from './lib/supabase';
 import { reviewService } from './lib/reviewService';
+import { contentService } from './lib/contentService';
 
 function App() {
   // Stati per immagini dinamiche da Supabase
@@ -28,6 +33,18 @@ function App() {
   // Stati per recensioni dinamiche
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
+
+  // Stati per sezioni dinamiche
+  const [dynamicSections, setDynamicSections] = useState([]);
+  const [sectionsLoading, setSectionsLoading] = useState(true);
+
+  // Mappa dei componenti dinamici
+  const sectionComponents = {
+    'about': About,
+    'activities': Activities,
+    'restaurants': Restaurants,
+    'poi': POI
+  };
 
   // Carica immagini da Supabase all'avvio
   useEffect(() => {
@@ -80,6 +97,28 @@ function App() {
     };
 
     loadReviews();
+  }, []);
+
+  // Carica sezioni dinamiche visibili
+  useEffect(() => {
+    const loadDynamicSections = async () => {
+      setSectionsLoading(true);
+      try {
+        const sections = await contentService.getSectionVisibility();
+        
+        // Filtra solo sezioni visibili e ordina per order_position
+        const visibleSections = sections
+          .filter(section => section.is_visible && sectionComponents[section.section_name])
+          .sort((a, b) => (a.order_position || 0) - (b.order_position || 0));
+        
+        setDynamicSections(visibleSections);
+      } catch (error) {
+        console.error('Errore caricamento sezioni dinamiche:', error);
+      }
+      setSectionsLoading(false);
+    };
+
+    loadDynamicSections();
   }, []);
 
   return (
@@ -167,6 +206,13 @@ function App() {
         <Hero heroImage={heroImage} />
         <Apartment />
         <HouseRules />
+        
+        {/* SEZIONI DINAMICHE - Riordinabili dalla Dashboard */}
+        {!sectionsLoading && dynamicSections.map((section) => {
+          const SectionComponent = sectionComponents[section.section_name];
+          return SectionComponent ? <SectionComponent key={section.section_name} /> : null;
+        })}
+        
         <Gallery galleryImages={galleryImages} />
         <Reviews reviews={reviews} loading={reviewsLoading} />
         <Contact />
