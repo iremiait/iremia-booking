@@ -286,6 +286,26 @@ export const contentService = {
     }
   },
 
+  async getActiveFAQs() {
+    try {
+      const { data, error } = await supabase
+        .from('faqs')
+        .select('*')
+        .eq('is_active', true)
+        .order('category', { ascending: true })
+        .order('order_position', { ascending: true });
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Errore caricamento FAQ attive:', error);
+        return [];
+      }
+      return data || [];
+    } catch (error) {
+      console.error('Errore caricamento FAQ attive:', error);
+      return [];
+    }
+  },
+
   async createFAQ(faqData) {
     try {
       const { data, error } = await supabase
@@ -354,14 +374,20 @@ export const contentService = {
     }
   },
 
-  async updateSectionVisibility(sectionName, isVisible) {
+  async updateSectionVisibility(sectionName, isVisible, orderPosition = null) {
     try {
+      const updateData = { 
+        is_visible: isVisible,
+        updated_at: new Date().toISOString()
+      };
+      
+      if (orderPosition !== null) {
+        updateData.order_position = orderPosition;
+      }
+
       const { data, error } = await supabase
         .from('section_visibility')
-        .update({ 
-          is_visible: isVisible,
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('section_name', sectionName)
         .select()
         .single();
