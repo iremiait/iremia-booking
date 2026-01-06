@@ -446,36 +446,3 @@ const AboutManager = () => {
 };
 
 export default AboutManager;
-```
-
----
-
-## ✅ **Cosa è stato aggiunto:**
-
-1. ✅ **Funzione `uploadImage()`** - Carica immagini su Supabase Storage
-2. ✅ **Input file con drag & drop visuale**
-3. ✅ **Validazione** (max 5MB, solo immagini)
-4. ✅ **Loading state** durante upload
-5. ✅ **Separatore "oppure"** tra upload e URL
-6. ✅ **Preview con pulsante elimina**
-7. ✅ **Salvataggio in cartella `/about/`**
-
----
-
-## 🧪 **Come testare:**
-
-1. Salva il file
-2. Vai su `/admin/popup` → Tab "Chi Siamo"
-3. Clicca su **"📤 Clicca per caricare un'immagine"**
-4. Seleziona un'immagine dal tuo PC
-5. Attendi upload (vedi spinner)
-6. L'immagine appare in preview
-7. Compila gli altri campi e salva
-
----
-
-## 📸 **Bucket Supabase:**
-
-Le immagini verranno salvate in:
-```
-popup-images/about/about_1234567890.jpg
