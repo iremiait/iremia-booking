@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Image as ImageIcon, Trash2, Plus } from 'lucide-react';
+import { Save, Image as ImageIcon, Trash2, Plus, Upload } from 'lucide-react';
 import { contentService } from '../../lib/contentService';
+import { supabase } from '../../lib/supabase';
 
 const AboutManager = () => {
   const [aboutData, setAboutData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -45,6 +47,63 @@ const AboutManager = () => {
       alert('❌ Errore nel caricamento');
     }
     setLoading(false);
+  };
+
+  const uploadImage = async (file) => {
+    if (!file) return null;
+
+    // Validazione
+    if (file.size > 5 * 1024 * 1024) {
+      alert('❌ File troppo grande. Massimo 5MB');
+      return null;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      alert('❌ Seleziona un\'immagine valida');
+      return null;
+    }
+
+    setUploading(true);
+    try {
+      console.log('📤 Upload immagine:', file.name);
+      
+      const fileExt = file.name.split('.').pop();
+      const fileName = `about_${Date.now()}.${fileExt}`;
+      const filePath = `about/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('popup-images')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error('❌ Errore upload:', uploadError);
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('popup-images')
+        .getPublicUrl(filePath);
+
+      console.log('✅ Upload completato:', publicUrl);
+      return publicUrl;
+    } catch (error) {
+      console.error('❌ Errore upload:', error);
+      alert('❌ Errore durante l\'upload: ' + error.message);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const url = await uploadImage(file);
+    if (url) {
+      updateField('image_url', url);
+      alert('✅ Immagine caricata con successo!');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -152,25 +211,75 @@ const AboutManager = () => {
               </p>
             </div>
 
+            {/* SEZIONE UPLOAD IMMAGINE */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <ImageIcon size={16} className="inline mr-1" />
-                URL Immagine
+                Immagine
               </label>
-              <input
-                type="url"
-                value={formData.image_url}
-                onChange={(e) => updateField('image_url', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                placeholder="https://..."
-              />
+
+              {/* Upload Button */}
+              <div className="mb-4">
+                <label className="cursor-pointer block">
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-teal-500 transition text-center">
+                    <Upload className="mx-auto mb-2 text-gray-400" size={32} />
+                    <p className="text-sm text-gray-600 mb-1">
+                      {uploading ? '⏳ Caricamento in corso...' : '📤 Clicca per caricare un\'immagine'}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      JPG, PNG, WebP (max 5MB)
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
+
+              {/* Separatore */}
+              <div className="flex items-center gap-4 my-4">
+                <div className="flex-1 border-t border-gray-300"></div>
+                <span className="text-sm text-gray-500">oppure</span>
+                <div className="flex-1 border-t border-gray-300"></div>
+              </div>
+
+              {/* URL Manuale */}
+              <div>
+                <label className="block text-xs text-gray-600 mb-2">
+                  Inserisci URL immagine
+                </label>
+                <input
+                  type="url"
+                  value={formData.image_url}
+                  onChange={(e) => updateField('image_url', e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  placeholder="https://..."
+                  disabled={uploading}
+                />
+              </div>
+
+              {/* Preview */}
               {formData.image_url && (
                 <div className="mt-4">
-                  <img
-                    src={formData.image_url}
-                    alt="Anteprima"
-                    className="w-full max-w-md h-48 object-cover rounded-lg"
-                  />
+                  <p className="text-xs text-gray-600 mb-2">Anteprima:</p>
+                  <div className="relative group">
+                    <img
+                      src={formData.image_url}
+                      alt="Anteprima"
+                      className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => updateField('image_url', '')}
+                      className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -260,7 +369,7 @@ const AboutManager = () => {
 
           <button
             type="submit"
-            disabled={saving}
+            disabled={saving || uploading}
             className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2 disabled:opacity-50"
           >
             {saving ? (
@@ -320,7 +429,7 @@ const AboutManager = () => {
                 )}
 
                 {formData.cta_text && formData.cta_link && (
-                  <a
+                  
                     href={formData.cta_link}
                     className="inline-block bg-teal-600 text-white px-8 py-3 rounded-lg hover:bg-teal-700 transition shadow-md"
                   >
@@ -337,3 +446,36 @@ const AboutManager = () => {
 };
 
 export default AboutManager;
+```
+
+---
+
+## ✅ **Cosa è stato aggiunto:**
+
+1. ✅ **Funzione `uploadImage()`** - Carica immagini su Supabase Storage
+2. ✅ **Input file con drag & drop visuale**
+3. ✅ **Validazione** (max 5MB, solo immagini)
+4. ✅ **Loading state** durante upload
+5. ✅ **Separatore "oppure"** tra upload e URL
+6. ✅ **Preview con pulsante elimina**
+7. ✅ **Salvataggio in cartella `/about/`**
+
+---
+
+## 🧪 **Come testare:**
+
+1. Salva il file
+2. Vai su `/admin/popup` → Tab "Chi Siamo"
+3. Clicca su **"📤 Clicca per caricare un'immagine"**
+4. Seleziona un'immagine dal tuo PC
+5. Attendi upload (vedi spinner)
+6. L'immagine appare in preview
+7. Compila gli altri campi e salva
+
+---
+
+## 📸 **Bucket Supabase:**
+
+Le immagini verranno salvate in:
+```
+popup-images/about/about_1234567890.jpg
