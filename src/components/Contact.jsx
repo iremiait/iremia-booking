@@ -1,10 +1,6 @@
 import React from 'react';
 
 const Contact = () => {
-
-  // 👉 Cambia questo valore a true se vuoi mostrare di nuovo Instagram
-  const showInstagram = false;
-
   return (
     <div id="contatti" className="mt-20 max-w-6xl mx-auto px-4">
       {/* Google Maps - Full Width sopra */}
@@ -30,6 +26,7 @@ const Contact = () => {
           <h3 className="text-2xl font-light text-gray-800 mb-6">
             Richiedi Informazioni
           </h3>
+
           <form
             className="space-y-4"
             onSubmit={(e) => {
@@ -152,24 +149,6 @@ const Contact = () => {
                 </a>
               </div>
             </div>
-
-            {/* Instagram (nascosto) */}
-            {showInstagram && (
-              <div className="flex items-start gap-3">
-                <div className="text-2xl text-teal-600">📱</div>
-                <div>
-                  <div className="font-medium text-gray-800">Instagram</div>
-                  <a
-                    href="https://www.instagram.com/iremiait/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-teal-600 hover:text-teal-700"
-                  >
-                    @iremiait
-                  </a>
-                </div>
-              </div>
-            )}
 
             {/* Indirizzo */}
             <div className="flex items-start gap-3">
