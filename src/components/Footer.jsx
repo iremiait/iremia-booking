@@ -1,5 +1,4 @@
 import React from 'react';
-
 const Footer = ({ logoImage }) => {
   return (
     <footer className="bg-gray-800 text-white mt-20">
@@ -24,9 +23,6 @@ const Footer = ({ logoImage }) => {
               </a>
               <a href="https://wa.me/393474160611" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-teal-400 block">
                 💬 WhatsApp
-              </a>
-              <a href="https://www.instagram.com/iremiait/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-teal-400 block">
-                📱 @iremiait
               </a>
               <p className="text-gray-400 pt-2">
                 📍 Via per Palagano 28, Lama Mocogno (MO)
@@ -55,5 +51,4 @@ const Footer = ({ logoImage }) => {
     </footer>
   );
 };
-
 export default Footer;
