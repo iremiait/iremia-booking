@@ -12,7 +12,7 @@ const HouseRules = () => {
           <div>
             <h4 className="font-semibold text-gray-800 mb-1">Check-in / Check-out</h4>
             <p className="text-gray-600 text-sm">Check-in: 16:00 - 21:00</p>
-            <p className="text-gray-600 text-sm">Check-out: entro le 11:00</p>
+            <p className="text-gray-600 text-sm">Check-out: entro le 10:00</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
