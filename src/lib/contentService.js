@@ -398,5 +398,43 @@ export const contentService = {
       console.error('Errore aggiornamento visibilità:', error);
       throw error;
     }
+  },
+
+  // ==========================================
+  // HOUSE RULES SECTION
+  // ==========================================
+  async getHouseRules() {
+    try {
+      const { data, error } = await supabase
+        .from('house_rules_section')
+        .select('*')
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Errore caricamento house rules:', error);
+        return null;
+      }
+      return data;
+    } catch (error) {
+      console.error('Errore caricamento house rules:', error);
+      return null;
+    }
+  },
+
+  async updateHouseRules(id, rulesData) {
+    try {
+      const { data, error } = await supabase
+        .from('house_rules_section')
+        .update({ ...rulesData, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Errore aggiornamento house rules:', error);
+      throw error;
+    }
   }
 };
