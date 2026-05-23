@@ -436,5 +436,43 @@ export const contentService = {
       console.error('Errore aggiornamento house rules:', error);
       throw error;
     }
+  },
+
+  // ==========================================
+  // CONTACT INFO
+  // ==========================================
+  async getContactInfo() {
+    try {
+      const { data, error } = await supabase
+        .from('contact_info')
+        .select('*')
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Errore caricamento contact info:', error);
+        return null;
+      }
+      return data;
+    } catch (error) {
+      console.error('Errore caricamento contact info:', error);
+      return null;
+    }
+  },
+
+  async updateContactInfo(id, contactData) {
+    try {
+      const { data, error } = await supabase
+        .from('contact_info')
+        .update({ ...contactData, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Errore aggiornamento contact info:', error);
+      throw error;
+    }
   }
 };
