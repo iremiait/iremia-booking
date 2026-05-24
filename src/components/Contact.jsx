@@ -1,13 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { contentService } from '../lib/contentService';
 
 const Contact = () => {
+  const [contactData, setContactData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadContactInfo();
+  }, []);
+
+  const loadContactInfo = async () => {
+    setLoading(true);
+    try {
+      const data = await contentService.getContactInfo();
+      setContactData(data);
+    } catch (error) {
+      console.error('Errore caricamento contatti:', error);
+    }
+    setLoading(false);
+  };
+
+  // Fallback ai valori di default se non ci sono dati
+  const formTitle = contactData?.form_title || 'Richiedi Informazioni';
+  const infoTitle = contactData?.info_title || 'Contattaci';
+  const email = contactData?.email || 'iremiait@gmail.com';
+  const phone = contactData?.phone || '+39 347 416 0611';
+  const whatsappLink = contactData?.whatsapp_link || 'https://wa.me/393474160611';
+  const addressLine1 = contactData?.address_line1 || 'Via per Palagano 28';
+  const addressLine2 = contactData?.address_line2 || 'Lama Mocogno (MO)';
+  const addressLine3 = contactData?.address_line3 || '850 m s.l.m.';
+  const mapEmbedUrl = contactData?.map_embed_url || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sVia%20per%20Palagano%2C%2028%2C%2041040%20Lama%20Mocogno%20MO%2C%20Italy!5e0!3m2!1sit!2sus!4v1682681099904!5m2!1sit!2sus';
+  
+  // EmailJS config
+  const emailjsServiceId = contactData?.emailjs_service_id || 'service_7hmscff';
+  const emailjsTemplateId = contactData?.emailjs_template_id || 'template_molmw8x';
+  const emailjsPublicKey = contactData?.emailjs_public_key || 'GF7_kONoo8HL9IqWX';
+
+  if (loading) {
+    return (
+      <div id="contatti" className="mt-20 max-w-6xl mx-auto px-4">
+        <div className="text-center py-12">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-teal-600 border-t-transparent"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div id="contatti" className="mt-20 max-w-6xl mx-auto px-4">
       {/* Google Maps - Full Width sopra */}
       <div className="mb-8">
         <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm overflow-hidden border border-teal-100">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2844.147!2d10.7330137!3d44.3088135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132aa5bde3099f93%3A0x41ba2e28c8fb83b0!2sVia%20per%20Palagano%2C%2028%2C%2041040%20Lama%20Mocogno%20MO%2C%20Italy!5e0!3m2!1sit!2sus!4v1682681099904!5m2!1sit!2sus"
+            src={mapEmbedUrl}
             width="100%"
             height="400"
             style={{ border: 0 }}
@@ -24,7 +69,7 @@ const Contact = () => {
         {/* Form Contatto */}
         <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
           <h3 className="text-2xl font-light text-gray-800 mb-6">
-            Richiedi Informazioni
+            {formTitle}
           </h3>
 
           <form
@@ -39,10 +84,10 @@ const Contact = () => {
 
               window.emailjs
                 .sendForm(
-                  'service_7hmscff',
-                  'template_molmw8x',
+                  emailjsServiceId,
+                  emailjsTemplateId,
                   form,
-                  'GF7_kONoo8HL9IqWX'
+                  emailjsPublicKey
                 )
                 .then(() => {
                   alert('✅ Messaggio inviato con successo!');
@@ -108,7 +153,7 @@ const Contact = () => {
         {/* Info Contatto */}
         <div className="bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 border border-teal-100">
           <h3 className="text-2xl font-light text-gray-800 mb-6">
-            Contattaci
+            {infoTitle}
           </h3>
 
           <div className="space-y-4">
@@ -117,11 +162,11 @@ const Contact = () => {
               <div className="text-2xl text-teal-600">📧</div>
               <div>
                 <div className="font-medium text-gray-800">Email</div>
-                <a
-                  href="mailto:iremiait@gmail.com"
+                
+                  href={`mailto:${email}`}
                   className="text-teal-600 hover:text-teal-700"
                 >
-                  iremiait@gmail.com
+                  {email}
                 </a>
               </div>
             </div>
@@ -133,14 +178,14 @@ const Contact = () => {
                 <div className="font-medium text-gray-800">
                   Telefono / WhatsApp
                 </div>
-                <a
-                  href="tel:+393474160611"
+                
+                  href={`tel:${phone}`}
                   className="text-teal-600 hover:text-teal-700 block"
                 >
-                  +39 347 416 0611
+                  {phone}
                 </a>
-                <a
-                  href="https://wa.me/393474160611"
+                
+                  href={whatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-teal-500 hover:text-teal-600 inline-flex items-center gap-1 mt-1"
@@ -156,11 +201,11 @@ const Contact = () => {
               <div>
                 <div className="font-medium text-gray-800">Dove siamo</div>
                 <div className="text-gray-600 text-sm">
-                  Via per Palagano 28
+                  {addressLine1}
                   <br />
-                  Lama Mocogno (MO)
+                  {addressLine2}
                   <br />
-                  850 m s.l.m.
+                  {addressLine3}
                 </div>
               </div>
             </div>
