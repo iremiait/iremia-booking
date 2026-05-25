@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon, LogOut, Star, Settings, HelpCircle, Users, Mountain, Utensils, MapPin, Home } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, BarChart3, Calendar, Clock, Palette, X, Save, Image as ImageIcon, LogOut, Star, Settings, HelpCircle, Users, Mountain, Utensils, MapPin, Home, Mail } from 'lucide-react';
 import { popupService } from '../../lib/supabase';
 import ImageManager from './ImageManager';
 import ReviewManager from './ReviewManager';
@@ -10,6 +10,7 @@ import ActivityManager from './ActivityManager';
 import RestaurantManager from './RestaurantManager';
 import POIManager from './POIManager';
 import HouseRulesManager from './HouseRulesManager';
+import ContactInfoManager from './ContactInfoManager';
 
 const PopupDashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('popups');
@@ -260,6 +261,17 @@ const PopupDashboard = ({ onLogout }) => {
               Regole Casa
             </button>
             <button
+              onClick={() => setActiveTab('contact-info')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
+                activeTab === 'contact-info'
+                  ? 'border-teal-600 text-teal-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <Mail size={18} />
+              Contatti
+            </button>
+            <button
               onClick={() => setActiveTab('about')}
               className={`py-4 px-2 border-b-2 font-medium text-sm transition flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'about'
@@ -337,6 +349,8 @@ const PopupDashboard = ({ onLogout }) => {
           <ReviewManager />
         ) : activeTab === 'house-rules' ? (
           <HouseRulesManager />
+        ) : activeTab === 'contact-info' ? (
+          <ContactInfoManager />
         ) : activeTab === 'about' ? (
           <AboutManager />
         ) : activeTab === 'activities' ? (
@@ -475,7 +489,7 @@ const PopupDashboard = ({ onLogout }) => {
         )}
       </div>
 
-      {/* Modal Crea/Modifica Popup - RESTO DEL CODICE INVARIATO */}
+      {/* Modal Crea/Modifica Popup */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -720,7 +734,7 @@ const PopupDashboard = ({ onLogout }) => {
         </div>
       )}
 
-      {/* Modal Statistiche - RESTO DEL CODICE INVARIATO */}
+      {/* Modal Statistiche */}
       {showStats && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
