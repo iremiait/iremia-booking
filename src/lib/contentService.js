@@ -377,11 +377,16 @@ export const contentService = {
   async updateSectionVisibility(sectionName, isVisible, orderPosition = null) {
     try {
       const updateData = { 
-        is_visible: isVisible,
         updated_at: new Date().toISOString()
       };
       
-      if (orderPosition !== null) {
+      // Aggiungi is_visible solo se è un boolean (per drag & drop non lo passiamo)
+      if (typeof isVisible === 'boolean') {
+        updateData.is_visible = isVisible;
+      }
+      
+      // Aggiungi order_position se specificato
+      if (typeof orderPosition === 'number') {
         updateData.order_position = orderPosition;
       }
 
