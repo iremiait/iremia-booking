@@ -9,17 +9,16 @@ export const contentService = {
       const { data, error } = await supabase
         .from('about_section')
         .select('*')
-        .maybeSingle(); // Usa maybeSingle invece di single
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         console.error('Errore caricamento about section:', error);
-        // Non fare alert, solo log
         return null;
       }
       return data;
     } catch (error) {
       console.error('Errore caricamento about section:', error);
-      return null; // Ritorna null invece di mostrare errore
+      return null;
     }
   },
 
@@ -69,7 +68,7 @@ export const contentService = {
 
       if (error && error.code !== 'PGRST116') {
         console.error('Errore caricamento attività:', error);
-        return []; // Ritorna array vuoto invece di mostrare errore
+        return [];
       }
       return data || [];
     } catch (error) {
@@ -472,6 +471,44 @@ export const contentService = {
       return data;
     } catch (error) {
       console.error('Errore aggiornamento contact info:', error);
+      throw error;
+    }
+  },
+
+  // ==========================================
+  // HERO SECTION
+  // ==========================================
+  async getHeroSection() {
+    try {
+      const { data, error } = await supabase
+        .from('hero_section')
+        .select('*')
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Errore caricamento hero section:', error);
+        return null;
+      }
+      return data;
+    } catch (error) {
+      console.error('Errore caricamento hero section:', error);
+      return null;
+    }
+  },
+
+  async updateHeroSection(id, heroData) {
+    try {
+      const { data, error } = await supabase
+        .from('hero_section')
+        .update({ ...heroData, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Errore aggiornamento hero section:', error);
       throw error;
     }
   }
