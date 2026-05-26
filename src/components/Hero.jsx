@@ -110,7 +110,7 @@ const Hero = ({ heroImage }) => {
         )}
 
         {/* CTA Button */}
-        
+        <a
           href="#contatti"
           className="inline-block bg-amber-700 hover:bg-amber-800 text-white font-bold py-3 px-8 rounded-lg transition-colors"
         >
