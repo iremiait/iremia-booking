@@ -360,7 +360,8 @@ export const contentService = {
     try {
       const { data, error } = await supabase
         .from('section_visibility')
-        .select('*');
+        .select('*')
+        .order('order_position', { ascending: true });
 
       if (error && error.code !== 'PGRST116') {
         console.error('Errore caricamento visibilità sezioni:', error);
