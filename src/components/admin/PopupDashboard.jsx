@@ -1,34 +1,32 @@
 import React, { useState } from 'react';
-import PopupManager from './PopupManager';
 import ImageManager from './ImageManager';
-import ReviewsManager from './ReviewsManager';
+import ReviewManager from './ReviewManager';
 import AboutManager from './AboutManager';
-import ActivitiesManager from './ActivitiesManager';
-import RestaurantsManager from './RestaurantsManager';
+import ActivityManager from './ActivityManager';
+import RestaurantManager from './RestaurantManager';
 import POIManager from './POIManager';
 import FAQManager from './FAQManager';
-import SectionVisibilityManager from './SectionVisibilityManager';
+import ContentVisibilityManager from './ContentVisibilityManager';
 import HouseRulesManager from './HouseRulesManager';
 import ContactInfoManager from './ContactInfoManager';
 import HeroSectionManager from './HeroSectionManager';
 
 const PopupDashboard = () => {
-  const [activeTab, setActiveTab] = useState('popup');
-
   const tabs = [
-    { id: 'popup', label: 'Popup', icon: '📢', component: PopupManager },
     { id: 'images', label: 'Immagini', icon: '🖼️', component: ImageManager },
-    { id: 'reviews', label: 'Recensioni', icon: '⭐', component: ReviewsManager },
+    { id: 'reviews', label: 'Recensioni', icon: '⭐', component: ReviewManager },
     { id: 'about', label: 'Chi Siamo', icon: 'ℹ️', component: AboutManager },
     { id: 'hero', label: 'Hero Section', icon: '🎯', component: HeroSectionManager },
     { id: 'houseRules', label: 'Regole Casa', icon: '🏠', component: HouseRulesManager },
     { id: 'contact', label: 'Contatti', icon: '📧', component: ContactInfoManager },
-    { id: 'activities', label: 'Attività', icon: '🎿', component: ActivitiesManager },
-    { id: 'restaurants', label: 'Ristoranti', icon: '🍽️', component: RestaurantsManager },
+    { id: 'activities', label: 'Attività', icon: '🎿', component: ActivityManager },
+    { id: 'restaurants', label: 'Ristoranti', icon: '🍽️', component: RestaurantManager },
     { id: 'poi', label: 'POI', icon: '📍', component: POIManager },
     { id: 'faq', label: 'FAQ', icon: '❓', component: FAQManager },
-    { id: 'visibility', label: 'Visibilità', icon: '👁️', component: SectionVisibilityManager }
+    { id: 'visibility', label: 'Visibilità', icon: '👁️', component: ContentVisibilityManager }
   ];
+
+  const [activeTab, setActiveTab] = useState(tabs[0].id);
 
   const activeTabData = tabs.find(tab => tab.id === activeTab);
   const ActiveComponent = activeTabData?.component;
