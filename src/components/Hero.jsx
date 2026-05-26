@@ -1,72 +1,128 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { contentService } from '../lib/contentService';
 
 const Hero = ({ heroImage }) => {
+  const [heroData, setHeroData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHeroData = async () => {
+      try {
+        const data = await contentService.getHeroSection();
+        setHeroData(data);
+      } catch (error) {
+        console.error('Errore caricamento hero data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHeroData();
+  }, []);
+
+  // Fallback hardcoded se non c'è dato dal DB
+  const defaultHeroData = {
+    main_title: 'Il tuo rifugio di pace',
+    subtitle: 'a Lama Mocogno',
+    etymology_word: 'Iremía',
+    etymology_greek: 'ηρεμία',
+    etymology_translation: 'calma · serenità · tranquillità',
+    welcome_paragraph_1:
+      'Immersa tra i boschi dell\'Appennino modenese, a 850 metri di altitudine, Iremia è la tua casetta di montagna dove ritrovare tranquillità e connessione con la natura.',
+    welcome_paragraph_2:
+      'Perfetta per coppie o piccole famiglie, offre tutto ciò che serve per un soggiorno autentico: spazi accoglienti, una vista meravigliosa e la pace che solo la montagna sa regalare.',
+    info_cards: [
+      { icon: '🏠', value: '55 m²', label: 'Appartamento' },
+      { icon: '🌲', value: '850 m', label: 'Altitudine' },
+      { icon: '👥', value: '2-4', label: 'Ospiti' },
+      { icon: '🛏️', value: 'Confortevole', label: 'Riposo' }
+    ]
+  };
+
+  const data = heroData || defaultHeroData;
+
+  if (loading) {
+    return (
+      <section className="relative h-screen flex items-center justify-center bg-gray-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-700"></div>
+      </section>
+    );
+  }
+
   return (
-    <div className="relative -mt-16 pt-16">
+    <section className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
-      <div className="relative h-[600px] overflow-hidden">
-        <div 
+      {heroImage && (
+        <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroImage})` }}
+          style={{
+            backgroundImage: `url('${heroImage}')`,
+            backgroundPosition: 'center'
+          }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
-        
-        {/* Hero Content */}
-        <div className="relative h-full flex items-center justify-center text-center px-4">
-          <div className="max-w-4xl">
-            <h2 className="text-6xl md:text-7xl font-light text-white mb-6 drop-shadow-2xl">
-              Il tuo rifugio di pace
-            </h2>
-            <p className="text-2xl md:text-3xl text-white/90 mb-8">
-              a Lama Mocogno
-            </p>
-            <div className="inline-block bg-white/95 backdrop-blur border-l-4 border-teal-600 p-6 rounded-lg shadow-2xl">
-              <p className="text-xl text-gray-700 italic">
-                <span className="font-semibold text-teal-700">Iremía</span> (ηρεμία)
-              </p>
-              <p className="text-gray-600 mt-2">
-                calma · serenità · tranquillità
-              </p>
-            </div>
+      )}
+
+      {/* Content */}
+      <div className="relative z-10 max-w-4xl px-6 text-center text-white">
+        {/* Main Title */}
+        <h1 className="text-5xl md:text-6xl font-bold mb-2 leading-tight">
+          {data.main_title}
+        </h1>
+
+        {/* Subtitle */}
+        <p className="text-xl md:text-2xl text-amber-100 mb-6">{data.subtitle}</p>
+
+        {/* Etymology Section */}
+        <div className="mb-12 bg-white/10 backdrop-blur-sm rounded-lg p-6 inline-block">
+          <p className="text-sm text-amber-100 mb-1">Dal greco antico</p>
+          <p className="text-3xl font-serif italic text-amber-50 mb-1">
+            {data.etymology_word} — {data.etymology_greek}
+          </p>
+          <p className="text-amber-100">{data.etymology_translation}</p>
+        </div>
+
+        {/* Welcome Paragraphs */}
+        <div className="mb-12 space-y-4">
+          <p className="text-lg text-gray-100 max-w-2xl mx-auto leading-relaxed">
+            {data.welcome_paragraph_1}
+          </p>
+          <p className="text-lg text-gray-100 max-w-2xl mx-auto leading-relaxed">
+            {data.welcome_paragraph_2}
+          </p>
+        </div>
+
+        {/* Info Cards */}
+        {data.info_cards && data.info_cards.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto mb-12">
+            {data.info_cards.map((card, index) => (
+              <div
+                key={index}
+                className="bg-white/15 backdrop-blur-sm rounded-lg p-4 text-white hover:bg-white/25 transition-all"
+              >
+                <div className="text-3xl mb-2">{card.icon}</div>
+                <div className="text-sm text-amber-100 mb-1">{card.label}</div>
+                <div className="text-xl font-bold">{card.value}</div>
+              </div>
+            ))}
           </div>
-        </div>
+        )}
+
+        {/* CTA Button */}
+        
+          href="#contatti"
+          className="inline-block bg-amber-700 hover:bg-amber-800 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+        >
+          Scopri di più
+        </a>
       </div>
 
-      {/* Info Box - Sotto l'immagine */}
-      <div className="max-w-7xl mx-auto px-4 -mt-20 relative z-10">
-        <div className="bg-white/95 backdrop-blur rounded-lg shadow-2xl p-8 max-w-3xl mx-auto border border-teal-100">
-          <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
-            Benvenuti a Iremia
-          </h3>
-          <div className="space-y-4 text-gray-600 leading-relaxed">
-            <p>
-              Iremia è una locazione turistica a Lama Mocogno gestita a livello familiare da Andrea e Iza.
-            </p>
-            <p>
-              Il nostro è un piccolo paese dell'appennino modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-teal-200">
-              <div className="text-center">
-                <div className="text-3xl text-teal-600 mb-2">🏠</div>
-                <div className="font-semibold text-gray-800">55 m²</div>
-                <div className="text-sm text-gray-500">Appartamento</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl text-teal-600 mb-2">👥</div>
-                <div className="font-semibold text-gray-800">Max 3 persone</div>
-                <div className="text-sm text-gray-500">Ospiti</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl text-teal-600 mb-2">⛰️</div>
-                <div className="font-semibold text-gray-800">850 m</div>
-                <div className="text-sm text-gray-500">Sul livello del mare</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="animate-bounce text-white text-2xl">↓</div>
       </div>
-    </div>
+    </section>
   );
 };
 
