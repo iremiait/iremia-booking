@@ -388,26 +388,19 @@ export const contentService = {
         updateData.order_position = orderPosition;
       }
 
-      console.log('📤 UPDATE QUERY - section_name:', sectionName);
-      console.log('📤 UPDATE QUERY - updateData:', updateData);
-
       const { data, error } = await supabase
         .from('section_visibility')
         .update(updateData)
         .eq('section_name', sectionName)
         .select();
 
-      console.log('📥 RESPONSE data:', data);
-      console.log('📥 RESPONSE error:', error);
-
       if (error) {
-        console.error('❌ Errore Supabase:', error);
         throw error;
       }
       
       return data;
     } catch (error) {
-      console.error('❌ Errore aggiornamento visibilità:', error);
+      console.error('Errore aggiornamento visibilità:', error);
       throw error;
     }
   },
