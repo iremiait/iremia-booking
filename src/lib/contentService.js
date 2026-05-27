@@ -380,29 +380,33 @@ export const contentService = {
         updated_at: new Date().toISOString()
       };
       
-      // Se isVisible è un boolean, aggiungilo
       if (typeof isVisible === 'boolean') {
         updateData.is_visible = isVisible;
       }
       
-      // Se orderPosition è un numero, aggiungilo
       if (typeof orderPosition === 'number') {
         updateData.order_position = orderPosition;
       }
+
+      console.log('📤 UPDATE QUERY - section_name:', sectionName);
+      console.log('📤 UPDATE QUERY - updateData:', updateData);
 
       const { data, error } = await supabase
         .from('section_visibility')
         .update(updateData)
         .eq('section_name', sectionName);
 
+      console.log('📥 RESPONSE data:', data);
+      console.log('📥 RESPONSE error:', error);
+
       if (error) {
-        console.error('Errore Supabase:', error);
+        console.error('❌ Errore Supabase:', error);
         throw error;
       }
       
       return data;
     } catch (error) {
-      console.error('Errore aggiornamento visibilità:', error);
+      console.error('❌ Errore aggiornamento visibilità:', error);
       throw error;
     }
   },
