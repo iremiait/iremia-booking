@@ -394,7 +394,8 @@ export const contentService = {
       const { data, error } = await supabase
         .from('section_visibility')
         .update(updateData)
-        .eq('section_name', sectionName);
+        .eq('section_name', sectionName)
+        .select();
 
       console.log('📥 RESPONSE data:', data);
       console.log('📥 RESPONSE error:', error);
