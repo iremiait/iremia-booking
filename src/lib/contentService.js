@@ -380,12 +380,12 @@ export const contentService = {
         updated_at: new Date().toISOString()
       };
       
-      // Aggiungi is_visible solo se è un boolean (per drag & drop non lo passiamo)
+      // Se isVisible è un boolean, aggiungilo
       if (typeof isVisible === 'boolean') {
         updateData.is_visible = isVisible;
       }
       
-      // Aggiungi order_position se specificato
+      // Se orderPosition è un numero, aggiungilo
       if (typeof orderPosition === 'number') {
         updateData.order_position = orderPosition;
       }
@@ -393,11 +393,13 @@ export const contentService = {
       const { data, error } = await supabase
         .from('section_visibility')
         .update(updateData)
-        .eq('section_name', sectionName)
-        .select()
-        .single();
+        .eq('section_name', sectionName);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Errore Supabase:', error);
+        throw error;
+      }
+      
       return data;
     } catch (error) {
       console.error('Errore aggiornamento visibilità:', error);
