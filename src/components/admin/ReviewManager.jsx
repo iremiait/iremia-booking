@@ -233,7 +233,7 @@ const ReviewManager = () => {
                     </span>
                     {review.review_date && (
                       <span className="text-xs text-gray-400">
-                        ({new Date(review.review_date).toLocaleDateString('it-IT')})
+                        ({new Date(review.review_date + "T00:00:00").toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric" })})
                       </span>
                     )}
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
