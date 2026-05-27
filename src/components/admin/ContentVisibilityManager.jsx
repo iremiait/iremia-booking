@@ -6,6 +6,7 @@ const ContentVisibilityManager = () => {
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [draggedIndex, setDraggedIndex] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     loadSections();
@@ -59,10 +60,16 @@ const ContentVisibilityManager = () => {
     
     // Salva il nuovo ordine nel database
     try {
+      setSaving(true);
+      
       // Aggiorna order_position per ogni sezione
-      const updates = sections.map((section, index) => 
-        contentService.updateSectionVisibility(section.section_name, section.is_visible, index)
-      );
+      const updates = sections.map((section, index) => {
+        return contentService.updateSectionVisibility(
+          section.section_name, 
+          section.is_visible, 
+          index  // Passa l'indice come order_position
+        );
+      });
       
       await Promise.all(updates);
       alert('✅ Ordine salvato con successo!');
@@ -70,16 +77,22 @@ const ContentVisibilityManager = () => {
     } catch (error) {
       console.error('Errore salvataggio ordine:', error);
       alert('❌ Errore nel salvataggio dell\'ordine');
+      await loadSections(); // Ricarica per ripristinare l'ordine precedente
+    } finally {
+      setSaving(false);
     }
   };
 
   const getSectionIcon = (sectionName) => {
     const icons = {
       'about': '👥',
-      'activities': '🎯',
+      'hero': '🎯',
+      'activities': '🎿',
       'restaurants': '🍽️',
       'poi': '📍',
-      'faqs': '❓'
+      'faqs': '❓',
+      'house_rules': '🏠',
+      'contact': '📧'
     };
     return icons[sectionName] || '📄';
   };
@@ -87,10 +100,13 @@ const ContentVisibilityManager = () => {
   const getSectionDescription = (sectionName) => {
     const descriptions = {
       'about': 'Mostra la sezione "Chi Siamo" con la storia di Andrea e Iza',
+      'hero': 'Mostra la Hero Section con titolo e etimologia',
       'activities': 'Mostra attività stagionali e cosa fare nella zona',
       'restaurants': 'Mostra ristoranti e locali consigliati',
       'poi': 'Mostra punti di interesse e luoghi da visitare',
-      'faqs': 'Mostra le domande frequenti'
+      'faqs': 'Mostra le domande frequenti',
+      'house_rules': 'Mostra le regole della casa',
+      'contact': 'Mostra i contatti e il form di contatto'
     };
     return descriptions[sectionName] || '';
   };
@@ -129,6 +145,15 @@ const ContentVisibilityManager = () => {
           </div>
         </div>
       </div>
+
+      {saving && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex gap-3">
+            <div className="text-yellow-600 text-xl">⏳</div>
+            <div className="text-sm text-yellow-800">Salvataggio in corso...</div>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 divide-y divide-gray-200">
         {sections.map((section, index) => (
@@ -185,11 +210,12 @@ const ContentVisibilityManager = () => {
 
                 <button
                   onClick={() => toggleVisibility(section.section_name, section.is_visible)}
+                  disabled={saving}
                   className={`p-3 rounded-lg transition flex items-center gap-2 ${
                     section.is_visible
                       ? 'bg-green-100 text-green-700 hover:bg-green-200'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
+                  } ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
                   title={section.is_visible ? 'Nascondi sezione' : 'Mostra sezione'}
                 >
                   {section.is_visible ? (
