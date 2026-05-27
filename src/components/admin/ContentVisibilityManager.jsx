@@ -28,12 +28,24 @@ const ContentVisibilityManager = () => {
 
   const toggleVisibility = async (sectionName, currentStatus) => {
     try {
-      await contentService.updateSectionVisibility(sectionName, !currentStatus);
+      setSaving(true);
+      const { error } = await supabase
+        .from('section_visibility')
+        .update({ 
+          is_visible: !currentStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('section_name', sectionName);
+
+      if (error) throw error;
+
       await loadSections();
       alert(`✅ Sezione ${!currentStatus ? 'attivata' : 'disattivata'} con successo!`);
     } catch (error) {
       console.error('Errore toggle visibilità:', error);
       alert('❌ Errore nel cambio visibilità');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -60,7 +72,6 @@ const ContentVisibilityManager = () => {
     try {
       setSaving(true);
       
-      // Aggiorna SOLO order_position per ogni sezione direttamente su Supabase
       const updates = sections.map((section, index) => {
         console.log(`📤 Aggiornamento ${section.section_name} con order_position: ${index}`);
         return supabase
