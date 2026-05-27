@@ -1,7 +1,22 @@
 import { supabase } from './supabase';
 
+const timeAgo = (dateString) => {
+  if (!dateString) return '';
+  
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
+
+  if (diffDays < 7) return `${diffDays} giorni fa`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} settimane fa`;
+  if (diffMonths < 12) return `${diffMonths} ${diffMonths === 1 ? 'mese' : 'mesi'} fa`;
+  return `${diffYears} ${diffYears === 1 ? 'anno' : 'anni'} fa`;
+};
+
 export const reviewService = {
-  // Get tutte le recensioni attive (per il sito pubblico)
   async getActiveReviews() {
     try {
       const { data, error } = await supabase
@@ -11,14 +26,16 @@ export const reviewService = {
         .order('order_position', { ascending: true });
 
       if (error) throw error;
-      return data || [];
+      return (data || []).map(r => ({
+        ...r,
+        time_ago: r.review_date ? timeAgo(r.review_date) : r.time_ago
+      }));
     } catch (error) {
       console.error('Errore caricamento recensioni attive:', error);
       return [];
     }
   },
 
-  // Get tutte le recensioni (per admin)
   async getAllReviews() {
     try {
       const { data, error } = await supabase
@@ -27,14 +44,16 @@ export const reviewService = {
         .order('order_position', { ascending: true });
 
       if (error) throw error;
-      return data || [];
+      return (data || []).map(r => ({
+        ...r,
+        time_ago: r.review_date ? timeAgo(r.review_date) : r.time_ago
+      }));
     } catch (error) {
       console.error('Errore caricamento tutte le recensioni:', error);
       return [];
     }
   },
 
-  // Crea nuova recensione
   async createReview(reviewData) {
     try {
       const { data, error } = await supabase
@@ -44,22 +63,21 @@ export const reviewService = {
           author_initials: reviewData.author_initials,
           rating: reviewData.rating || 5,
           review_text: reviewData.review_text,
+          review_date: reviewData.review_date || null,
           time_ago: reviewData.time_ago,
           is_active: reviewData.is_active !== undefined ? reviewData.is_active : true,
           order_position: reviewData.order_position || 0
         }])
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore creazione recensione:', error);
       throw error;
     }
   },
 
-  // Aggiorna recensione
   async updateReview(id, reviewData) {
     try {
       const { data, error } = await supabase
@@ -69,18 +87,16 @@ export const reviewService = {
           updated_at: new Date().toISOString()
         })
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore aggiornamento recensione:', error);
       throw error;
     }
   },
 
-  // Elimina recensione
   async deleteReview(id) {
     try {
       const { error } = await supabase
@@ -96,7 +112,6 @@ export const reviewService = {
     }
   },
 
-  // Toggle attiva/disattiva
   async toggleActive(id, currentStatus) {
     try {
       const { data, error } = await supabase
@@ -106,18 +121,16 @@ export const reviewService = {
           updated_at: new Date().toISOString()
         })
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore toggle active:', error);
       throw error;
     }
   },
 
-  // Riordina recensioni
   async reorderReviews(reviewsWithNewOrder) {
     try {
       const updates = reviewsWithNewOrder.map((review, index) => 
