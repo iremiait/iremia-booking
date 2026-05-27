@@ -27,11 +27,10 @@ export const contentService = {
       const { data, error } = await supabase
         .from('about_section')
         .insert([aboutData])
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore creazione about:', error);
       throw error;
@@ -44,11 +43,10 @@ export const contentService = {
         .from('about_section')
         .update({ ...aboutData, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore aggiornamento about:', error);
       throw error;
@@ -82,11 +80,10 @@ export const contentService = {
       const { data, error } = await supabase
         .from('activities')
         .insert([activityData])
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore creazione attività:', error);
       throw error;
@@ -99,11 +96,10 @@ export const contentService = {
         .from('activities')
         .update({ ...activityData, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore aggiornamento attività:', error);
       throw error;
@@ -151,11 +147,10 @@ export const contentService = {
       const { data, error } = await supabase
         .from('restaurants')
         .insert([restaurantData])
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore creazione ristorante:', error);
       throw error;
@@ -168,11 +163,10 @@ export const contentService = {
         .from('restaurants')
         .update({ ...restaurantData, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore aggiornamento ristorante:', error);
       throw error;
@@ -220,11 +214,10 @@ export const contentService = {
       const { data, error } = await supabase
         .from('poi')
         .insert([poiData])
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore creazione POI:', error);
       throw error;
@@ -237,11 +230,10 @@ export const contentService = {
         .from('poi')
         .update({ ...poiData, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore aggiornamento POI:', error);
       throw error;
@@ -310,11 +302,10 @@ export const contentService = {
       const { data, error } = await supabase
         .from('faqs')
         .insert([faqData])
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore creazione FAQ:', error);
       throw error;
@@ -327,11 +318,10 @@ export const contentService = {
         .from('faqs')
         .update({ ...faqData, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore aggiornamento FAQ:', error);
       throw error;
@@ -376,14 +366,14 @@ export const contentService = {
 
   async updateSectionVisibility(sectionName, isVisible, orderPosition = null) {
     try {
-      const updateData = { 
+      const updateData = {
         updated_at: new Date().toISOString()
       };
-      
+
       if (typeof isVisible === 'boolean') {
         updateData.is_visible = isVisible;
       }
-      
+
       if (typeof orderPosition === 'number') {
         updateData.order_position = orderPosition;
       }
@@ -394,10 +384,7 @@ export const contentService = {
         .eq('section_name', sectionName)
         .select();
 
-      if (error) {
-        throw error;
-      }
-      
+      if (error) throw error;
       return data;
     } catch (error) {
       console.error('Errore aggiornamento visibilità:', error);
@@ -432,11 +419,10 @@ export const contentService = {
         .from('house_rules_section')
         .update({ ...rulesData, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore aggiornamento house rules:', error);
       throw error;
@@ -470,11 +456,10 @@ export const contentService = {
         .from('contact_info')
         .update({ ...contactData, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore aggiornamento contact info:', error);
       throw error;
@@ -508,11 +493,10 @@ export const contentService = {
         .from('hero_section')
         .update({ ...heroData, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
       if (error) throw error;
-      return data;
+      return data?.[0];
     } catch (error) {
       console.error('Errore aggiornamento hero section:', error);
       throw error;
