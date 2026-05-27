@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, GripVertical } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 import { contentService } from '../../lib/contentService';
 
 const ContentVisibilityManager = () => {
@@ -16,7 +17,6 @@ const ContentVisibilityManager = () => {
     setLoading(true);
     try {
       const data = await contentService.getSectionVisibility();
-      // Ordina per order_position
       const sorted = data.sort((a, b) => (a.order_position || 0) - (b.order_position || 0));
       setSections(sorted);
     } catch (error) {
@@ -37,7 +37,6 @@ const ContentVisibilityManager = () => {
     }
   };
 
-  // Drag & Drop handlers
   const handleDragStart = (index) => {
     setDraggedIndex(index);
   };
@@ -61,27 +60,25 @@ const ContentVisibilityManager = () => {
     try {
       setSaving(true);
       
+      // Aggiorna SOLO order_position per ogni sezione direttamente su Supabase
       const updates = sections.map((section, index) => {
-        console.log(`Aggiornamento ${section.section_name} con order_position: ${index}`);
-        return contentService.updateSectionVisibility(
-          section.section_name, 
-          section.is_visible, 
-          index
-        );
+        console.log(`📤 Aggiornamento ${section.section_name} con order_position: ${index}`);
+        return supabase
+          .from('section_visibility')
+          .update({ 
+            order_position: index, 
+            updated_at: new Date().toISOString() 
+          })
+          .eq('section_name', section.section_name);
       });
       
       const results = await Promise.all(updates);
-      console.log('Risultati salvataggio:', results);
-      
-      // DELAY DI 2 SECONDI prima di ricaricare
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      await loadSections();
+      console.log('✅ Tutti gli update completati:', results);
       alert('✅ Ordine salvato con successo!');
+      
     } catch (error) {
-      console.error('Errore salvataggio ordine:', error);
+      console.error('❌ Errore salvataggio ordine:', error);
       alert('❌ Errore nel salvataggio dell\'ordine');
-      await loadSections();
     } finally {
       setSaving(false);
     }
@@ -154,7 +151,7 @@ const ContentVisibilityManager = () => {
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <div className="flex gap-3">
             <div className="text-yellow-600 text-xl">⏳</div>
-            <div className="text-sm text-yellow-800">Salvataggio in corso... (attendere 2 secondi)</div>
+            <div className="text-sm text-yellow-800">Salvataggio in corso...</div>
           </div>
         </div>
       )}
@@ -174,24 +171,19 @@ const ContentVisibilityManager = () => {
             }`}
           >
             <div className="flex items-center justify-between">
-              {/* Drag Handle + Content */}
               <div className="flex items-center gap-4 flex-1">
-                {/* Drag Handle */}
                 <div className="text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing">
                   <GripVertical size={24} />
                 </div>
 
-                {/* Order Number */}
                 <div className="w-8 h-8 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-semibold text-sm">
                   {index + 1}
                 </div>
 
-                {/* Icon */}
                 <div className="text-4xl">
                   {getSectionIcon(section.section_name)}
                 </div>
 
-                {/* Info */}
                 <div className="flex-1">
                   <h4 className="text-lg font-medium text-gray-900 mb-1">
                     {section.section_title}
@@ -202,7 +194,6 @@ const ContentVisibilityManager = () => {
                 </div>
               </div>
 
-              {/* Actions */}
               <div className="flex items-center gap-4 ml-4">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   section.is_visible 
