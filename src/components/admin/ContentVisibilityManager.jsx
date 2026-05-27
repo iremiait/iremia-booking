@@ -64,6 +64,7 @@ const ContentVisibilityManager = () => {
       
       // Aggiorna order_position per ogni sezione
       const updates = sections.map((section, index) => {
+        console.log(`Aggiornamento ${section.section_name} con order_position: ${index}`);
         return contentService.updateSectionVisibility(
           section.section_name, 
           section.is_visible, 
@@ -71,13 +72,21 @@ const ContentVisibilityManager = () => {
         );
       });
       
-      await Promise.all(updates);
-      alert('✅ Ordine salvato con successo!');
-      await loadSections();
+      const results = await Promise.all(updates);
+      console.log('Risultati salvataggio:', results);
+      
+      // Aggiungi un piccolo delay prima di ricaricare
+      setTimeout(async () => {
+        await loadSections();
+        alert('✅ Ordine salvato con successo!');
+      }, 500);
     } catch (error) {
       console.error('Errore salvataggio ordine:', error);
       alert('❌ Errore nel salvataggio dell\'ordine');
-      await loadSections(); // Ricarica per ripristinare l'ordine precedente
+      // Ricarica per ripristinare l'ordine precedente
+      setTimeout(async () => {
+        await loadSections();
+      }, 500);
     } finally {
       setSaving(false);
     }
