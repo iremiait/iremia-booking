@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Eye, EyeOff, GripVertical } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { contentService } from '../../lib/contentService';
@@ -8,6 +8,9 @@ const ContentVisibilityManager = () => {
   const [loading, setLoading] = useState(true);
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [saving, setSaving] = useState(false);
+  
+  // Ref che tiene sempre l'ultimo valore aggiornato di sections
+  const sectionsRef = useRef([]);
 
   useEffect(() => {
     loadSections();
@@ -19,6 +22,7 @@ const ContentVisibilityManager = () => {
       const data = await contentService.getSectionVisibility();
       const sorted = data.sort((a, b) => (a.order_position || 0) - (b.order_position || 0));
       setSections(sorted);
+      sectionsRef.current = sorted;
     } catch (error) {
       console.error('Errore caricamento sezioni:', error);
       alert('Errore nel caricamento delle sezioni');
@@ -40,11 +44,13 @@ const ContentVisibilityManager = () => {
 
       if (error) throw error;
 
-      setSections(prev => prev.map(s => 
+      const updated = sections.map(s => 
         s.section_name === sectionName 
           ? { ...s, is_visible: !currentStatus }
           : s
-      ));
+      );
+      setSections(updated);
+      sectionsRef.current = updated;
 
       alert(`✅ Sezione ${!currentStatus ? 'attivata' : 'disattivata'} con successo!`);
     } catch (error) {
@@ -56,34 +62,33 @@ const ContentVisibilityManager = () => {
   };
 
   const handleDragStart = (index) => {
-    console.log('🟡 dragStart index:', index, 'sezione:', sections[index]?.section_name);
     setDraggedIndex(index);
   };
 
   const handleDragOver = (e, index) => {
     e.preventDefault();
-    console.log('🔵 dragOver index:', index);
     if (draggedIndex === null || draggedIndex === index) return;
 
-    const newSections = [...sections];
+    const newSections = [...sectionsRef.current];
     const draggedItem = newSections[draggedIndex];
     newSections.splice(draggedIndex, 1);
     newSections.splice(index, 0, draggedItem);
 
     setSections(newSections);
+    sectionsRef.current = newSections;
     setDraggedIndex(index);
   };
 
   const handleDragEnd = async () => {
-    console.log('🟢 dragEnd chiamato');
-    console.log('🟢 sections al momento del salvataggio:', sections.map(s => s.section_name));
     setDraggedIndex(null);
+    
+    // Usa sectionsRef.current invece di sections — sempre aggiornato
+    const currentSections = sectionsRef.current;
     
     try {
       setSaving(true);
       
-      const updates = sections.map((section, index) => {
-        console.log(`💾 Salvo ${section.section_name} con order_position: ${index}`);
+      const updates = currentSections.map((section, index) => {
         return supabase
           .from('section_visibility')
           .update({ 
@@ -93,8 +98,7 @@ const ContentVisibilityManager = () => {
           .eq('section_name', section.section_name);
       });
       
-      const results = await Promise.all(updates);
-      console.log('✅ Risultati salvataggio:', results);
+      await Promise.all(updates);
       alert('✅ Ordine salvato con successo!');
       
     } catch (error) {
