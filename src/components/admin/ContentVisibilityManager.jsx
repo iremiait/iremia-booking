@@ -40,7 +40,6 @@ const ContentVisibilityManager = () => {
 
       if (error) throw error;
 
-      // Aggiorna lo stato locale immediatamente
       setSections(prev => prev.map(s => 
         s.section_name === sectionName 
           ? { ...s, is_visible: !currentStatus }
@@ -57,11 +56,13 @@ const ContentVisibilityManager = () => {
   };
 
   const handleDragStart = (index) => {
+    console.log('🟡 dragStart index:', index, 'sezione:', sections[index]?.section_name);
     setDraggedIndex(index);
   };
 
   const handleDragOver = (e, index) => {
     e.preventDefault();
+    console.log('🔵 dragOver index:', index);
     if (draggedIndex === null || draggedIndex === index) return;
 
     const newSections = [...sections];
@@ -74,13 +75,15 @@ const ContentVisibilityManager = () => {
   };
 
   const handleDragEnd = async () => {
+    console.log('🟢 dragEnd chiamato');
+    console.log('🟢 sections al momento del salvataggio:', sections.map(s => s.section_name));
     setDraggedIndex(null);
     
     try {
       setSaving(true);
       
-      // Salva gli order_position nel database
       const updates = sections.map((section, index) => {
+        console.log(`💾 Salvo ${section.section_name} con order_position: ${index}`);
         return supabase
           .from('section_visibility')
           .update({ 
@@ -90,13 +93,13 @@ const ContentVisibilityManager = () => {
           .eq('section_name', section.section_name);
       });
       
-      await Promise.all(updates);
+      const results = await Promise.all(updates);
+      console.log('✅ Risultati salvataggio:', results);
       alert('✅ Ordine salvato con successo!');
       
     } catch (error) {
       console.error('❌ Errore salvataggio ordine:', error);
       alert('❌ Errore nel salvataggio dell\'ordine');
-      // Se errore, ricarica i dati originali
       await loadSections();
     } finally {
       setSaving(false);
