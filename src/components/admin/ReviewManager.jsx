@@ -1,6 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2, Eye, EyeOff, GripVertical, X, Save, Star } from 'lucide-react';
 import { reviewService } from '../../lib/reviewService';
+
+const timeAgo = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
+
+  if (diffDays < 7) return `${diffDays} giorni fa`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} settimane fa`;
+  if (diffMonths < 12) return `${diffMonths} ${diffMonths === 1 ? 'mese' : 'mesi'} fa`;
+  return `${diffYears} ${diffYears === 1 ? 'anno' : 'anni'} fa`;
+};
 
 const ReviewManager = () => {
   const [reviews, setReviews] = useState([]);
@@ -9,13 +24,14 @@ const ReviewManager = () => {
   const [editingReview, setEditingReview] = useState(null);
   const [saving, setSaving] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState(null);
+  const reviewsRef = useRef([]);
 
   const [formData, setFormData] = useState({
     author_name: '',
     author_initials: '',
     rating: 5,
     review_text: '',
-    time_ago: '',
+    review_date: '',
     is_active: true
   });
 
@@ -28,6 +44,7 @@ const ReviewManager = () => {
     try {
       const data = await reviewService.getAllReviews();
       setReviews(data);
+      reviewsRef.current = data;
     } catch (error) {
       console.error('Errore caricamento recensioni:', error);
       alert('Errore nel caricamento delle recensioni');
@@ -43,7 +60,7 @@ const ReviewManager = () => {
         author_initials: review.author_initials,
         rating: review.rating,
         review_text: review.review_text,
-        time_ago: review.time_ago,
+        review_date: review.review_date || '',
         is_active: review.is_active
       });
     } else {
@@ -53,7 +70,7 @@ const ReviewManager = () => {
         author_initials: '',
         rating: 5,
         review_text: '',
-        time_ago: '',
+        review_date: '',
         is_active: true
       });
     }
@@ -90,7 +107,6 @@ const ReviewManager = () => {
 
   const handleDelete = async (id) => {
     if (!confirm('Sei sicuro di voler eliminare questa recensione?')) return;
-
     try {
       await reviewService.deleteReview(id);
       await loadReviews();
@@ -115,7 +131,6 @@ const ReviewManager = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  // Drag & Drop
   const handleDragStart = (index) => {
     setDraggedIndex(index);
   };
@@ -124,19 +139,21 @@ const ReviewManager = () => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
 
-    const newReviews = [...reviews];
+    const newReviews = [...reviewsRef.current];
     const draggedItem = newReviews[draggedIndex];
     newReviews.splice(draggedIndex, 1);
     newReviews.splice(index, 0, draggedItem);
 
     setReviews(newReviews);
+    reviewsRef.current = newReviews;
     setDraggedIndex(index);
   };
 
   const handleDragEnd = async () => {
     setDraggedIndex(null);
+    const currentReviews = reviewsRef.current;
     try {
-      await reviewService.reorderReviews(reviews);
+      await reviewService.reorderReviews(currentReviews);
       alert('✅ Ordine salvato!');
     } catch (error) {
       console.error('Errore riordinamento:', error);
@@ -199,24 +216,26 @@ const ReviewManager = () => {
               className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition cursor-move"
             >
               <div className="flex items-start gap-4">
-                {/* Drag Handle */}
                 <div className="text-gray-400 mt-1 cursor-grab active:cursor-grabbing">
                   <GripVertical size={20} />
                 </div>
-
-                {/* Avatar */}
                 <div className="w-12 h-12 bg-teal-600 text-white rounded-full flex items-center justify-center font-semibold flex-shrink-0">
                   {review.author_initials}
                 </div>
-
-                {/* Content */}
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <h4 className="font-medium text-gray-900">{review.author_name}</h4>
                     <div className="flex text-yellow-400">
                       {'⭐'.repeat(review.rating)}
                     </div>
-                    <span className="text-sm text-gray-500">{review.time_ago}</span>
+                    <span className="text-sm text-gray-500">
+                      {review.review_date ? timeAgo(review.review_date) : review.time_ago}
+                    </span>
+                    {review.review_date && (
+                      <span className="text-xs text-gray-400">
+                        ({new Date(review.review_date).toLocaleDateString('it-IT')})
+                      </span>
+                    )}
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       review.is_active 
                         ? 'bg-green-100 text-green-700' 
@@ -229,8 +248,6 @@ const ReviewManager = () => {
                     "{review.review_text}"
                   </p>
                 </div>
-
-                {/* Actions */}
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
                     onClick={() => toggleActive(review)}
@@ -239,21 +256,18 @@ const ReviewManager = () => {
                         ? 'bg-green-100 text-green-700 hover:bg-green-200'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
-                    title={review.is_active ? 'Nascondi' : 'Mostra'}
                   >
                     {review.is_active ? <Eye size={18} /> : <EyeOff size={18} />}
                   </button>
                   <button
                     onClick={() => openModal(review)}
                     className="p-2 bg-teal-100 text-teal-700 rounded-lg hover:bg-teal-200 transition"
-                    title="Modifica"
                   >
                     <Edit2 size={18} />
                   </button>
                   <button
                     onClick={() => handleDelete(review.id)}
                     className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition"
-                    title="Elimina"
                   >
                     <Trash2 size={18} />
                   </button>
@@ -272,10 +286,7 @@ const ReviewManager = () => {
               <h2 className="text-2xl font-light text-gray-900">
                 {editingReview ? 'Modifica Recensione' : 'Nuova Recensione'}
               </h2>
-              <button
-                onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600 transition"
-              >
+              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition">
                 <X size={24} />
               </button>
             </div>
@@ -295,7 +306,6 @@ const ReviewManager = () => {
                     required
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Iniziali *
@@ -327,19 +337,22 @@ const ReviewManager = () => {
                     ))}
                   </select>
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tempo fa *
+                    Data Recensione *
                   </label>
                   <input
-                    type="text"
-                    value={formData.time_ago}
-                    onChange={(e) => updateField('time_ago', e.target.value)}
+                    type="date"
+                    value={formData.review_date}
+                    onChange={(e) => updateField('review_date', e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="Es: 5 mesi fa"
                     required
                   />
+                  {formData.review_date && (
+                    <p className="text-xs text-teal-600 mt-1">
+                      Apparirà come: "{timeAgo(formData.review_date)}"
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -385,7 +398,9 @@ const ReviewManager = () => {
                     <div className="flex text-yellow-400 text-sm">
                       {'⭐'.repeat(formData.rating)}
                     </div>
-                    <span className="text-sm text-gray-500">{formData.time_ago || 'X tempo fa'}</span>
+                    <span className="text-sm text-gray-500">
+                      {formData.review_date ? timeAgo(formData.review_date) : 'X tempo fa'}
+                    </span>
                   </div>
                   <p className="text-gray-700 text-sm leading-relaxed">
                     "{formData.review_text || 'Il testo della recensione apparirà qui...'}"
