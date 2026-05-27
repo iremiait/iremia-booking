@@ -20,7 +20,6 @@ const Hero = ({ heroImage }) => {
     fetchHeroData();
   }, []);
 
-  // Fallback hardcoded se non c'è dato dal DB
   const defaultHeroData = {
     main_title: 'Il tuo rifugio di pace',
     subtitle: 'a Lama Mocogno',
@@ -93,13 +92,13 @@ const Hero = ({ heroImage }) => {
           </p>
         </div>
 
-        {/* Info Cards */}
+        {/* Info Cards — flex centrato, si adatta a qualsiasi numero */}
         {data.info_cards && data.info_cards.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto mb-12">
+          <div className="flex flex-wrap justify-center gap-4 max-w-2xl mx-auto mb-12">
             {data.info_cards.map((card, index) => (
               <div
                 key={index}
-                className="bg-white/15 backdrop-blur-sm rounded-lg p-4 text-white hover:bg-white/25 transition-all"
+                className="bg-white/15 backdrop-blur-sm rounded-lg p-4 text-white hover:bg-white/25 transition-all w-32"
               >
                 <div className="text-3xl mb-2">{card.icon}</div>
                 <div className="text-sm text-amber-100 mb-1">{card.label}</div>
