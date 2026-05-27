@@ -17,7 +17,9 @@ const ContentVisibilityManager = () => {
     setLoading(true);
     try {
       const data = await contentService.getSectionVisibility();
+      console.log('📥 Dati caricati da DB:', data);
       const sorted = data.sort((a, b) => (a.order_position || 0) - (b.order_position || 0));
+      console.log('📥 Dati ordinati:', sorted);
       setSections(sorted);
     } catch (error) {
       console.error('Errore caricamento sezioni:', error);
@@ -29,6 +31,8 @@ const ContentVisibilityManager = () => {
   const toggleVisibility = async (sectionName, currentStatus) => {
     try {
       setSaving(true);
+      console.log(`🔄 Toggle ${sectionName} da ${currentStatus} a ${!currentStatus}`);
+      
       const { error } = await supabase
         .from('section_visibility')
         .update({ 
@@ -37,8 +41,16 @@ const ContentVisibilityManager = () => {
         })
         .eq('section_name', sectionName);
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Errore Supabase:', error);
+        throw error;
+      }
 
+      console.log('✅ Update riuscito, ricaricare tra 500ms...');
+      
+      // Aspetta 500ms per assicurare che il database sia aggiornato
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       await loadSections();
       alert(`✅ Sezione ${!currentStatus ? 'attivata' : 'disattivata'} con successo!`);
     } catch (error) {
@@ -84,7 +96,12 @@ const ContentVisibilityManager = () => {
       });
       
       const results = await Promise.all(updates);
-      console.log('✅ Tutti gli update completati:', results);
+      console.log('✅ Tutti gli update completati');
+      
+      // Aspetta 500ms per assicurare che il database sia aggiornato
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      await loadSections();
       alert('✅ Ordine salvato con successo!');
       
     } catch (error) {
