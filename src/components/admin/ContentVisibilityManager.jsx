@@ -58,35 +58,30 @@ const ContentVisibilityManager = () => {
   const handleDragEnd = async () => {
     setDraggedIndex(null);
     
-    // Salva il nuovo ordine nel database
     try {
       setSaving(true);
       
-      // Aggiorna order_position per ogni sezione
       const updates = sections.map((section, index) => {
         console.log(`Aggiornamento ${section.section_name} con order_position: ${index}`);
         return contentService.updateSectionVisibility(
           section.section_name, 
           section.is_visible, 
-          index  // Passa l'indice come order_position
+          index
         );
       });
       
       const results = await Promise.all(updates);
       console.log('Risultati salvataggio:', results);
       
-      // Aggiungi un piccolo delay prima di ricaricare
-      setTimeout(async () => {
-        await loadSections();
-        alert('✅ Ordine salvato con successo!');
-      }, 500);
+      // DELAY DI 2 SECONDI prima di ricaricare
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      await loadSections();
+      alert('✅ Ordine salvato con successo!');
     } catch (error) {
       console.error('Errore salvataggio ordine:', error);
       alert('❌ Errore nel salvataggio dell\'ordine');
-      // Ricarica per ripristinare l'ordine precedente
-      setTimeout(async () => {
-        await loadSections();
-      }, 500);
+      await loadSections();
     } finally {
       setSaving(false);
     }
@@ -159,7 +154,7 @@ const ContentVisibilityManager = () => {
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <div className="flex gap-3">
             <div className="text-yellow-600 text-xl">⏳</div>
-            <div className="text-sm text-yellow-800">Salvataggio in corso...</div>
+            <div className="text-sm text-yellow-800">Salvataggio in corso... (attendere 2 secondi)</div>
           </div>
         </div>
       )}
