@@ -15,6 +15,7 @@ import Footer from './components/Footer';
 import { supabase } from './lib/supabase';
 import { reviewService } from './lib/reviewService';
 import { contentService } from './lib/contentService';
+import { themeService } from './lib/themeService';
 
 function App() {
   const [heroImage, setHeroImage] = useState('/images/lama.jpg');
@@ -34,6 +35,19 @@ function App() {
     'poi': POI,
     'faqs': FAQs
   };
+
+  // Carica tema dinamico da Supabase
+  useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        const theme = await themeService.getTheme();
+        themeService.applyTheme(theme);
+      } catch (error) {
+        console.error('Errore caricamento tema:', error);
+      }
+    };
+    loadTheme();
+  }, []);
 
   useEffect(() => {
     const loadImages = async () => {
