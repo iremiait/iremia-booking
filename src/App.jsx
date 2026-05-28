@@ -41,7 +41,7 @@ function App() {
         const { data, error } = await supabase
           .from('site_images')
           .select('*')
-          .single();
+          .maybeSingle();
 
         if (error && error.code !== 'PGRST116') {
           console.error('Errore caricamento immagini:', error);
@@ -52,10 +52,13 @@ function App() {
           if (data.hero_url) setHeroImage(data.hero_url);
           if (data.logo_url) setLogoImage(data.logo_url);
           if (data.gallery_urls && data.gallery_urls.length > 0) {
-            setGalleryImages(data.gallery_urls.map((url, index) => ({
-              src: url,
-              alt: `Foto ${index + 1}`
-            })));
+            // Supporta sia stringhe che oggetti {url, alt}
+            const normalized = data.gallery_urls.map((item, index) =>
+              typeof item === 'string'
+                ? { src: item, alt: `Foto ${index + 1}` }
+                : { src: item.url, alt: item.alt || `Foto ${index + 1}` }
+            );
+            setGalleryImages(normalized);
           }
         }
       } catch (error) {
