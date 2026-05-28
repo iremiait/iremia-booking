@@ -1,16 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Trash2, Image as ImageIcon, GripVertical, Plus, Link, Edit2, Check, X } from 'lucide-react';
+import { Trash2, Image as ImageIcon, GripVertical, Plus, Link, Edit2, Check, X, Upload } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const ImageManager = () => {
+  const [heroImage, setHeroImage] = useState('');
+  const [logoImage, setLogoImage] = useState('');
   const [galleryImages, setGalleryImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [newUrl, setNewUrl] = useState('');
   const [newAlt, setNewAlt] = useState('');
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editingAlt, setEditingAlt] = useState('');
+  const [dbId, setDbId] = useState(null);
   const galleryRef = useRef([]);
 
   useEffect(() => {
@@ -31,10 +35,12 @@ const ImageManager = () => {
       }
 
       if (data) {
+        setDbId(data.id);
+        setHeroImage(data.hero_url || '');
+        setLogoImage(data.logo_url || '');
         const urls = data.gallery_urls || [];
-        // Supporta sia il vecchio formato (stringhe) che il nuovo ({url, alt})
-        const normalized = urls.map((item, i) => 
-          typeof item === 'string' 
+        const normalized = urls.map((item, i) =>
+          typeof item === 'string'
             ? { url: item, alt: `Foto ${i + 1}` }
             : item
         );
@@ -47,45 +53,95 @@ const ImageManager = () => {
     setLoading(false);
   };
 
-  const saveGallery = async (images) => {
+  const saveField = async (updates) => {
     setSaving(true);
     try {
-      const { data: existing } = await supabase
-        .from('site_images')
-        .select('id')
-        .maybeSingle();
-
-      if (existing) {
+      if (dbId) {
         const { error } = await supabase
           .from('site_images')
-          .update({ gallery_urls: images })
-          .eq('id', existing.id);
+          .update(updates)
+          .eq('id', dbId);
         if (error) throw error;
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('site_images')
-          .insert([{ gallery_urls: images }]);
+          .insert([updates])
+          .select();
         if (error) throw error;
+        if (data?.[0]) setDbId(data[0].id);
       }
-      alert('✅ Galleria salvata!');
+      alert('✅ Salvato!');
     } catch (error) {
       console.error('❌ Errore salvataggio:', error);
-      alert('❌ Errore nel salvataggio: ' + error.message);
+      alert('❌ Errore: ' + error.message);
     }
     setSaving(false);
   };
 
+  const uploadToSupabase = async (file, type) => {
+    if (!file) return null;
+    if (file.size > 5 * 1024 * 1024) { alert('❌ File troppo grande. Max 5MB'); return null; }
+    if (!file.type.startsWith('image/')) { alert('❌ Seleziona un\'immagine valida'); return null; }
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${type}_${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from('popup-images')
+        .upload(fileName, file);
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('popup-images')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('❌ Errore upload:', error);
+      alert('❌ Errore upload: ' + error.message);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleHeroUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = await uploadToSupabase(file, 'hero');
+    if (url) {
+      setHeroImage(url);
+      await saveField({ hero_url: url });
+    }
+  };
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = await uploadToSupabase(file, 'logo');
+    if (url) {
+      setLogoImage(url);
+      await saveField({ logo_url: url });
+    }
+  };
+
+  const saveHeroUrl = async () => {
+    if (!heroImage.trim()) return;
+    await saveField({ hero_url: heroImage.trim() });
+  };
+
+  const saveLogoUrl = async () => {
+    if (!logoImage.trim()) return;
+    await saveField({ logo_url: logoImage.trim() });
+  };
+
+  // Gallery
   const addImage = () => {
     const trimmed = newUrl.trim();
     if (!trimmed) return;
-    if (!trimmed.startsWith('http')) {
-      alert('❌ Inserisci un URL valido');
-      return;
-    }
-    if (galleryImages.find(img => img.url === trimmed)) {
-      alert('❌ Questa immagine è già presente');
-      return;
-    }
+    if (!trimmed.startsWith('http')) { alert('❌ Inserisci un URL valido'); return; }
+    if (galleryImages.find(img => img.url === trimmed)) { alert('❌ Immagine già presente'); return; }
     const newImage = { url: trimmed, alt: newAlt.trim() || `Foto ${galleryImages.length + 1}` };
     const updated = [...galleryImages, newImage];
     setGalleryImages(updated);
@@ -95,7 +151,7 @@ const ImageManager = () => {
   };
 
   const deleteImage = (index) => {
-    if (!confirm('Eliminare questa immagine dalla galleria?')) return;
+    if (!confirm('Eliminare questa immagine?')) return;
     const updated = galleryImages.filter((_, i) => i !== index);
     setGalleryImages(updated);
     galleryRef.current = updated;
@@ -113,26 +169,25 @@ const ImageManager = () => {
     setGalleryImages(updated);
     galleryRef.current = updated;
     setEditingIndex(null);
-    setEditingAlt('');
+  };
+
+  const saveGallery = async () => {
+    await saveField({ gallery_urls: galleryRef.current });
   };
 
   // Drag & Drop
   const handleDragStart = (index) => setDraggedIndex(index);
-
   const handleDragOver = (e, index) => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
-
     const newGallery = [...galleryRef.current];
     const draggedItem = newGallery[draggedIndex];
     newGallery.splice(draggedIndex, 1);
     newGallery.splice(index, 0, draggedItem);
-
     setGalleryImages(newGallery);
     galleryRef.current = newGallery;
     setDraggedIndex(index);
   };
-
   const handleDragEnd = () => setDraggedIndex(null);
 
   if (loading) {
@@ -146,14 +201,98 @@ const ImageManager = () => {
   return (
     <div className="space-y-8">
 
-      {/* Aggiungi Immagine */}
+      {/* Hero Image */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-2">
+          <ImageIcon size={22} className="text-teal-600" />
+          Immagine Hero (sfondo principale)
+        </h3>
+
+        {heroImage && (
+          <div className="mb-4 rounded-xl overflow-hidden h-48">
+            <img src={heroImage} alt="Hero" className="w-full h-full object-cover" />
+          </div>
+        )}
+
+        <div className="flex gap-3 mb-3">
+          <input
+            type="url"
+            value={heroImage}
+            onChange={(e) => setHeroImage(e.target.value)}
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            placeholder="https://..."
+          />
+          <button
+            onClick={saveHeroUrl}
+            disabled={saving}
+            className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition disabled:opacity-50"
+          >
+            Salva URL
+          </button>
+        </div>
+
+        <label className="block cursor-pointer">
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-500 transition text-center">
+            <Upload className="mx-auto mb-1 text-gray-400" size={24} />
+            <p className="text-sm text-gray-600">
+              {uploading ? '⏳ Caricamento...' : 'oppure carica un file'}
+            </p>
+            <p className="text-xs text-gray-400">JPG, PNG (max 5MB)</p>
+          </div>
+          <input type="file" accept="image/*" onChange={handleHeroUpload} className="hidden" disabled={uploading} />
+        </label>
+      </div>
+
+      {/* Logo */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-2">
+          <ImageIcon size={22} className="text-teal-600" />
+          Logo
+        </h3>
+
+        {logoImage && (
+          <div className="mb-4 bg-gray-100 rounded-xl p-6 flex justify-center">
+            <img src={logoImage} alt="Logo" className="h-24 object-contain" />
+          </div>
+        )}
+
+        <div className="flex gap-3 mb-3">
+          <input
+            type="url"
+            value={logoImage}
+            onChange={(e) => setLogoImage(e.target.value)}
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            placeholder="https://..."
+          />
+          <button
+            onClick={saveLogoUrl}
+            disabled={saving}
+            className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition disabled:opacity-50"
+          >
+            Salva URL
+          </button>
+        </div>
+
+        <label className="block cursor-pointer">
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-500 transition text-center">
+            <Upload className="mx-auto mb-1 text-gray-400" size={24} />
+            <p className="text-sm text-gray-600">
+              {uploading ? '⏳ Caricamento...' : 'oppure carica un file'}
+            </p>
+            <p className="text-xs text-gray-400">PNG trasparente consigliato (max 5MB)</p>
+          </div>
+          <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" disabled={uploading} />
+        </label>
+      </div>
+
+      {/* Galleria */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-2">
           <Link size={22} className="text-teal-600" />
-          Aggiungi Immagine Cloudinary
+          Galleria Foto (Cloudinary)
         </h3>
 
-        <div className="space-y-3">
+        <div className="space-y-3 mb-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">URL Immagine *</label>
             <input
@@ -184,17 +323,13 @@ const ImageManager = () => {
             Aggiungi Foto
           </button>
         </div>
-      </div>
 
-      {/* Galleria */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-medium text-gray-900 flex items-center gap-2">
-            <ImageIcon size={22} className="text-teal-600" />
-            Galleria ({galleryImages.length} foto)
-          </h3>
+        <div className="flex justify-between items-center mb-4">
+          <h4 className="font-medium text-gray-700">
+            Foto in galleria ({galleryImages.length})
+          </h4>
           <button
-            onClick={() => saveGallery(galleryRef.current)}
+            onClick={saveGallery}
             disabled={saving}
             className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2 disabled:opacity-50"
           >
@@ -203,9 +338,7 @@ const ImageManager = () => {
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                 Salvataggio...
               </>
-            ) : (
-              '💾 Salva'
-            )}
+            ) : '💾 Salva Galleria'}
           </button>
         </div>
 
@@ -217,7 +350,7 @@ const ImageManager = () => {
           </div>
         ) : (
           <>
-            <p className="text-xs text-gray-400 mb-4">💡 Trascina per riordinare · Clicca ✏️ per modificare il titolo · Poi clicca "Salva"</p>
+            <p className="text-xs text-gray-400 mb-4">💡 Trascina per riordinare · Hover sulla foto per modificare titolo o eliminare · Poi clicca "Salva Galleria"</p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {galleryImages.map((image, index) => (
                 <div
@@ -232,29 +365,15 @@ const ImageManager = () => {
                       : 'border-gray-200 hover:border-teal-400'
                   }`}
                 >
-                  {/* Immagine */}
                   <div className="aspect-square">
-                    <img
-                      src={image.url}
-                      alt={image.alt}
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={image.url} alt={image.alt} className="w-full h-full object-cover" />
                   </div>
 
-                  {/* Overlay azioni */}
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center gap-2">
-                    <button
-                      onClick={() => startEditAlt(index)}
-                      className="bg-teal-500 text-white p-2 rounded-lg hover:bg-teal-600 transition"
-                      title="Modifica titolo"
-                    >
+                    <button onClick={() => startEditAlt(index)} className="bg-teal-500 text-white p-2 rounded-lg hover:bg-teal-600 transition" title="Modifica titolo">
                       <Edit2 size={16} />
                     </button>
-                    <button
-                      onClick={() => deleteImage(index)}
-                      className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition"
-                      title="Elimina"
-                    >
+                    <button onClick={() => deleteImage(index)} className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition" title="Elimina">
                       <Trash2 size={16} />
                     </button>
                     <div className="bg-white/20 text-white p-2 rounded-lg">
@@ -262,12 +381,10 @@ const ImageManager = () => {
                     </div>
                   </div>
 
-                  {/* Numero */}
                   <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-lg">
                     #{index + 1}
                   </div>
 
-                  {/* Titolo - editing inline */}
                   {editingIndex === index ? (
                     <div className="absolute bottom-0 left-0 right-0 bg-white p-2 flex gap-1">
                       <input
