@@ -20,7 +20,6 @@ const HouseRules = () => {
     setLoading(false);
   };
 
-  // Fallback ai valori di default se non ci sono dati
   const title = rulesData?.title || 'Regole della Casa';
   const checkinStart = rulesData?.checkin_start || '16:00';
   const checkinEnd = rulesData?.checkin_end || '21:00';
@@ -39,27 +38,31 @@ const HouseRules = () => {
 
   if (loading) {
     return (
-      <div className="mt-16 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
+      <div className="mt-16 rounded-lg shadow-sm p-8 max-w-4xl mx-auto" style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-primary-100)' }}>
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-teal-600 border-t-transparent"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-t-transparent" style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }}></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mt-16 bg-white/80 backdrop-blur rounded-lg shadow-sm p-8 max-w-4xl mx-auto border border-teal-100">
-      <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">
+    <div
+      className="mt-16 rounded-lg shadow-sm p-8 max-w-4xl mx-auto"
+      style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-primary-100)' }}
+    >
+      <h3 className="text-2xl font-light mb-6 text-center" style={{ color: 'var(--color-text-primary)' }}>
         {title}
       </h3>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Check-in / Check-out */}
         <div className="flex items-start gap-3">
           <div className="text-2xl">🕐</div>
           <div>
-            <h4 className="font-semibold text-gray-800 mb-1">Check-in / Check-out</h4>
-            <p className="text-gray-600 text-sm">Check-in: {checkinStart} - {checkinEnd}</p>
-            <p className="text-gray-600 text-sm">Check-out: entro le {checkoutTime}</p>
+            <h4 className="font-semibold mb-1" style={{ color: 'var(--color-text-primary)' }}>Check-in / Check-out</h4>
+            <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Check-in: {checkinStart} - {checkinEnd}</p>
+            <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Check-out: entro le {checkoutTime}</p>
           </div>
         </div>
 
@@ -68,22 +71,23 @@ const HouseRules = () => {
           <div key={index} className="flex items-start gap-3">
             <div className="text-2xl">{rule.icon}</div>
             <div>
-              <h4 className="font-semibold text-gray-800 mb-1">{rule.title}</h4>
-              <p className="text-gray-600 text-sm">{rule.description}</p>
+              <h4 className="font-semibold mb-1" style={{ color: 'var(--color-text-primary)' }}>{rule.title}</h4>
+              <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{rule.description}</p>
             </div>
           </div>
         ))}
       </div>
-      
+
       {/* Pulsante Airbnb */}
       {showAirbnb && (
-        <div className="mt-8 pt-8 border-t border-teal-200 text-center">
-          <p className="text-gray-600 mb-4">{airbnbText}</p>
-          <a 
+        <div className="mt-8 pt-8 text-center" style={{ borderTop: '1px solid var(--color-primary-100)' }}>
+          <p className="mb-4" style={{ color: 'var(--color-text-secondary)' }}>{airbnbText}</p>
+          <a
             href={airbnbLink}
-            target="_blank" 
+            target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#FF5A5F] hover:bg-[#E14348] text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-md hover:shadow-lg"
+            className="inline-flex items-center gap-2 text-white px-6 py-3 rounded-lg font-medium transition-all shadow-md hover:shadow-lg hover:scale-105"
+            style={{ backgroundColor: '#FF5A5F' }}
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm0 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"/>
