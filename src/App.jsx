@@ -36,18 +36,78 @@ function App() {
     'faqs': FAQs
   };
 
-  // Carica tema dinamico da Supabase
+  // Carica tema dinamico da Supabase e inietta CSS override
   useEffect(() => {
     const loadTheme = async () => {
       try {
         const theme = await themeService.getTheme();
         themeService.applyTheme(theme);
+        injectThemeOverrides(theme);
       } catch (error) {
         console.error('Errore caricamento tema:', error);
       }
     };
     loadTheme();
   }, []);
+
+  // Inietta un <style> tag che sovrascrive le classi Tailwind teal/amber
+  const injectThemeOverrides = (theme) => {
+    const existingStyle = document.getElementById('iremia-theme-overrides');
+    if (existingStyle) existingStyle.remove();
+
+    const style = document.createElement('style');
+    style.id = 'iremia-theme-overrides';
+    style.innerHTML = `
+      /* Sfondi principali */
+      .bg-teal-600 { background-color: ${theme.color_primary} !important; }
+      .bg-teal-700 { background-color: ${theme.color_primary_dark} !important; }
+      .bg-teal-500 { background-color: ${theme.color_primary} !important; }
+      .bg-teal-100 { background-color: ${theme.color_primary_100} !important; }
+      .bg-teal-50  { background-color: ${theme.color_primary_50} !important; }
+
+      /* Testi teal */
+      .text-teal-600 { color: ${theme.color_primary} !important; }
+      .text-teal-700 { color: ${theme.color_primary_dark} !important; }
+      .text-teal-500 { color: ${theme.color_primary} !important; }
+      .text-teal-400 { color: ${theme.color_primary_light} !important; }
+
+      /* Bordi teal */
+      .border-teal-600 { border-color: ${theme.color_primary} !important; }
+      .border-teal-500 { border-color: ${theme.color_primary} !important; }
+      .border-teal-200 { border-color: ${theme.color_primary_100} !important; }
+      .border-teal-100 { border-color: ${theme.color_primary_50} !important; }
+
+      /* Hover teal */
+      .hover\\:bg-teal-700:hover { background-color: ${theme.color_primary_dark} !important; }
+      .hover\\:bg-teal-600:hover { background-color: ${theme.color_primary} !important; }
+      .hover\\:text-teal-600:hover { color: ${theme.color_primary} !important; }
+      .hover\\:text-teal-700:hover { color: ${theme.color_primary_dark} !important; }
+      .hover\\:border-teal-600:hover { border-color: ${theme.color_primary} !important; }
+
+      /* Gradient sfondo pagina */
+      .from-teal-100 { --tw-gradient-from: ${theme.color_primary_100} !important; }
+      .via-teal-50   { --tw-gradient-via: ${theme.color_primary_50} !important; }
+      .to-teal-100   { --tw-gradient-to: ${theme.color_primary_100} !important; }
+      .from-teal-50  { --tw-gradient-from: ${theme.color_primary_50} !important; }
+      .to-teal-50    { --tw-gradient-to: ${theme.color_primary_50} !important; }
+
+      /* Gradient sezioni (es. About) */
+      .from-teal-600 { --tw-gradient-from: ${theme.color_primary} !important; }
+      .to-teal-700   { --tw-gradient-to: ${theme.color_primary_dark} !important; }
+
+      /* Accent hero (amber) */
+      .bg-amber-700 { background-color: ${theme.color_accent} !important; }
+      .bg-amber-800 { background-color: ${theme.color_accent_dark} !important; }
+      .hover\\:bg-amber-800:hover { background-color: ${theme.color_accent_dark} !important; }
+      .hover\\:bg-amber-700:hover { background-color: ${theme.color_accent} !important; }
+      .text-amber-100 { color: ${theme.color_accent_light} !important; }
+      .text-amber-50  { color: ${theme.color_accent_light} !important; }
+
+      /* Ring focus */
+      .focus\\:ring-teal-500:focus { --tw-ring-color: ${theme.color_primary} !important; }
+    `;
+    document.head.appendChild(style);
+  };
 
   useEffect(() => {
     const loadImages = async () => {
@@ -66,7 +126,6 @@ function App() {
           if (data.hero_url) setHeroImage(data.hero_url);
           if (data.logo_url) setLogoImage(data.logo_url);
           if (data.gallery_urls && data.gallery_urls.length > 0) {
-            // Supporta sia stringhe che oggetti {url, alt}
             const normalized = data.gallery_urls.map((item, index) =>
               typeof item === 'string'
                 ? { src: item, alt: `Foto ${index + 1}` }
