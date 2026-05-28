@@ -10,6 +10,7 @@ import ContentVisibilityManager from './ContentVisibilityManager';
 import HouseRulesManager from './HouseRulesManager';
 import ContactInfoManager from './ContactInfoManager';
 import HeroSectionManager from './HeroSectionManager';
+import PopupManager from './PopupManager';
 
 const PopupDashboard = () => {
   const tabs = [
@@ -23,6 +24,7 @@ const PopupDashboard = () => {
     { id: 'restaurants', label: 'Ristoranti', icon: '🍽️', component: RestaurantManager },
     { id: 'poi', label: 'POI', icon: '📍', component: POIManager },
     { id: 'faq', label: 'FAQ', icon: '❓', component: FAQManager },
+    { id: 'popup', label: 'Popup', icon: '💬', component: PopupManager },
     { id: 'visibility', label: 'Visibilità', icon: '👁️', component: ContentVisibilityManager }
   ];
 
@@ -79,7 +81,7 @@ const PopupDashboard = () => {
 
         {/* Footer */}
         <div className="mt-8 text-center text-gray-600 text-sm">
-          <p>© 2024 Iremia Dashboard - Ultimi aggiornamenti salvati automaticamente</p>
+          <p>© {new Date().getFullYear()} Iremia Dashboard - Ultimi aggiornamenti salvati automaticamente</p>
         </div>
       </div>
     </div>
