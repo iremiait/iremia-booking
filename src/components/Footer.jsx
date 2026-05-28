@@ -20,7 +20,6 @@ const Footer = ({ logoImage }) => {
     setLoading(false);
   };
 
-  // Fallback ai valori di default
   const tagline = contactData?.tagline || 'Il tuo rifugio di pace a Lama Mocogno';
   const email = contactData?.email || 'iremiait@gmail.com';
   const phone = contactData?.phone || '+39 347 416 0611';
@@ -32,18 +31,18 @@ const Footer = ({ logoImage }) => {
   const cinCode = contactData?.cin_code || 'IT036018C2UE6SRL2D';
 
   return (
-    <footer className="bg-gray-800 text-white mt-20">
+    <footer className="mt-20" style={{ backgroundColor: 'var(--color-primary-dark)', color: 'white' }}>
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Logo */}
           <div>
-            <img 
-              src={logoImage} 
-              alt="Iremia" 
-              loading="lazy" 
-              className="h-24 mb-4 brightness-0 invert" 
+            <img
+              src={logoImage}
+              alt="Iremia"
+              loading="lazy"
+              className="h-24 mb-4 brightness-0 invert"
             />
-            <p className="text-gray-400 text-xs mt-2">
+            <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
               {tagline}
             </p>
           </div>
@@ -52,36 +51,25 @@ const Footer = ({ logoImage }) => {
           <div>
             <h4 className="text-lg font-medium mb-4">Contatti</h4>
             <div className="space-y-2 text-sm">
-              <a 
-                href={`mailto:${email}`} 
-                className="text-gray-300 hover:text-teal-400 block"
-              >
+              <a href={`mailto:${email}`} className="block transition-colors hover:opacity-80" style={{ color: 'rgba(255,255,255,0.75)' }}>
                 📧 {email}
               </a>
-              <a 
-                href={`tel:${phone}`} 
-                className="text-gray-300 hover:text-teal-400 block"
-              >
+              <a href={`tel:${phone}`} className="block transition-colors hover:opacity-80" style={{ color: 'rgba(255,255,255,0.75)' }}>
                 📞 {phone}
               </a>
-              <a 
-                href={whatsappLink} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-gray-300 hover:text-teal-400 block"
-              >
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="block transition-colors hover:opacity-80" style={{ color: 'rgba(255,255,255,0.75)' }}>
                 💬 WhatsApp
               </a>
-              <p className="text-gray-400 pt-2">
+              <p className="pt-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
                 📍 {addressLine1}, {addressLine2}
               </p>
             </div>
           </div>
 
-          {/* Link Utili */}
+          {/* Zona */}
           <div>
             <h4 className="text-lg font-medium mb-4">Zona</h4>
-            <div className="space-y-2 text-sm text-gray-300">
+            <div className="space-y-2 text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
               <p>⛷️ Piane di Mocogno</p>
               <p>🏔️ Cimone (30 min)</p>
               <p>🥾 Via Vandelli</p>
@@ -89,11 +77,11 @@ const Footer = ({ logoImage }) => {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-6 pt-6 text-center">
-          <p className="text-gray-400 text-sm">
+        <div className="mt-6 pt-6 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }}>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
             © {copyrightYear} Iremia.it · Casa Vacanza Lama Mocogno
           </p>
-          <p className="text-gray-500 text-xs mt-2">
+          <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
             CIR: {cirCode} · CIN: {cinCode}
           </p>
         </div>
