@@ -1,5 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+:root {
+  --color-primary: #1B7B7E;
+  --color-primary-dark: #0D5456;
+  --color-primary-light: #4FA5A8;
+  --color-primary-50: #f0fdfa;
+  --color-primary-100: #ccfbf1;
+  --color-accent: #b45309;
+  --color-accent-dark: #92400e;
+  --color-accent-light: #d97706;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-muted: #9CA3AF;
+  --color-bg-primary: #f0fdfa;
+  --color-bg-secondary: #ffffff;
+  --color-bg-card: #ffffff;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,6 +33,7 @@ body {
 * {
   box-sizing: border-box;
 }
+
 /* Scroll offset per header fisso */
 html {
   scroll-behavior: smooth;
