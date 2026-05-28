@@ -11,6 +11,7 @@ import HouseRulesManager from './HouseRulesManager';
 import ContactInfoManager from './ContactInfoManager';
 import HeroSectionManager from './HeroSectionManager';
 import PopupManager from './PopupManager';
+import ThemeManager from './ThemeManager';
 
 const PopupDashboard = () => {
   const tabs = [
@@ -25,7 +26,8 @@ const PopupDashboard = () => {
     { id: 'poi', label: 'POI', icon: '📍', component: POIManager },
     { id: 'faq', label: 'FAQ', icon: '❓', component: FAQManager },
     { id: 'popup', label: 'Popup', icon: '💬', component: PopupManager },
-    { id: 'visibility', label: 'Visibilità', icon: '👁️', component: ContentVisibilityManager }
+    { id: 'visibility', label: 'Visibilità', icon: '👁️', component: ContentVisibilityManager },
+    { id: 'theme', label: 'Tema', icon: '🎨', component: ThemeManager },
   ];
 
   const [activeTab, setActiveTab] = useState(tabs[0].id);
