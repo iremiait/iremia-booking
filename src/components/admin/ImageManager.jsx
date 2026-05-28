@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Trash2, Image as ImageIcon, GripVertical, Plus, Link } from 'lucide-react';
+import { Trash2, Image as ImageIcon, GripVertical, Plus, Link, Edit2, Check, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const ImageManager = () => {
@@ -7,7 +7,10 @@ const ImageManager = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [newUrl, setNewUrl] = useState('');
+  const [newAlt, setNewAlt] = useState('');
   const [draggedIndex, setDraggedIndex] = useState(null);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingAlt, setEditingAlt] = useState('');
   const galleryRef = useRef([]);
 
   useEffect(() => {
@@ -29,8 +32,14 @@ const ImageManager = () => {
 
       if (data) {
         const urls = data.gallery_urls || [];
-        setGalleryImages(urls);
-        galleryRef.current = urls;
+        // Supporta sia il vecchio formato (stringhe) che il nuovo ({url, alt})
+        const normalized = urls.map((item, i) => 
+          typeof item === 'string' 
+            ? { url: item, alt: `Foto ${i + 1}` }
+            : item
+        );
+        setGalleryImages(normalized);
+        galleryRef.current = normalized;
       }
     } catch (error) {
       console.error('❌ Errore catch:', error);
@@ -38,7 +47,7 @@ const ImageManager = () => {
     setLoading(false);
   };
 
-  const saveGallery = async (urls) => {
+  const saveGallery = async (images) => {
     setSaving(true);
     try {
       const { data: existing } = await supabase
@@ -49,13 +58,13 @@ const ImageManager = () => {
       if (existing) {
         const { error } = await supabase
           .from('site_images')
-          .update({ gallery_urls: urls })
+          .update({ gallery_urls: images })
           .eq('id', existing.id);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('site_images')
-          .insert([{ gallery_urls: urls }]);
+          .insert([{ gallery_urls: images }]);
         if (error) throw error;
       }
       alert('✅ Galleria salvata!');
@@ -66,38 +75,23 @@ const ImageManager = () => {
     setSaving(false);
   };
 
-  const addUrl = () => {
+  const addImage = () => {
     const trimmed = newUrl.trim();
     if (!trimmed) return;
     if (!trimmed.startsWith('http')) {
       alert('❌ Inserisci un URL valido');
       return;
     }
-    if (galleryImages.includes(trimmed)) {
+    if (galleryImages.find(img => img.url === trimmed)) {
       alert('❌ Questa immagine è già presente');
       return;
     }
-    const updated = [...galleryImages, trimmed];
+    const newImage = { url: trimmed, alt: newAlt.trim() || `Foto ${galleryImages.length + 1}` };
+    const updated = [...galleryImages, newImage];
     setGalleryImages(updated);
     galleryRef.current = updated;
     setNewUrl('');
-  };
-
-  const addMultipleUrls = (text) => {
-    const urls = text
-      .split('\n')
-      .map(u => u.trim())
-      .filter(u => u.startsWith('http') && !galleryImages.includes(u));
-
-    if (urls.length === 0) {
-      alert('❌ Nessun URL valido trovato');
-      return;
-    }
-    const updated = [...galleryImages, ...urls];
-    setGalleryImages(updated);
-    galleryRef.current = updated;
-    setNewUrl('');
-    alert(`✅ Aggiunte ${urls.length} immagini`);
+    setNewAlt('');
   };
 
   const deleteImage = (index) => {
@@ -105,6 +99,21 @@ const ImageManager = () => {
     const updated = galleryImages.filter((_, i) => i !== index);
     setGalleryImages(updated);
     galleryRef.current = updated;
+  };
+
+  const startEditAlt = (index) => {
+    setEditingIndex(index);
+    setEditingAlt(galleryImages[index].alt);
+  };
+
+  const saveAlt = (index) => {
+    const updated = galleryImages.map((img, i) =>
+      i === index ? { ...img, alt: editingAlt.trim() || img.alt } : img
+    );
+    setGalleryImages(updated);
+    galleryRef.current = updated;
+    setEditingIndex(null);
+    setEditingAlt('');
   };
 
   // Drag & Drop
@@ -137,46 +146,43 @@ const ImageManager = () => {
   return (
     <div className="space-y-8">
 
-      {/* Aggiungi Immagini */}
+      {/* Aggiungi Immagine */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-xl font-medium text-gray-900 mb-4 flex items-center gap-2">
           <Link size={22} className="text-teal-600" />
-          Aggiungi Immagini Cloudinary
+          Aggiungi Immagine Cloudinary
         </h3>
 
-        {/* Singolo URL */}
-        <div className="flex gap-3 mb-4">
-          <input
-            type="url"
-            value={newUrl}
-            onChange={(e) => setNewUrl(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && addUrl()}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-            placeholder="https://res.cloudinary.com/..."
-          />
+        <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">URL Immagine *</label>
+            <input
+              type="url"
+              value={newUrl}
+              onChange={(e) => setNewUrl(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && addImage()}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              placeholder="https://res.cloudinary.com/..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Titolo / Descrizione</label>
+            <input
+              type="text"
+              value={newAlt}
+              onChange={(e) => setNewAlt(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && addImage()}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              placeholder="Es: Soggiorno, Camera da letto, Balcone..."
+            />
+          </div>
           <button
-            onClick={addUrl}
-            className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2"
+            onClick={addImage}
+            className="w-full px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center justify-center gap-2"
           >
             <Plus size={18} />
-            Aggiungi
+            Aggiungi Foto
           </button>
-        </div>
-
-        {/* Incolla più URL */}
-        <div>
-          <p className="text-sm text-gray-500 mb-2">Oppure incolla più URL (uno per riga):</p>
-          <textarea
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent h-28 font-mono text-xs"
-            placeholder={"https://res.cloudinary.com/...\nhttps://res.cloudinary.com/...\nhttps://res.cloudinary.com/..."}
-            onBlur={(e) => {
-              if (e.target.value.trim()) {
-                addMultipleUrls(e.target.value);
-                e.target.value = '';
-              }
-            }}
-          />
-          <p className="text-xs text-gray-400 mt-1">Incolla e clicca fuori per aggiungere tutte le immagini in una volta</p>
         </div>
       </div>
 
@@ -198,7 +204,7 @@ const ImageManager = () => {
                 Salvataggio...
               </>
             ) : (
-              '💾 Salva Ordine'
+              '💾 Salva'
             )}
           </button>
         </div>
@@ -211,43 +217,80 @@ const ImageManager = () => {
           </div>
         ) : (
           <>
-            <p className="text-xs text-gray-400 mb-4">💡 Trascina le immagini per riordinarle, poi clicca "Salva Ordine"</p>
+            <p className="text-xs text-gray-400 mb-4">💡 Trascina per riordinare · Clicca ✏️ per modificare il titolo · Poi clicca "Salva"</p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {galleryImages.map((url, index) => (
+              {galleryImages.map((image, index) => (
                 <div
                   key={index}
                   draggable
                   onDragStart={() => handleDragStart(index)}
                   onDragOver={(e) => handleDragOver(e, index)}
                   onDragEnd={handleDragEnd}
-                  className={`relative group aspect-square rounded-xl overflow-hidden border-2 transition cursor-move ${
+                  className={`relative group rounded-xl overflow-hidden border-2 transition cursor-move ${
                     draggedIndex === index
                       ? 'border-teal-500 opacity-50'
                       : 'border-gray-200 hover:border-teal-400'
                   }`}
                 >
-                  <img
-                    src={url}
-                    alt={`Gallery ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
+                  {/* Immagine */}
+                  <div className="aspect-square">
+                    <img
+                      src={image.url}
+                      alt={image.alt}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
 
-                  {/* Overlay */}
+                  {/* Overlay azioni */}
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center gap-2">
+                    <button
+                      onClick={() => startEditAlt(index)}
+                      className="bg-teal-500 text-white p-2 rounded-lg hover:bg-teal-600 transition"
+                      title="Modifica titolo"
+                    >
+                      <Edit2 size={16} />
+                    </button>
                     <button
                       onClick={() => deleteImage(index)}
                       className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition"
+                      title="Elimina"
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={16} />
                     </button>
                     <div className="bg-white/20 text-white p-2 rounded-lg">
-                      <GripVertical size={18} />
+                      <GripVertical size={16} />
                     </div>
                   </div>
 
+                  {/* Numero */}
                   <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-lg">
                     #{index + 1}
                   </div>
+
+                  {/* Titolo - editing inline */}
+                  {editingIndex === index ? (
+                    <div className="absolute bottom-0 left-0 right-0 bg-white p-2 flex gap-1">
+                      <input
+                        type="text"
+                        value={editingAlt}
+                        onChange={(e) => setEditingAlt(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && saveAlt(index)}
+                        className="flex-1 text-xs px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-teal-500"
+                        autoFocus
+                        placeholder="Titolo foto..."
+                      />
+                      <button onClick={() => saveAlt(index)} className="p-1 bg-teal-500 text-white rounded">
+                        <Check size={14} />
+                      </button>
+                      <button onClick={() => setEditingIndex(null)} className="p-1 bg-gray-300 text-gray-700 rounded">
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs px-2 py-1 truncate">
+                      {image.alt}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
