@@ -21,12 +21,11 @@ function App() {
   const [heroImage, setHeroImage] = useState('/images/lama.jpg');
   const [logoImage, setLogoImage] = useState('/logo.png');
   const [galleryImages, setGalleryImages] = useState([]);
-
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
-
   const [dynamicSections, setDynamicSections] = useState([]);
   const [sectionsLoading, setSectionsLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const sectionComponents = {
     'about': About,
@@ -36,78 +35,18 @@ function App() {
     'faqs': FAQs
   };
 
-  // Carica tema dinamico da Supabase e inietta CSS override
+  // Carica tema dinamico da Supabase
   useEffect(() => {
     const loadTheme = async () => {
       try {
         const theme = await themeService.getTheme();
         themeService.applyTheme(theme);
-        injectThemeOverrides(theme);
       } catch (error) {
         console.error('Errore caricamento tema:', error);
       }
     };
     loadTheme();
   }, []);
-
-  // Inietta un <style> tag che sovrascrive le classi Tailwind teal/amber
-  const injectThemeOverrides = (theme) => {
-    const existingStyle = document.getElementById('iremia-theme-overrides');
-    if (existingStyle) existingStyle.remove();
-
-    const style = document.createElement('style');
-    style.id = 'iremia-theme-overrides';
-    style.innerHTML = `
-      /* Sfondi principali */
-      .bg-teal-600 { background-color: ${theme.color_primary} !important; }
-      .bg-teal-700 { background-color: ${theme.color_primary_dark} !important; }
-      .bg-teal-500 { background-color: ${theme.color_primary} !important; }
-      .bg-teal-100 { background-color: ${theme.color_primary_100} !important; }
-      .bg-teal-50  { background-color: ${theme.color_primary_50} !important; }
-
-      /* Testi teal */
-      .text-teal-600 { color: ${theme.color_primary} !important; }
-      .text-teal-700 { color: ${theme.color_primary_dark} !important; }
-      .text-teal-500 { color: ${theme.color_primary} !important; }
-      .text-teal-400 { color: ${theme.color_primary_light} !important; }
-
-      /* Bordi teal */
-      .border-teal-600 { border-color: ${theme.color_primary} !important; }
-      .border-teal-500 { border-color: ${theme.color_primary} !important; }
-      .border-teal-200 { border-color: ${theme.color_primary_100} !important; }
-      .border-teal-100 { border-color: ${theme.color_primary_50} !important; }
-
-      /* Hover teal */
-      .hover\\:bg-teal-700:hover { background-color: ${theme.color_primary_dark} !important; }
-      .hover\\:bg-teal-600:hover { background-color: ${theme.color_primary} !important; }
-      .hover\\:text-teal-600:hover { color: ${theme.color_primary} !important; }
-      .hover\\:text-teal-700:hover { color: ${theme.color_primary_dark} !important; }
-      .hover\\:border-teal-600:hover { border-color: ${theme.color_primary} !important; }
-
-      /* Gradient sfondo pagina */
-      .from-teal-100 { --tw-gradient-from: ${theme.color_primary_100} !important; }
-      .via-teal-50   { --tw-gradient-via: ${theme.color_primary_50} !important; }
-      .to-teal-100   { --tw-gradient-to: ${theme.color_primary_100} !important; }
-      .from-teal-50  { --tw-gradient-from: ${theme.color_primary_50} !important; }
-      .to-teal-50    { --tw-gradient-to: ${theme.color_primary_50} !important; }
-
-      /* Gradient sezioni (es. About) */
-      .from-teal-600 { --tw-gradient-from: ${theme.color_primary} !important; }
-      .to-teal-700   { --tw-gradient-to: ${theme.color_primary_dark} !important; }
-
-      /* Accent hero (amber) */
-      .bg-amber-700 { background-color: ${theme.color_accent} !important; }
-      .bg-amber-800 { background-color: ${theme.color_accent_dark} !important; }
-      .hover\\:bg-amber-800:hover { background-color: ${theme.color_accent_dark} !important; }
-      .hover\\:bg-amber-700:hover { background-color: ${theme.color_accent} !important; }
-      .text-amber-100 { color: ${theme.color_accent_light} !important; }
-      .text-amber-50  { color: ${theme.color_accent_light} !important; }
-
-      /* Ring focus */
-      .focus\\:ring-teal-500:focus { --tw-ring-color: ${theme.color_primary} !important; }
-    `;
-    document.head.appendChild(style);
-  };
 
   useEffect(() => {
     const loadImages = async () => {
@@ -117,10 +56,7 @@ function App() {
           .select('*')
           .maybeSingle();
 
-        if (error && error.code !== 'PGRST116') {
-          console.error('Errore caricamento immagini:', error);
-          return;
-        }
+        if (error && error.code !== 'PGRST116') return;
 
         if (data) {
           if (data.hero_url) setHeroImage(data.hero_url);
@@ -138,7 +74,6 @@ function App() {
         console.error('Errore nel caricamento immagini:', error);
       }
     };
-
     loadImages();
   }, []);
 
@@ -153,7 +88,6 @@ function App() {
       }
       setReviewsLoading(false);
     };
-
     loadReviews();
   }, []);
 
@@ -171,14 +105,24 @@ function App() {
       }
       setSectionsLoading(false);
     };
-
     loadDynamicSections();
   }, []);
 
+  const navLinks = [
+    { href: '#appartamento', label: "L'Appartamento" },
+    { href: '#galleria', label: 'Galleria' },
+    { href: '#zona', label: 'La Zona' },
+    { href: '#contatti', label: 'Contatti' },
+  ];
+
   return (
-    <div id="top" className="min-h-screen bg-gradient-to-b from-teal-100 via-teal-50 to-teal-100">
+    <div
+      id="top"
+      className="min-h-screen"
+      style={{ background: 'linear-gradient(to bottom, var(--color-primary-100), var(--color-primary-50), var(--color-primary-100))' }}
+    >
       <Popup />
-      
+
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
@@ -186,38 +130,78 @@ function App() {
             <a href="#top" className="cursor-pointer">
               <img src={logoImage} alt="Iremia" className="h-40" />
             </a>
-            
+
+            {/* Desktop Nav */}
             <nav className="hidden md:flex gap-6 items-center">
-              <a href="#appartamento" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">L'Appartamento</a>
-              <a href="#galleria" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Galleria</a>
-              <a href="#zona" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">La Zona</a>
-              <a href="#contatti" className="text-gray-700 hover:text-teal-600 font-medium transition-colors">Contatti</a>
-              <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">Prenota</a>
+              {navLinks.map(link => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="font-medium transition-colors text-gray-700"
+                  onMouseEnter={e => e.currentTarget.style.color = 'var(--color-primary)'}
+                  onMouseLeave={e => e.currentTarget.style.color = '#374151'}
+                >
+                  {link.label}
+                </a>
+              ))}
+              <a
+                href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white px-4 py-2 rounded-lg transition-all font-medium"
+                style={{ backgroundColor: 'var(--color-primary)' }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
+              >
+                Prenota
+              </a>
             </nav>
 
-            <button 
-              id="mobile-menu-button"
-              className="md:hidden text-gray-700 hover:text-teal-600 focus:outline-none"
-              onClick={() => {
-                const menu = document.getElementById('mobile-menu');
-                menu.classList.toggle('hidden');
-              }}
+            {/* Mobile burger */}
+            <button
+              className="md:hidden text-gray-700 focus:outline-none"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              style={{ color: mobileMenuOpen ? 'var(--color-primary)' : undefined }}
             >
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                  d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
               </svg>
             </button>
           </div>
 
-          <div id="mobile-menu" className="hidden md:hidden mt-4 pb-4">
-            <nav className="flex flex-col space-y-3">
-              <a href="#appartamento" className="text-gray-700 hover:text-teal-600 font-medium transition-colors py-2 border-b border-gray-200" onClick={() => document.getElementById('mobile-menu').classList.add('hidden')}>L'Appartamento</a>
-              <a href="#galleria" className="text-gray-700 hover:text-teal-600 font-medium transition-colors py-2 border-b border-gray-200" onClick={() => document.getElementById('mobile-menu').classList.add('hidden')}>Galleria</a>
-              <a href="#zona" className="text-gray-700 hover:text-teal-600 font-medium transition-colors py-2 border-b border-gray-200" onClick={() => document.getElementById('mobile-menu').classList.add('hidden')}>La Zona</a>
-              <a href="#contatti" className="text-gray-700 hover:text-teal-600 font-medium transition-colors py-2 border-b border-gray-200" onClick={() => document.getElementById('mobile-menu').classList.add('hidden')}>Contatti</a>
-              <a href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare" target="_blank" rel="noopener noreferrer" className="bg-teal-600 text-white px-4 py-3 rounded-lg hover:bg-teal-700 transition-colors text-center font-medium">Prenota su WhatsApp</a>
-            </nav>
-          </div>
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-4 pb-4">
+              <nav className="flex flex-col space-y-3">
+                {navLinks.map(link => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="font-medium transition-colors py-2 text-gray-700"
+                    style={{ borderBottom: '1px solid var(--color-primary-100)' }}
+                    onClick={() => setMobileMenuOpen(false)}
+                    onMouseEnter={e => e.currentTarget.style.color = 'var(--color-primary)'}
+                    onMouseLeave={e => e.currentTarget.style.color = '#374151'}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+                <a
+                  href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white px-4 py-3 rounded-lg text-center font-medium transition-all"
+                  style={{ backgroundColor: 'var(--color-primary)' }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Prenota su WhatsApp
+                </a>
+              </nav>
+            </div>
+          )}
         </div>
       </header>
 
@@ -225,12 +209,12 @@ function App() {
         <Hero heroImage={heroImage} />
         <Apartment />
         <HouseRules />
-        
+
         {!sectionsLoading && dynamicSections.map((section) => {
           const SectionComponent = sectionComponents[section.section_name];
           return SectionComponent ? <SectionComponent key={section.section_name} /> : null;
         })}
-        
+
         <Gallery galleryImages={galleryImages} />
         <Reviews reviews={reviews} loading={reviewsLoading} />
         <Contact />
