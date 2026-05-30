@@ -31,7 +31,6 @@ const Hero = ({ heroImage }) => {
       { icon: '🏠', value: '55 m²', label: 'Appartamento' },
       { icon: '🌲', value: '850 m', label: 'Altitudine' },
       { icon: '👥', value: '2-4', label: 'Ospiti' },
-      { icon: '🛏️', value: 'Confortevole', label: 'Riposo' }
     ]
   };
 
@@ -88,18 +87,18 @@ const Hero = ({ heroImage }) => {
           </p>
         </div>
 
-        {/* Info Cards */}
+        {/* Info Cards — sempre 3 colonne */}
         {data.info_cards && data.info_cards.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-4 max-w-2xl mx-auto mb-12">
+          <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto mb-12">
             {data.info_cards.map((card, index) => (
               <div
                 key={index}
-                className="rounded-lg p-4 text-white hover:scale-105 transition-all w-32"
+                className="rounded-lg p-4 text-white hover:scale-105 transition-all"
                 style={{ backgroundColor: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(4px)' }}
               >
                 <div className="text-3xl mb-2">{card.icon}</div>
-                <div className="text-sm mb-1" style={{ color: 'var(--color-accent-light)' }}>{card.label}</div>
-                <div className="text-xl font-bold">{card.value}</div>
+                <div className="text-xs mb-1" style={{ color: 'var(--color-accent-light)' }}>{card.label}</div>
+                <div className="text-lg font-bold leading-tight">{card.value}</div>
               </div>
             ))}
           </div>
