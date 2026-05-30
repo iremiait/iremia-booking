@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Upload } from 'lucide-react';
 import { popupService } from '../../lib/supabase';
+import { uploadService } from '../../lib/uploadService';
 
 const PopupManager = () => {
   const [popups, setPopups] = useState([]);
@@ -147,17 +148,16 @@ const PopupManager = () => {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { alert('❌ File troppo grande. Massimo 5MB'); return; }
     setUploading(true);
     try {
-      const url = await popupService.uploadImage(file);
-      updateField('image_url', url);
-      alert('✅ Immagine caricata!');
+      const url = await uploadService.uploadImage(file);
+      if (url) updateField('image_url', url);
+      alert('✅ Immagine caricata su Cloudinary!');
     } catch (error) {
-      console.error('Errore upload:', error);
-      alert('❌ Errore durante l\'upload');
+      alert('❌ Errore durante l\'upload: ' + error.message);
+    } finally {
+      setUploading(false);
     }
-    setUploading(false);
   };
 
   const updateField = (field, value) => {
@@ -195,7 +195,7 @@ const PopupManager = () => {
         <div className="flex gap-3">
           <div className="text-blue-600 text-xl">💡</div>
           <div className="text-sm text-blue-800">
-            Il popup appare ai visitatori dopo il ritardo impostato. Viene mostrato di nuovo solo dopo il numero di giorni configurato. Puoi impostare date di inizio e fine per promozioni temporanee.
+            Il popup appare ai visitatori dopo il ritardo impostato. Viene mostrato di nuovo solo dopo il numero di giorni configurato.
           </div>
         </div>
       </div>
@@ -292,8 +292,8 @@ const PopupManager = () => {
                 <label className="block cursor-pointer">
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-teal-500 transition text-center">
                     <Upload className="mx-auto mb-2 text-gray-400" size={28} />
-                    <p className="text-sm text-gray-600">{uploading ? '⏳ Caricamento...' : '📤 Carica immagine'}</p>
-                    <p className="text-xs text-gray-400 mt-1">JPG, PNG (max 5MB)</p>
+                    <p className="text-sm text-gray-600">{uploading ? '⏳ Caricamento su Cloudinary...' : '📤 Carica immagine'}</p>
+                    <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP (max 10MB) · Le immagini vengono caricate su Cloudinary</p>
                   </div>
                   <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
                 </label>
