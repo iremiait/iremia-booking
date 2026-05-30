@@ -1,26 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Eye, EyeOff, GripVertical } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { contentService } from '../../lib/contentService';
 
 const ContentVisibilityManager = () => {
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [saving, setSaving] = useState(false);
-  
-  // Ref che tiene sempre l'ultimo valore aggiornato di sections
   const sectionsRef = useRef([]);
 
-  useEffect(() => {
-    loadSections();
-  }, []);
+  useEffect(() => { loadSections(); }, []);
 
   const loadSections = async () => {
     setLoading(true);
     try {
-      const data = await contentService.getSectionVisibility();
-      const sorted = data.sort((a, b) => (a.order_position || 0) - (b.order_position || 0));
+      const { data, error } = await supabase
+        .from('section_visibility')
+        .select('*')
+        .order('order_position', { ascending: true });
+
+      if (error) throw error;
+
+      const sorted = (data || []).sort((a, b) => (a.order_position || 0) - (b.order_position || 0));
       setSections(sorted);
       sectionsRef.current = sorted;
     } catch (error) {
@@ -33,25 +34,18 @@ const ContentVisibilityManager = () => {
   const toggleVisibility = async (sectionName, currentStatus) => {
     try {
       setSaving(true);
-      
       const { error } = await supabase
         .from('section_visibility')
-        .update({ 
-          is_visible: !currentStatus,
-          updated_at: new Date().toISOString()
-        })
+        .update({ is_visible: !currentStatus, updated_at: new Date().toISOString() })
         .eq('section_name', sectionName);
 
       if (error) throw error;
 
-      const updated = sections.map(s => 
-        s.section_name === sectionName 
-          ? { ...s, is_visible: !currentStatus }
-          : s
+      const updated = sections.map(s =>
+        s.section_name === sectionName ? { ...s, is_visible: !currentStatus } : s
       );
       setSections(updated);
       sectionsRef.current = updated;
-
       alert(`✅ Sezione ${!currentStatus ? 'attivata' : 'disattivata'} con successo!`);
     } catch (error) {
       console.error('Errore toggle visibilità:', error);
@@ -61,9 +55,7 @@ const ContentVisibilityManager = () => {
     }
   };
 
-  const handleDragStart = (index) => {
-    setDraggedIndex(index);
-  };
+  const handleDragStart = (index) => setDraggedIndex(index);
 
   const handleDragOver = (e, index) => {
     e.preventDefault();
@@ -81,26 +73,17 @@ const ContentVisibilityManager = () => {
 
   const handleDragEnd = async () => {
     setDraggedIndex(null);
-    
-    // Usa sectionsRef.current invece di sections — sempre aggiornato
     const currentSections = sectionsRef.current;
-    
     try {
       setSaving(true);
-      
-      const updates = currentSections.map((section, index) => {
-        return supabase
+      const updates = currentSections.map((section, index) =>
+        supabase
           .from('section_visibility')
-          .update({ 
-            order_position: index, 
-            updated_at: new Date().toISOString() 
-          })
-          .eq('section_name', section.section_name);
-      });
-      
+          .update({ order_position: index, updated_at: new Date().toISOString() })
+          .eq('section_name', section.section_name)
+      );
       await Promise.all(updates);
       alert('✅ Ordine salvato con successo!');
-      
     } catch (error) {
       console.error('❌ Errore salvataggio ordine:', error);
       alert('❌ Errore nel salvataggio dell\'ordine');
@@ -112,14 +95,9 @@ const ContentVisibilityManager = () => {
 
   const getSectionIcon = (sectionName) => {
     const icons = {
-      'about': '👥',
-      'hero': '🎯',
-      'activities': '🎿',
-      'restaurants': '🍽️',
-      'poi': '📍',
-      'faqs': '❓',
-      'house_rules': '🏠',
-      'contact': '📧'
+      'about': '👥', 'hero': '🎯', 'activities': '🎿',
+      'restaurants': '🍽️', 'poi': '📍', 'faqs': '❓',
+      'house_rules': '🏠', 'contact': '📧'
     };
     return icons[sectionName] || '📄';
   };
@@ -149,11 +127,9 @@ const ContentVisibilityManager = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-2xl font-light text-gray-900 mb-2">
-          Visibilità & Ordine Sezioni
-        </h3>
+        <h3 className="text-2xl font-light text-gray-900 mb-2">Visibilità & Ordine Sezioni</h3>
         <p className="text-sm text-gray-600">
-          Attiva/disattiva le sezioni del sito e trascinale per riordinarle. Le sezioni disattivate non verranno mostrate ai visitatori.
+          Attiva/disattiva le sezioni del sito e trascinale per riordinarle.
         </p>
       </div>
 
@@ -161,9 +137,7 @@ const ContentVisibilityManager = () => {
         <div className="flex gap-3">
           <div className="text-blue-600 text-xl">💡</div>
           <div className="flex-1">
-            <h4 className="text-sm font-medium text-blue-900 mb-1">
-              Come riordinare le sezioni
-            </h4>
+            <h4 className="text-sm font-medium text-blue-900 mb-1">Come riordinare le sezioni</h4>
             <ul className="text-sm text-blue-800 space-y-1">
               <li>• Trascina le sezioni usando l'icona <GripVertical size={14} className="inline" /></li>
               <li>• L'ordine viene salvato automaticamente quando rilasci</li>
@@ -190,66 +164,33 @@ const ContentVisibilityManager = () => {
             onDragStart={() => handleDragStart(index)}
             onDragOver={(e) => handleDragOver(e, index)}
             onDragEnd={handleDragEnd}
-            className={`p-6 transition cursor-move ${
-              draggedIndex === index 
-                ? 'bg-teal-50 border-2 border-teal-500' 
-                : 'hover:bg-gray-50'
-            }`}
+            className={`p-6 transition cursor-move ${draggedIndex === index ? 'bg-teal-50 border-2 border-teal-500' : 'hover:bg-gray-50'}`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4 flex-1">
                 <div className="text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing">
                   <GripVertical size={24} />
                 </div>
-
                 <div className="w-8 h-8 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-semibold text-sm">
                   {index + 1}
                 </div>
-
-                <div className="text-4xl">
-                  {getSectionIcon(section.section_name)}
-                </div>
-
+                <div className="text-4xl">{getSectionIcon(section.section_name)}</div>
                 <div className="flex-1">
-                  <h4 className="text-lg font-medium text-gray-900 mb-1">
-                    {section.section_title}
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    {getSectionDescription(section.section_name)}
-                  </p>
+                  <h4 className="text-lg font-medium text-gray-900 mb-1">{section.section_title}</h4>
+                  <p className="text-sm text-gray-600">{getSectionDescription(section.section_name)}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4 ml-4">
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  section.is_visible 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-gray-100 text-gray-600'
-                }`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${section.is_visible ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
                   {section.is_visible ? 'Visibile' : 'Nascosta'}
                 </span>
-
                 <button
                   onClick={() => toggleVisibility(section.section_name, section.is_visible)}
                   disabled={saving}
-                  className={`p-3 rounded-lg transition flex items-center gap-2 ${
-                    section.is_visible
-                      ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  } ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  title={section.is_visible ? 'Nascondi sezione' : 'Mostra sezione'}
+                  className={`p-3 rounded-lg transition flex items-center gap-2 ${section.is_visible ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  {section.is_visible ? (
-                    <>
-                      <Eye size={20} />
-                      <span className="text-sm font-medium hidden sm:inline">Nascondi</span>
-                    </>
-                  ) : (
-                    <>
-                      <EyeOff size={20} />
-                      <span className="text-sm font-medium hidden sm:inline">Mostra</span>
-                    </>
-                  )}
+                  {section.is_visible ? <><Eye size={20} /><span className="text-sm font-medium hidden sm:inline">Nascondi</span></> : <><EyeOff size={20} /><span className="text-sm font-medium hidden sm:inline">Mostra</span></>}
                 </button>
               </div>
             </div>
@@ -261,9 +202,7 @@ const ContentVisibilityManager = () => {
         <div className="flex gap-3">
           <div className="text-amber-600 text-xl">⚠️</div>
           <div className="flex-1">
-            <h4 className="text-sm font-medium text-amber-900 mb-1">
-              Importante
-            </h4>
+            <h4 className="text-sm font-medium text-amber-900 mb-1">Importante</h4>
             <ul className="text-sm text-amber-800 space-y-1">
               <li>• Le sezioni nascoste non appariranno sul sito pubblico</li>
               <li>• I contenuti rimangono salvati nel database</li>
