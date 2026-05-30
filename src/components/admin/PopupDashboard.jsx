@@ -13,14 +13,18 @@ import ContactInfoManager from './ContactInfoManager';
 import HeroSectionManager from './HeroSectionManager';
 import PopupManager from './PopupManager';
 import ThemeManager from './ThemeManager';
+import ApartmentManager from './ApartmentManager';
+import ZoneManager from './ZoneManager';
 
 const PopupDashboard = ({ onLogout }) => {
   const tabs = [
     { id: 'images', label: 'Immagini', icon: '🖼️', component: ImageManager },
     { id: 'reviews', label: 'Recensioni', icon: '⭐', component: ReviewManager },
-    { id: 'about', label: 'Chi Siamo', icon: 'ℹ️', component: AboutManager },
     { id: 'hero', label: 'Hero Section', icon: '🎯', component: HeroSectionManager },
-    { id: 'houseRules', label: 'Regole Casa', icon: '🏠', component: HouseRulesManager },
+    { id: 'apartment', label: 'Appartamento', icon: '🏠', component: ApartmentManager },
+    { id: 'zone', label: 'La Zona', icon: '🗺️', component: ZoneManager },
+    { id: 'about', label: 'Chi Siamo', icon: 'ℹ️', component: AboutManager },
+    { id: 'houseRules', label: 'Regole Casa', icon: '📋', component: HouseRulesManager },
     { id: 'contact', label: 'Contatti', icon: '📧', component: ContactInfoManager },
     { id: 'activities', label: 'Attività', icon: '🎿', component: ActivityManager },
     { id: 'restaurants', label: 'Ristoranti', icon: '🍽️', component: RestaurantManager },
@@ -46,14 +50,11 @@ const PopupDashboard = ({ onLogout }) => {
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
 
-        {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-gray-900 mb-2">📊 Dashboard Admin</h1>
             <p className="text-gray-600">Gestisci tutti i contenuti del sito Iremia</p>
           </div>
-
-          {/* Logout Button */}
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 px-5 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition shadow-sm font-medium"
@@ -63,7 +64,6 @@ const PopupDashboard = ({ onLogout }) => {
           </button>
         </div>
 
-        {/* Tab Navigation */}
         <div className="bg-white rounded-lg shadow-lg mb-6 overflow-x-auto">
           <div className="flex gap-2 p-4 min-w-min">
             {tabs.map(tab => (
@@ -83,7 +83,6 @@ const PopupDashboard = ({ onLogout }) => {
           </div>
         </div>
 
-        {/* Content Area */}
         <div className="bg-white rounded-lg shadow-lg p-6">
           {ActiveComponent ? (
             <>
@@ -100,7 +99,6 @@ const PopupDashboard = ({ onLogout }) => {
           )}
         </div>
 
-        {/* Footer */}
         <div className="mt-8 text-center text-gray-600 text-sm">
           <p>© {new Date().getFullYear()} Iremia Dashboard</p>
         </div>
