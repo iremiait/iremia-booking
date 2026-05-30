@@ -1,85 +1,181 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Lock } from 'lucide-react';
+import { ArrowLeft, Lock, Mail, Eye, EyeOff, Loader } from 'lucide-react';
 import PopupDashboard from '../components/admin/PopupDashboard';
+import { authService } from '../lib/supabase';
 
 const AdminPopup = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
-  const ADMIN_PASSWORD = 'iremia2025';
-
+  // Controlla se c'è già una sessione attiva
   useEffect(() => {
-    const auth = sessionStorage.getItem('admin_authenticated');
-    if (auth === 'true') {
-      setIsAuthenticated(true);
-    }
+    const checkSession = async () => {
+      try {
+        const session = await authService.getSession();
+        setIsAuthenticated(!!session);
+      } catch (err) {
+        console.error('Errore controllo sessione:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkSession();
+
+    // Ascolta i cambiamenti di autenticazione
+    const { data: { subscription } } = authService.onAuthStateChange((session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      sessionStorage.setItem('admin_authenticated', 'true');
-      setIsAuthenticated(true);
-      setError('');
-    } else {
-      setError('Password errata!');
+    setSubmitting(true);
+    setError('');
+
+    try {
+      await authService.login(email, password);
+      // onAuthStateChange gestirà il redirect automaticamente
+    } catch (err) {
+      console.error('Errore login:', err);
+      if (err.message === 'Invalid login credentials') {
+        setError('Email o password errati.');
+      } else if (err.message === 'Email not confirmed') {
+        setError('Email non confermata. Controlla la tua casella.');
+      } else {
+        setError('Errore durante il login. Riprova.');
+      }
       setPassword('');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('admin_authenticated');
-    setIsAuthenticated(false);
-    setPassword('');
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      setEmail('');
+      setPassword('');
+    } catch (err) {
+      console.error('Errore logout:', err);
+    }
   };
+
+  // Caricamento iniziale
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader size={40} className="animate-spin text-teal-600 mx-auto mb-4" />
+          <p className="text-gray-600">Caricamento...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Schermata Login
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full border border-teal-100">
+          
+          {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-teal-100 rounded-full mb-4">
               <Lock size={32} className="text-teal-600" />
             </div>
             <h2 className="text-2xl font-light text-gray-900 mb-2">Admin Dashboard</h2>
-            <p className="text-gray-600">Inserisci la password per accedere</p>
+            <p className="text-gray-600 text-sm">Accesso riservato</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          {/* Form */}
+          <form onSubmit={handleLogin} className="space-y-5">
+            
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
+              <div className="relative">
+                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                  placeholder="admin@iremia.it"
+                  required
+                  autoComplete="email"
+                />
+              </div>
+            </div>
+
+            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                placeholder="Inserisci la password"
-                required
-              />
+              <div className="relative">
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                  placeholder="••••••••"
+                  required
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
 
+            {/* Errore */}
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+                <span>⚠️</span>
                 {error}
               </div>
             )}
 
+            {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-teal-600 text-white py-3 rounded-lg hover:bg-teal-700 transition font-medium"
+              disabled={submitting}
+              className="w-full bg-teal-600 text-white py-3 rounded-lg hover:bg-teal-700 transition font-medium flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Accedi
+              {submitting ? (
+                <>
+                  <Loader size={18} className="animate-spin" />
+                  Accesso in corso...
+                </>
+              ) : (
+                <>
+                  <Lock size={18} />
+                  Accedi
+                </>
+              )}
             </button>
           </form>
 
+          {/* Footer */}
           <div className="mt-6 text-center">
-            <a
+            
               href="/"
-              className="text-sm text-teal-600 hover:text-teal-700 inline-flex items-center gap-1"
+              className="text-sm text-teal-600 hover:text-teal-700 inline-flex items-center gap-1 transition"
             >
               <ArrowLeft size={16} />
               Torna alla homepage
