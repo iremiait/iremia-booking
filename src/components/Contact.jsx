@@ -47,7 +47,7 @@ const Contact = () => {
     <div id="contatti" style={{ scrollMarginTop: '50px' }} className="mt-20 max-w-6xl mx-auto px-4">
 
       {/* Google Maps */}
-      <div className="mb-8">
+      <div className="mb-16">
         <div className="rounded-lg shadow-sm overflow-hidden" style={{ border: '1px solid var(--color-primary-100)' }}>
           <iframe
             src={mapEmbedUrl}
