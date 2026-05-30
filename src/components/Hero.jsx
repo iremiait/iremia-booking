@@ -45,8 +45,8 @@ const Hero = ({ heroImage }) => {
   }
 
   return (
-    // FIX: aggiunto pb-8 md:pb-0 per spazio sotto le cards su mobile
-    <section className="relative h-screen flex items-center justify-center overflow-hidden pb-8 md:pb-0">
+    {/* FIX: min-h-screen per non tagliare il contenuto su mobile + pt per safe area */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10 md:pt-0 md:pb-0 md:h-screen">
       {/* Background Image */}
       {heroImage && (
         <div
