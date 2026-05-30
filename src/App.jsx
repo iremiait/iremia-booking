@@ -25,6 +25,14 @@ const SECTION_COMPONENTS = {
   faqs: FAQs,
 };
 
+const NavLink = ({ href, children, onClick, style, onMouseEnter, onMouseLeave, className }) => {
+  return React.createElement('a', { href, onClick, style, onMouseEnter, onMouseLeave, className }, children);
+};
+
+const ExtLink = ({ href, children, onClick, style, onMouseEnter, onMouseLeave, className }) => {
+  return React.createElement('a', { href, target: '_blank', rel: 'noopener noreferrer', onClick, style, onMouseEnter, onMouseLeave, className }, children);
+};
+
 function App() {
   const [heroImage, setHeroImage] = useState('/images/lama.jpg');
   const [logoImage, setLogoImage] = useState('/logo.png');
@@ -43,12 +51,10 @@ function App() {
     { href: '#contatti', label: 'Contatti' },
   ];
 
-  // Carica tema dinamico da Supabase
   useEffect(() => {
     themeService.getTheme().then(themeService.applyTheme).catch(() => {});
   }, []);
 
-  // Carica contatti per WhatsApp header
   useEffect(() => {
     contentService.getContactInfo().then(data => {
       if (data?.whatsapp_link) {
@@ -57,17 +63,14 @@ function App() {
     }).catch(() => {});
   }, []);
 
-  // Carica immagini da Supabase
   useEffect(() => {
     const loadImages = async () => {
       const { data, error } = await supabase
         .from('site_images')
         .select('*')
         .maybeSingle();
-
       if (error && error.code !== 'PGRST116') return;
       if (!data) return;
-
       if (data.hero_url) setHeroImage(data.hero_url);
       if (data.logo_url) setLogoImage(data.logo_url);
       if (data.gallery_urls?.length > 0) {
@@ -83,7 +86,6 @@ function App() {
     loadImages();
   }, []);
 
-  // Carica recensioni
   useEffect(() => {
     reviewService.getActiveReviews()
       .then(setReviews)
@@ -91,7 +93,6 @@ function App() {
       .finally(() => setReviewsLoading(false));
   }, []);
 
-  // Carica sezioni dinamiche
   useEffect(() => {
     const loadSections = async () => {
       const sections = await contentService.getSectionVisibility().catch(() => []);
@@ -113,18 +114,16 @@ function App() {
     >
       <Popup />
 
-      {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            <a href="#top" className="cursor-pointer">
+            <NavLink href="#top" className="cursor-pointer">
               <img src={logoImage} alt="Iremia" className="h-40" />
-            </a>
+            </NavLink>
 
-            {/* Desktop Nav */}
             <nav className="hidden md:flex gap-6 items-center">
               {navLinks.map(link => (
-                
+                <NavLink
                   key={link.href}
                   href={link.href}
                   className="font-medium transition-colors text-gray-700"
@@ -132,22 +131,19 @@ function App() {
                   onMouseLeave={e => e.currentTarget.style.color = '#374151'}
                 >
                   {link.label}
-                </a>
+                </NavLink>
               ))}
-              
+              <ExtLink
                 href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="text-white px-4 py-2 rounded-lg transition-all font-medium"
                 style={{ backgroundColor: 'var(--color-primary)' }}
                 onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'}
                 onMouseLeave={e => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
               >
                 Prenota
-              </a>
+              </ExtLink>
             </nav>
 
-            {/* Mobile burger */}
             <button
               className="md:hidden text-gray-700 focus:outline-none"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -160,12 +156,11 @@ function App() {
             </button>
           </div>
 
-          {/* Mobile Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden mt-4 pb-4">
               <nav className="flex flex-col space-y-3">
                 {navLinks.map(link => (
-                  
+                  <NavLink
                     key={link.href}
                     href={link.href}
                     className="font-medium transition-colors py-2 text-gray-700"
@@ -175,12 +170,10 @@ function App() {
                     onMouseLeave={e => e.currentTarget.style.color = '#374151'}
                   >
                     {link.label}
-                  </a>
+                  </NavLink>
                 ))}
-                
+                <ExtLink
                   href={whatsappLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-white px-4 py-3 rounded-lg text-center font-medium transition-all"
                   style={{ backgroundColor: 'var(--color-primary)' }}
                   onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'}
@@ -188,7 +181,7 @@ function App() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Prenota su WhatsApp
-                </a>
+                </ExtLink>
               </nav>
             </div>
           )}
