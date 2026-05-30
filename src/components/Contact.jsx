@@ -35,7 +35,7 @@ const Contact = () => {
 
   if (loading) {
     return (
-      <div id="contatti" className="mt-20 max-w-6xl mx-auto px-4">
+      <div id="contatti" style={{ scrollMarginTop: '575px' }} className="mt-20 max-w-6xl mx-auto px-4">
         <div className="text-center py-12">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-t-transparent" style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }}></div>
         </div>
@@ -44,7 +44,7 @@ const Contact = () => {
   }
 
   return (
-    <div id="contatti" className="mt-20 max-w-6xl mx-auto px-4">
+    <div id="contatti" style={{ scrollMarginTop: '575px' }} className="mt-20 max-w-6xl mx-auto px-4">
 
       {/* Google Maps */}
       <div className="mb-8">
