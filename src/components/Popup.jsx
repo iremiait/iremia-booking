@@ -7,19 +7,21 @@ const Popup = () => {
 
   useEffect(() => {
     const checkPopup = async () => {
-      const lastShown = localStorage.getItem('iremia_popup_last_shown');
-      if (lastShown) {
-        const daysSinceShown = Math.floor((Date.now() - parseInt(lastShown)) / (1000 * 60 * 60 * 24));
-        const popup = await popupService.getActivePopup();
-        if (!popup || daysSinceShown < (popup.show_frequency_days || 7)) return;
-      }
-
+      // Una sola chiamata per ottenere il popup
       const popup = await popupService.getActivePopup();
       if (!popup) return;
 
+      // Controlla date validità
       const now = new Date();
       if (popup.start_date && new Date(popup.start_date) > now) return;
       if (popup.end_date && new Date(popup.end_date) < now) return;
+
+      // Controlla frequenza
+      const lastShown = localStorage.getItem('iremia_popup_last_shown');
+      if (lastShown) {
+        const daysSinceShown = Math.floor((Date.now() - parseInt(lastShown)) / (1000 * 60 * 60 * 24));
+        if (daysSinceShown < (popup.show_frequency_days || 7)) return;
+      }
 
       setTimeout(() => {
         setPopupData(popup);
