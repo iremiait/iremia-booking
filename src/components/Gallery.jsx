@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Gallery = ({ galleryImages }) => {
@@ -36,15 +36,14 @@ const Gallery = ({ galleryImages }) => {
   const thumbUrl = (url) => optimizeUrl(url, 600);
   const fullUrl = (url) => optimizeUrl(url, 1400);
 
-  const getColumns = () => {
+  // useMemo evita di ricalcolare le colonne ad ogni render
+  const columns = useMemo(() => {
     const cols = [[], [], []];
     galleryImages.forEach((img, i) => cols[i % 3].push({ img, index: i }));
     return cols;
-  };
+  }, [galleryImages]);
 
   if (!galleryImages || galleryImages.length === 0) return null;
-
-  const columns = getColumns();
 
   return (
     <>
