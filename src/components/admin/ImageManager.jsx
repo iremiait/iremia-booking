@@ -162,13 +162,29 @@ const ImageManager = () => {
     setEditingAlt(galleryImages[index].alt);
   };
 
-  const saveAlt = (index) => {
+  // FIX: salva automaticamente su Supabase quando si conferma la modifica alt
+  const saveAlt = async (index) => {
     const updated = galleryImages.map((img, i) =>
       i === index ? { ...img, alt: editingAlt.trim() || img.alt } : img
     );
     setGalleryImages(updated);
     galleryRef.current = updated;
     setEditingIndex(null);
+    // Salva subito su Supabase senza bisogno di cliccare "Salva Galleria"
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('site_images')
+        .update({ gallery_urls: updated })
+        .eq('id', dbId);
+      if (error) throw error;
+      // Nessun alert per non disturbare, l'utente vede la modifica applicata
+    } catch (error) {
+      console.error('❌ Errore salvataggio alt:', error);
+      alert('❌ Errore nel salvataggio del titolo: ' + error.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const saveGallery = async () => {
@@ -312,7 +328,7 @@ const ImageManager = () => {
               onChange={(e) => setNewAlt(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addImage()}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-              placeholder="Es: Soggiorno, Camera da letto, Balcone..."
+              placeholder="Es: Soggiorno, Camera da letto, Biglietto da visita..."
             />
           </div>
           <button
@@ -340,6 +356,15 @@ const ImageManager = () => {
               </>
             ) : '💾 Salva Galleria'}
           </button>
+        </div>
+
+        {/* Nota informativa */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+          <p className="text-xs text-blue-700">
+            💡 <strong>Modifica titolo:</strong> clicca ✏️ sulla foto, modifica e premi ✓ — salva automaticamente.
+            <br />
+            <strong>Aggiungi / elimina / riordina foto:</strong> clicca "💾 Salva Galleria" per confermare.
+          </p>
         </div>
 
         {galleryImages.length === 0 ? (
@@ -385,6 +410,13 @@ const ImageManager = () => {
                     #{index + 1}
                   </div>
 
+                  {/* Indicatore biglietto da visita */}
+                  {image.alt?.toLowerCase().includes('biglietto da visita') && (
+                    <div className="absolute top-2 right-2 bg-teal-600 text-white text-xs px-2 py-1 rounded-lg">
+                      📇
+                    </div>
+                  )}
+
                   {editingIndex === index ? (
                     <div className="absolute bottom-0 left-0 right-0 bg-white p-2 flex gap-1">
                       <input
@@ -396,10 +428,10 @@ const ImageManager = () => {
                         autoFocus
                         placeholder="Titolo foto..."
                       />
-                      <button onClick={() => saveAlt(index)} className="p-1 bg-teal-500 text-white rounded">
+                      <button onClick={() => saveAlt(index)} className="p-1 bg-teal-500 text-white rounded" title="Salva">
                         <Check size={14} />
                       </button>
-                      <button onClick={() => setEditingIndex(null)} className="p-1 bg-gray-300 text-gray-700 rounded">
+                      <button onClick={() => setEditingIndex(null)} className="p-1 bg-gray-300 text-gray-700 rounded" title="Annulla">
                         <X size={14} />
                       </button>
                     </div>
