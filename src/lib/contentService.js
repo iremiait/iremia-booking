@@ -265,5 +265,43 @@ export const contentService = {
       .select();
     if (error) throw error;
     return data?.[0];
-  }
+  },
+
+  // ==========================================
+  // APARTMENT SECTION
+  // ==========================================
+  async getApartment() {
+    return await handleQuery(
+      supabase.from('apartment_section').select('*').maybeSingle()
+    );
+  },
+
+  async updateApartment(id, data) {
+    const { data: result, error } = await supabase
+      .from('apartment_section')
+      .update({ ...data, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return result?.[0];
+  },
+
+  // ==========================================
+  // ZONE SECTION
+  // ==========================================
+  async getZone() {
+    return await handleQuery(
+      supabase.from('zone_section').select('*').maybeSingle()
+    );
+  },
+
+  async updateZone(id, data) {
+    const { data: result, error } = await supabase
+      .from('zone_section')
+      .update({ ...data, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return result?.[0];
+  },
 };
