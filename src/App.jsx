@@ -17,6 +17,14 @@ import { reviewService } from './lib/reviewService';
 import { contentService } from './lib/contentService';
 import { themeService } from './lib/themeService';
 
+const SECTION_COMPONENTS = {
+  about: About,
+  activities: Activities,
+  restaurants: Restaurants,
+  poi: POI,
+  faqs: FAQs,
+};
+
 function App() {
   const [heroImage, setHeroImage] = useState('/images/lama.jpg');
   const [logoImage, setLogoImage] = useState('/logo.png');
@@ -27,93 +35,65 @@ function App() {
   const [sectionsLoading, setSectionsLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const sectionComponents = {
-    'about': About,
-    'activities': Activities,
-    'restaurants': Restaurants,
-    'poi': POI,
-    'faqs': FAQs
-  };
-
-  // Carica tema dinamico da Supabase
-  useEffect(() => {
-    const loadTheme = async () => {
-      try {
-        const theme = await themeService.getTheme();
-        themeService.applyTheme(theme);
-      } catch (error) {
-        console.error('Errore caricamento tema:', error);
-      }
-    };
-    loadTheme();
-  }, []);
-
-  useEffect(() => {
-    const loadImages = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('site_images')
-          .select('*')
-          .maybeSingle();
-
-        if (error && error.code !== 'PGRST116') return;
-
-        if (data) {
-          if (data.hero_url) setHeroImage(data.hero_url);
-          if (data.logo_url) setLogoImage(data.logo_url);
-          if (data.gallery_urls && data.gallery_urls.length > 0) {
-            const normalized = data.gallery_urls.map((item, index) =>
-              typeof item === 'string'
-                ? { src: item, alt: `Foto ${index + 1}` }
-                : { src: item.url, alt: item.alt || `Foto ${index + 1}` }
-            );
-            setGalleryImages(normalized);
-          }
-        }
-      } catch (error) {
-        console.error('Errore nel caricamento immagini:', error);
-      }
-    };
-    loadImages();
-  }, []);
-
-  useEffect(() => {
-    const loadReviews = async () => {
-      setReviewsLoading(true);
-      try {
-        const data = await reviewService.getActiveReviews();
-        setReviews(data);
-      } catch (error) {
-        console.error('Errore caricamento recensioni:', error);
-      }
-      setReviewsLoading(false);
-    };
-    loadReviews();
-  }, []);
-
-  useEffect(() => {
-    const loadDynamicSections = async () => {
-      setSectionsLoading(true);
-      try {
-        const sections = await contentService.getSectionVisibility();
-        const visibleSections = sections
-          .filter(section => section.is_visible && sectionComponents[section.section_name])
-          .sort((a, b) => (a.order_position || 0) - (b.order_position || 0));
-        setDynamicSections(visibleSections);
-      } catch (error) {
-        console.error('Errore caricamento sezioni dinamiche:', error);
-      }
-      setSectionsLoading(false);
-    };
-    loadDynamicSections();
-  }, []);
-
   const navLinks = [
     { href: '#appartamento', label: "L'Appartamento" },
     { href: '#galleria', label: 'Galleria' },
     { href: '#zona', label: 'La Zona' },
     { href: '#contatti', label: 'Contatti' },
   ];
+
+  // Carica tema dinamico da Supabase
+  useEffect(() => {
+    themeService.getTheme().then(themeService.applyTheme).catch(() => {});
+  }, []);
+
+  // Carica immagini da Supabase
+  useEffect(() => {
+    const loadImages = async () => {
+      const { data, error } = await supabase
+        .from('site_images')
+        .select('*')
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') return;
+      if (!data) return;
+
+      if (data.hero_url) setHeroImage(data.hero_url);
+      if (data.logo_url) setLogoImage(data.logo_url);
+      if (data.gallery_urls?.length > 0) {
+        setGalleryImages(
+          data.gallery_urls.map((item, index) =>
+            typeof item === 'string'
+              ? { src: item, alt: `Foto ${index + 1}` }
+              : { src: item.url, alt: item.alt || `Foto ${index + 1}` }
+          )
+        );
+      }
+    };
+    loadImages();
+  }, []);
+
+  // Carica recensioni
+  useEffect(() => {
+    reviewService.getActiveReviews()
+      .then(setReviews)
+      .catch(() => {})
+      .finally(() => setReviewsLoading(false));
+  }, []);
+
+  // Carica sezioni dinamiche
+  useEffect(() => {
+    const loadSections = async () => {
+      const sections = await contentService.getSectionVisibility().catch(() => []);
+      setDynamicSections(
+        sections
+          .filter(s => s.is_visible && SECTION_COMPONENTS[s.section_name])
+          .sort((a, b) => (a.order_position || 0) - (b.order_position || 0))
+      );
+      setSectionsLoading(false);
+    };
+    loadSections();
+  }, []);
 
   return (
     <div
@@ -210,8 +190,8 @@ function App() {
         <Apartment />
         <HouseRules />
 
-        {!sectionsLoading && dynamicSections.map((section) => {
-          const SectionComponent = sectionComponents[section.section_name];
+        {!sectionsLoading && dynamicSections.map(section => {
+          const SectionComponent = SECTION_COMPONENTS[section.section_name];
           return SectionComponent ? <SectionComponent key={section.section_name} /> : null;
         })}
 
