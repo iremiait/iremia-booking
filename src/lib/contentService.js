@@ -1,505 +1,269 @@
 import { supabase } from './supabase';
 
+const handleQuery = async (query) => {
+  const { data, error } = await query;
+  if (error && error.code !== 'PGRST116') throw error;
+  return data;
+};
+
 export const contentService = {
   // ==========================================
-  // ABOUT SECTION (Chi Siamo)
+  // ABOUT SECTION
   // ==========================================
   async getAbout() {
-    try {
-      const { data, error } = await supabase
-        .from('about_section')
-        .select('*')
-        .maybeSingle();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento about section:', error);
-        return null;
-      }
-      return data;
-    } catch (error) {
-      console.error('Errore caricamento about section:', error);
-      return null;
-    }
+    return await handleQuery(
+      supabase.from('about_section').select('*').maybeSingle()
+    );
   },
 
   async createAbout(aboutData) {
-    try {
-      const { data, error } = await supabase
-        .from('about_section')
-        .insert([aboutData])
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore creazione about:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('about_section')
+      .insert([aboutData])
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   async updateAbout(id, aboutData) {
-    try {
-      const { data, error } = await supabase
-        .from('about_section')
-        .update({ ...aboutData, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore aggiornamento about:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('about_section')
+      .update({ ...aboutData, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   // ==========================================
-  // ACTIVITIES (Attività)
+  // ACTIVITIES
   // ==========================================
   async getActivities() {
-    try {
-      const { data, error } = await supabase
-        .from('activities')
-        .select('*')
+    return await handleQuery(
+      supabase.from('activities').select('*')
         .order('season', { ascending: true })
-        .order('order_position', { ascending: true });
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento attività:', error);
-        return [];
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento attività:', error);
-      return [];
-    }
+        .order('order_position', { ascending: true })
+    ) || [];
   },
 
   async createActivity(activityData) {
-    try {
-      const { data, error } = await supabase
-        .from('activities')
-        .insert([activityData])
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore creazione attività:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('activities')
+      .insert([activityData])
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   async updateActivity(id, activityData) {
-    try {
-      const { data, error } = await supabase
-        .from('activities')
-        .update({ ...activityData, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore aggiornamento attività:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('activities')
+      .update({ ...activityData, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   async deleteActivity(id) {
-    try {
-      const { error } = await supabase
-        .from('activities')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      return true;
-    } catch (error) {
-      console.error('Errore eliminazione attività:', error);
-      throw error;
-    }
+    const { error } = await supabase.from('activities').delete().eq('id', id);
+    if (error) throw error;
+    return true;
   },
 
   // ==========================================
-  // RESTAURANTS (Ristoranti)
+  // RESTAURANTS
   // ==========================================
   async getRestaurants() {
-    try {
-      const { data, error } = await supabase
-        .from('restaurants')
-        .select('*')
-        .order('order_position', { ascending: true });
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento ristoranti:', error);
-        return [];
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento ristoranti:', error);
-      return [];
-    }
+    return await handleQuery(
+      supabase.from('restaurants').select('*')
+        .order('order_position', { ascending: true })
+    ) || [];
   },
 
   async createRestaurant(restaurantData) {
-    try {
-      const { data, error } = await supabase
-        .from('restaurants')
-        .insert([restaurantData])
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore creazione ristorante:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('restaurants')
+      .insert([restaurantData])
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   async updateRestaurant(id, restaurantData) {
-    try {
-      const { data, error } = await supabase
-        .from('restaurants')
-        .update({ ...restaurantData, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore aggiornamento ristorante:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('restaurants')
+      .update({ ...restaurantData, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   async deleteRestaurant(id) {
-    try {
-      const { error } = await supabase
-        .from('restaurants')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      return true;
-    } catch (error) {
-      console.error('Errore eliminazione ristorante:', error);
-      throw error;
-    }
+    const { error } = await supabase.from('restaurants').delete().eq('id', id);
+    if (error) throw error;
+    return true;
   },
 
   // ==========================================
-  // POI (Punti di Interesse)
+  // POI
   // ==========================================
   async getPOIs() {
-    try {
-      const { data, error } = await supabase
-        .from('poi')
-        .select('*')
-        .order('order_position', { ascending: true });
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento POI:', error);
-        return [];
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento POI:', error);
-      return [];
-    }
+    return await handleQuery(
+      supabase.from('poi').select('*')
+        .order('order_position', { ascending: true })
+    ) || [];
   },
 
   async createPOI(poiData) {
-    try {
-      const { data, error } = await supabase
-        .from('poi')
-        .insert([poiData])
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore creazione POI:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('poi')
+      .insert([poiData])
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   async updatePOI(id, poiData) {
-    try {
-      const { data, error } = await supabase
-        .from('poi')
-        .update({ ...poiData, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore aggiornamento POI:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('poi')
+      .update({ ...poiData, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   async deletePOI(id) {
-    try {
-      const { error } = await supabase
-        .from('poi')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      return true;
-    } catch (error) {
-      console.error('Errore eliminazione POI:', error);
-      throw error;
-    }
+    const { error } = await supabase.from('poi').delete().eq('id', id);
+    if (error) throw error;
+    return true;
   },
 
   // ==========================================
   // FAQ
   // ==========================================
   async getAllFAQs() {
-    try {
-      const { data, error } = await supabase
-        .from('faqs')
-        .select('*')
+    return await handleQuery(
+      supabase.from('faqs').select('*')
         .order('category', { ascending: true })
-        .order('order_position', { ascending: true });
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento FAQ:', error);
-        return [];
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento FAQ:', error);
-      return [];
-    }
+        .order('order_position', { ascending: true })
+    ) || [];
   },
 
   async getActiveFAQs() {
-    try {
-      const { data, error } = await supabase
-        .from('faqs')
-        .select('*')
+    return await handleQuery(
+      supabase.from('faqs').select('*')
         .eq('is_active', true)
         .order('category', { ascending: true })
-        .order('order_position', { ascending: true });
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento FAQ attive:', error);
-        return [];
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento FAQ attive:', error);
-      return [];
-    }
+        .order('order_position', { ascending: true })
+    ) || [];
   },
 
   async createFAQ(faqData) {
-    try {
-      const { data, error } = await supabase
-        .from('faqs')
-        .insert([faqData])
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore creazione FAQ:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('faqs')
+      .insert([faqData])
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   async updateFAQ(id, faqData) {
-    try {
-      const { data, error } = await supabase
-        .from('faqs')
-        .update({ ...faqData, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore aggiornamento FAQ:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('faqs')
+      .update({ ...faqData, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   async deleteFAQ(id) {
-    try {
-      const { error } = await supabase
-        .from('faqs')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      return true;
-    } catch (error) {
-      console.error('Errore eliminazione FAQ:', error);
-      throw error;
-    }
+    const { error } = await supabase.from('faqs').delete().eq('id', id);
+    if (error) throw error;
+    return true;
   },
 
   // ==========================================
   // SECTION VISIBILITY
   // ==========================================
   async getSectionVisibility() {
-    try {
-      const { data, error } = await supabase
-        .from('section_visibility')
-        .select('*')
-        .order('order_position', { ascending: true });
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento visibilità sezioni:', error);
-        return [];
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Errore caricamento visibilità sezioni:', error);
-      return [];
-    }
+    return await handleQuery(
+      supabase.from('section_visibility').select('*')
+        .order('order_position', { ascending: true })
+    ) || [];
   },
 
   async updateSectionVisibility(sectionName, isVisible, orderPosition = null) {
-    try {
-      const updateData = {
-        updated_at: new Date().toISOString()
-      };
+    const updateData = { updated_at: new Date().toISOString() };
+    if (typeof isVisible === 'boolean') updateData.is_visible = isVisible;
+    if (typeof orderPosition === 'number') updateData.order_position = orderPosition;
 
-      if (typeof isVisible === 'boolean') {
-        updateData.is_visible = isVisible;
-      }
-
-      if (typeof orderPosition === 'number') {
-        updateData.order_position = orderPosition;
-      }
-
-      const { data, error } = await supabase
-        .from('section_visibility')
-        .update(updateData)
-        .eq('section_name', sectionName)
-        .select();
-
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      console.error('Errore aggiornamento visibilità:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('section_visibility')
+      .update(updateData)
+      .eq('section_name', sectionName)
+      .select();
+    if (error) throw error;
+    return data;
   },
 
   // ==========================================
-  // HOUSE RULES SECTION
+  // HOUSE RULES
   // ==========================================
   async getHouseRules() {
-    try {
-      const { data, error } = await supabase
-        .from('house_rules_section')
-        .select('*')
-        .maybeSingle();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento house rules:', error);
-        return null;
-      }
-      return data;
-    } catch (error) {
-      console.error('Errore caricamento house rules:', error);
-      return null;
-    }
+    return await handleQuery(
+      supabase.from('house_rules_section').select('*').maybeSingle()
+    );
   },
 
   async updateHouseRules(id, rulesData) {
-    try {
-      const { data, error } = await supabase
-        .from('house_rules_section')
-        .update({ ...rulesData, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore aggiornamento house rules:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('house_rules_section')
+      .update({ ...rulesData, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   // ==========================================
   // CONTACT INFO
   // ==========================================
   async getContactInfo() {
-    try {
-      const { data, error } = await supabase
-        .from('contact_info')
-        .select('*')
-        .maybeSingle();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento contact info:', error);
-        return null;
-      }
-      return data;
-    } catch (error) {
-      console.error('Errore caricamento contact info:', error);
-      return null;
-    }
+    return await handleQuery(
+      supabase.from('contact_info').select('*').maybeSingle()
+    );
   },
 
   async updateContactInfo(id, contactData) {
-    try {
-      const { data, error } = await supabase
-        .from('contact_info')
-        .update({ ...contactData, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore aggiornamento contact info:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('contact_info')
+      .update({ ...contactData, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   // ==========================================
   // HERO SECTION
   // ==========================================
   async getHeroSection() {
-    try {
-      const { data, error } = await supabase
-        .from('hero_section')
-        .select('*')
-        .maybeSingle();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento hero section:', error);
-        return null;
-      }
-      return data;
-    } catch (error) {
-      console.error('Errore caricamento hero section:', error);
-      return null;
-    }
+    return await handleQuery(
+      supabase.from('hero_section').select('*').maybeSingle()
+    );
   },
 
   async updateHeroSection(id, heroData) {
-    try {
-      const { data, error } = await supabase
-        .from('hero_section')
-        .update({ ...heroData, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore aggiornamento hero section:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('hero_section')
+      .update({ ...heroData, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data?.[0];
   }
 };
