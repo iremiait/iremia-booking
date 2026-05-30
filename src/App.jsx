@@ -34,6 +34,7 @@ function App() {
   const [dynamicSections, setDynamicSections] = useState([]);
   const [sectionsLoading, setSectionsLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [whatsappLink, setWhatsappLink] = useState('https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare');
 
   const navLinks = [
     { href: '#appartamento', label: "L'Appartamento" },
@@ -45,6 +46,15 @@ function App() {
   // Carica tema dinamico da Supabase
   useEffect(() => {
     themeService.getTheme().then(themeService.applyTheme).catch(() => {});
+  }, []);
+
+  // Carica contatti per WhatsApp header
+  useEffect(() => {
+    contentService.getContactInfo().then(data => {
+      if (data?.whatsapp_link) {
+        setWhatsappLink(data.whatsapp_link + '?text=Ciao!%20Vorrei%20prenotare');
+      }
+    }).catch(() => {});
   }, []);
 
   // Carica immagini da Supabase
@@ -114,7 +124,7 @@ function App() {
             {/* Desktop Nav */}
             <nav className="hidden md:flex gap-6 items-center">
               {navLinks.map(link => (
-                <a
+                
                   key={link.href}
                   href={link.href}
                   className="font-medium transition-colors text-gray-700"
@@ -124,8 +134,8 @@ function App() {
                   {link.label}
                 </a>
               ))}
-              <a
-                href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare"
+              
+                href={whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white px-4 py-2 rounded-lg transition-all font-medium"
@@ -155,7 +165,7 @@ function App() {
             <div className="md:hidden mt-4 pb-4">
               <nav className="flex flex-col space-y-3">
                 {navLinks.map(link => (
-                  <a
+                  
                     key={link.href}
                     href={link.href}
                     className="font-medium transition-colors py-2 text-gray-700"
@@ -167,8 +177,8 @@ function App() {
                     {link.label}
                   </a>
                 ))}
-                <a
-                  href="https://wa.me/393474160611?text=Ciao!%20Vorrei%20prenotare"
+                
+                  href={whatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white px-4 py-3 rounded-lg text-center font-medium transition-all"
