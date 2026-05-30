@@ -125,7 +125,7 @@ function App() {
       <Popup />
       <CookieBanner />
 
-      <header className="bg-white shadow-sm sticky top-0 z-50">
+      <header className="shadow-sm sticky top-0 z-50" style={{ backgroundColor: 'var(--color-bg-header)' }}>
         <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <NavLink href="#top" className="cursor-pointer">
