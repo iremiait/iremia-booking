@@ -12,7 +12,6 @@ const AdminPopup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
-  // Controlla se c'è già una sessione attiva
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -27,7 +26,6 @@ const AdminPopup = () => {
 
     checkSession();
 
-    // Ascolta i cambiamenti di autenticazione
     const { data: { subscription } } = authService.onAuthStateChange((session) => {
       setIsAuthenticated(!!session);
     });
@@ -42,13 +40,12 @@ const AdminPopup = () => {
 
     try {
       await authService.login(email, password);
-      // onAuthStateChange gestirà il redirect automaticamente
     } catch (err) {
       console.error('Errore login:', err);
       if (err.message === 'Invalid login credentials') {
         setError('Email o password errati.');
       } else if (err.message === 'Email not confirmed') {
-        setError('Email non confermata. Controlla la tua casella.');
+        setError('Email non confermata.');
       } else {
         setError('Errore durante il login. Riprova.');
       }
@@ -68,7 +65,6 @@ const AdminPopup = () => {
     }
   };
 
-  // Caricamento iniziale
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-50 flex items-center justify-center">
@@ -80,50 +76,55 @@ const AdminPopup = () => {
     );
   }
 
-  // Schermata Login
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full border border-teal-100">
-          
-          {/* Header */}
+
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-teal-100 rounded-full mb-4">
               <Lock size={32} className="text-teal-600" />
             </div>
-            <h2 className="text-2xl font-light text-gray-900 mb-2">Admin Dashboard</h2>
-            <p className="text-gray-600 text-sm">Accesso riservato</p>
+            <h2 className="text-2xl font-light text-gray-900 mb-2">
+              Admin Dashboard
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Accesso riservato
+            </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleLogin} className="space-y-5">
-            
-            {/* Email */}
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email
               </label>
               <div className="relative">
-                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Mail
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
-                  placeholder="admin@iremia.it"
+                  placeholder="iremiait@gmail.com"
                   required
                   autoComplete="email"
                 />
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
               <div className="relative">
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Lock
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
@@ -143,15 +144,13 @@ const AdminPopup = () => {
               </div>
             </div>
 
-            {/* Errore */}
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
-                <span>⚠️</span>
-                {error}
+                <span>&#9888;</span>
+                <span>{error}</span>
               </div>
             )}
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={submitting}
@@ -160,33 +159,33 @@ const AdminPopup = () => {
               {submitting ? (
                 <>
                   <Loader size={18} className="animate-spin" />
-                  Accesso in corso...
+                  <span>Accesso in corso...</span>
                 </>
               ) : (
                 <>
                   <Lock size={18} />
-                  Accedi
+                  <span>Accedi</span>
                 </>
               )}
             </button>
+
           </form>
 
-          {/* Footer */}
           <div className="mt-6 text-center">
             
               href="/"
               className="text-sm text-teal-600 hover:text-teal-700 inline-flex items-center gap-1 transition"
             >
               <ArrowLeft size={16} />
-              Torna alla homepage
+              <span>Torna alla homepage</span>
             </a>
           </div>
+
         </div>
       </div>
     );
   }
 
-  // Dashboard autenticata
   return <PopupDashboard onLogout={handleLogout} />;
 };
 
