@@ -160,7 +160,7 @@ const Gallery = ({ galleryImages }) => {
 
   return (
     <>
-      <section id="galleria" className="mt-10 md:mt-20 max-w-7xl mx-auto px-4">
+      <section id="galleria" className="mt-4 md:mt-20 max-w-7xl mx-auto px-4">
         {/* Titolo sezione */}
         <div className="text-center mb-12">
           <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--color-primary)' }}>
