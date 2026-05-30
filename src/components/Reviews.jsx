@@ -25,9 +25,9 @@ const Reviews = ({ reviews, loading }) => {
   };
 
   const zoneTitle = zoneData?.title || 'La Zona';
-  const zoneDescription = zoneData?.description || 'Lama Mocogno è un piccolo paese dell\'Appennino Modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d\'inverno.';
+  const zoneDescription = zoneData?.description || "Lama Mocogno è un piccolo paese dell'Appennino Modenese a 850 m s.l.m., ideale per sfuggire al caldo della pianura nei periodi estivi e per passare qualche giornata sulla neve d'inverno.";
   const zoneCards = zoneData?.cards || [
-    { icon: '⛷️', title: 'Piste da Sci', desc: 'Vicinissimi alle Piane di Mocogno e a 30\' dal comprensorio del Cimone' },
+    { icon: '⛷️', title: 'Piste da Sci', desc: "Vicinissimi alle Piane di Mocogno e a 30' dal comprensorio del Cimone" },
     { icon: '🥾', title: 'Via Vandelli', desc: 'Sulla storica Via Vandelli del 1738, da Modena a Massa' },
     { icon: '🏔️', title: 'Frignano', desc: 'Nel cuore del territorio del Frignano, tra natura e tradizione' },
   ];
@@ -132,7 +132,10 @@ const Reviews = ({ reviews, loading }) => {
       {/* La Zona */}
       {zoneLoading ? (
         <div className="mt-20 max-w-4xl mx-auto px-4 text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-t-transparent" style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }}></div>
+          <div
+            className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-t-transparent"
+            style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }}
+          ></div>
         </div>
       ) : (
         <div
