@@ -45,7 +45,6 @@ const Hero = ({ heroImage }) => {
   }
 
   return (
-    {/* FIX: min-h-screen per non tagliare il contenuto su mobile + pt per safe area */}
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10 md:pt-0 md:pb-0 md:h-screen">
       {/* Background Image */}
       {heroImage && (
