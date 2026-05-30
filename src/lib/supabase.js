@@ -7,7 +7,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Funzioni helper per Popup
 export const popupService = {
-  // Get configurazione popup attiva
   async getActivePopup() {
     const { data, error } = await supabase
       .from('popup_config')
@@ -23,7 +22,6 @@ export const popupService = {
     return data
   },
 
-  // Get tutti i popup
   async getAllPopups() {
     const { data, error } = await supabase
       .from('popup_config')
@@ -38,7 +36,6 @@ export const popupService = {
     return data
   },
 
-  // Upload immagine
   async uploadImage(file) {
     const fileExt = file.name.split('.').pop()
     const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`
@@ -60,7 +57,6 @@ export const popupService = {
     return publicUrl
   },
 
-  // Elimina immagine
   async deleteImage(imageUrl) {
     if (!imageUrl) return
     
@@ -73,7 +69,6 @@ export const popupService = {
     if (error) console.error('Error deleting image:', error)
   },
 
-  // Crea nuovo popup
   async createPopup(popupData) {
     const { data, error } = await supabase
       .from('popup_config')
@@ -85,7 +80,6 @@ export const popupService = {
     return data
   },
 
-  // Aggiorna popup
   async updatePopup(id, popupData) {
     const { data, error } = await supabase
       .from('popup_config')
@@ -98,9 +92,7 @@ export const popupService = {
     return data
   },
 
-  // Elimina popup
   async deletePopup(id) {
-    // Prima ottieni il popup per eliminare l'immagine
     const { data: popup } = await supabase
       .from('popup_config')
       .select('image_url')
@@ -119,7 +111,6 @@ export const popupService = {
     if (error) throw error
   },
 
-  // Get statistiche popup
   async getPopupStats(popupId, days = 30) {
     const { data, error } = await supabase
       .from('popup_stats')
@@ -136,7 +127,6 @@ export const popupService = {
     return data
   },
 
-  // Incrementa views
   async incrementViews(popupId) {
     const today = new Date().toISOString().split('T')[0]
     
@@ -159,7 +149,6 @@ export const popupService = {
     }
   },
 
-  // Incrementa clicks
   async incrementClicks(popupId) {
     const today = new Date().toISOString().split('T')[0]
     
@@ -178,3 +167,32 @@ export const popupService = {
     }
   }
 }
+
+// Auth Service
+export const authService = {
+  async login(email, password) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async logout() {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  },
+
+  async getSession() {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    return session;
+  },
+
+  onAuthStateChange(callback) {
+    return supabase.auth.onAuthStateChange((_event, session) => {
+      callback(session);
+    });
+  }
+};
