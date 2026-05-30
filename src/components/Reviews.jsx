@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { contentService } from '../lib/contentService';
 
+const LinkEsterno = ({ href, className, style, onMouseEnter, onMouseLeave, children }) => {
+  return React.createElement(
+    'a',
+    { href, target: '_blank', rel: 'noopener noreferrer', className, style, onMouseEnter, onMouseLeave },
+    children
+  );
+};
+
 const Reviews = ({ reviews, loading }) => {
   const [zoneData, setZoneData] = useState(null);
   const [contactData, setContactData] = useState(null);
@@ -96,34 +104,30 @@ const Reviews = ({ reviews, loading }) => {
 
         {/* Link Google Business */}
         <div className="mt-8 text-center">
-          
+          <LinkEsterno
             href={googleReviewsLink}
-            target="_blank"
-            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 font-medium transition-opacity hover:opacity-75"
             style={{ color: 'var(--color-primary)' }}
           >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
             </svg>
             {googleReviewsText}
-          </a>
+          </LinkEsterno>
         </div>
       </div>
 
       {/* CTA */}
       <div className="mt-12 text-center">
-        
+        <LinkEsterno
           href={`https://wa.me/${whatsappNumber}?text=${ctaWhatsappMessage}`}
-          target="_blank"
-          rel="noopener noreferrer"
           className="inline-block text-white px-8 py-4 rounded-lg text-lg font-medium transition-all shadow-md hover:shadow-lg hover:scale-105"
           style={{ backgroundColor: 'var(--color-primary)' }}
           onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'}
           onMouseLeave={e => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
         >
           {ctaText}
-        </a>
+        </LinkEsterno>
         <p className="text-sm mt-4" style={{ color: 'var(--color-text-muted)' }}>
           Sempre a vostra disposizione
         </p>
