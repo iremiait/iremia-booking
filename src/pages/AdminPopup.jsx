@@ -100,10 +100,7 @@ const AdminPopup = () => {
                 Email
               </label>
               <div className="relative">
-                <Mail
-                  size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
+                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="email"
                   value={email}
@@ -121,16 +118,13 @@ const AdminPopup = () => {
                 Password
               </label>
               <div className="relative">
-                <Lock
-                  size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
-                  placeholder="••••••••"
+                  placeholder="Password"
                   required
                   autoComplete="current-password"
                 />
@@ -145,9 +139,8 @@ const AdminPopup = () => {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
-                <span>&#9888;</span>
-                <span>{error}</span>
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {error}
               </div>
             )}
 
@@ -172,7 +165,7 @@ const AdminPopup = () => {
           </form>
 
           <div className="mt-6 text-center">
-            
+            <a
               href="/"
               className="text-sm text-teal-600 hover:text-teal-700 inline-flex items-center gap-1 transition"
             >
