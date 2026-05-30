@@ -77,15 +77,14 @@ const Gallery = ({ galleryImages }) => {
       URL.revokeObjectURL(blobUrl);
     } catch (err) {
       console.error('Errore download:', err);
-      // Fallback: apri in nuova tab
       window.open(img?.src || img, '_blank');
     } finally {
       setDownloading(false);
     }
   };
 
-  // Masonry columns con useMemo
-  const columns = useMemo(() => {
+  // Masonry columns per desktop (md+) con useMemo
+  const desktopColumns = useMemo(() => {
     const cols = [[], [], []];
     galleryImages.forEach((img, i) => cols[i % 3].push({ img, index: i }));
     return cols;
@@ -94,14 +93,75 @@ const Gallery = ({ galleryImages }) => {
   if (!galleryImages || galleryImages.length === 0) return null;
 
   const progress = lightboxIndex !== null ? ((lightboxIndex + 1) / galleryImages.length) * 100 : 0;
-
   const currentImg = lightboxIndex !== null ? galleryImages[lightboxIndex] : null;
   const currentIsBusinessCard = lightboxIndex !== null && isBusinessCard(currentImg, lightboxIndex);
+
+  // Componente card foto riutilizzabile
+  const PhotoCard = ({ img, index, isFeatured }) => {
+    const isBizCard = isBusinessCard(img, index);
+    return (
+      <div
+        onClick={() => openLightbox(index)}
+        className="relative overflow-hidden rounded-xl cursor-pointer group shadow-sm hover:shadow-2xl transition-all duration-500"
+        style={{ aspectRatio: isFeatured ? '4/3' : '4/3' }}
+      >
+        <img
+          src={thumbUrl(img.src || img)}
+          alt={img.alt || `Foto ${index + 1}`}
+          loading="lazy"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        />
+
+        {/* Overlay gradiente */}
+        <div
+          className="absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
+          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)' }}
+        />
+
+        {/* Titolo hover */}
+        {img.alt && (
+          <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+            <p className="text-white text-sm font-medium">{img.alt}</p>
+          </div>
+        )}
+
+        {/* Icona zoom */}
+        <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100">
+          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+          </svg>
+        </div>
+
+        {/* Badge featured — solo su desktop */}
+        {isFeatured && (
+          <div
+            className="absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium text-white hidden md:block"
+            style={{ backgroundColor: 'var(--color-primary)' }}
+          >
+            In evidenza
+          </div>
+        )}
+
+        {/* Bottone download biglietto */}
+        {isBizCard && (
+          <button
+            onClick={(e) => handleDownload(e, img)}
+            className="absolute bottom-2 right-2 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-105 active:scale-95"
+            style={{ backgroundColor: 'var(--color-primary)' }}
+            title="Scarica biglietto da visita"
+          >
+            <Download size={13} />
+            Scarica
+          </button>
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
       <section id="galleria" className="mt-20 max-w-7xl mx-auto px-4">
-        {/* Titolo sezione con decorazione */}
+        {/* Titolo sezione */}
         <div className="text-center mb-12">
           <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--color-primary)' }}>
             Esplora
@@ -109,7 +169,6 @@ const Gallery = ({ galleryImages }) => {
           <h3 className="text-4xl font-light mb-3" style={{ color: 'var(--color-text-primary)' }}>
             Scopri gli spazi
           </h3>
-          {/* Linea decorativa */}
           <div className="flex items-center justify-center gap-3 mb-3">
             <div className="h-px w-16" style={{ backgroundColor: 'var(--color-primary-100)' }}></div>
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
@@ -120,13 +179,19 @@ const Gallery = ({ galleryImages }) => {
           </p>
         </div>
 
-        {/* Masonry Grid con foto featured */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-          {columns.map((col, colIndex) => (
-            <div key={colIndex} className="flex flex-col gap-3 md:gap-4">
+        {/* ── MOBILE: griglia 2 colonne uniforme ── */}
+        <div className="grid grid-cols-2 gap-3 md:hidden">
+          {galleryImages.map((img, index) => (
+            <PhotoCard key={index} img={img} index={index} isFeatured={false} />
+          ))}
+        </div>
+
+        {/* ── DESKTOP: masonry 3 colonne ── */}
+        <div className="hidden md:grid md:grid-cols-3 gap-4">
+          {desktopColumns.map((col, colIndex) => (
+            <div key={colIndex} className="flex flex-col gap-4">
               {col.map(({ img, index }) => {
                 const isFeatured = index === 0;
-                const isBizCard = isBusinessCard(img, index);
                 return (
                   <div
                     key={index}
@@ -142,27 +207,23 @@ const Gallery = ({ galleryImages }) => {
                       style={{ minHeight: isFeatured ? '280px' : '180px' }}
                     />
 
-                    {/* Overlay gradiente */}
                     <div
                       className="absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
                       style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)' }}
                     />
 
-                    {/* Titolo che sale dal basso */}
                     {img.alt && (
                       <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
                         <p className="text-white text-sm font-medium">{img.alt}</p>
                       </div>
                     )}
 
-                    {/* Icona zoom */}
                     <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100">
                       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                       </svg>
                     </div>
 
-                    {/* Badge featured */}
                     {isFeatured && (
                       <div
                         className="absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-medium text-white"
@@ -172,8 +233,7 @@ const Gallery = ({ galleryImages }) => {
                       </div>
                     )}
 
-                    {/* Bottone download biglietto da visita (nella griglia) */}
-                    {isBizCard && (
+                    {isBusinessCard(img, index) && (
                       <button
                         onClick={(e) => handleDownload(e, img)}
                         className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-105 active:scale-95"
@@ -230,7 +290,7 @@ const Gallery = ({ galleryImages }) => {
             {lightboxIndex + 1} <span style={{ color: 'rgba(255,255,255,0.5)' }}>/ {galleryImages.length}</span>
           </div>
 
-          {/* Bottone download nel lightbox - solo per il biglietto da visita */}
+          {/* Bottone download nel lightbox */}
           {currentIsBusinessCard && (
             <button
               onClick={(e) => { e.stopPropagation(); handleDownload(e, currentImg); }}
