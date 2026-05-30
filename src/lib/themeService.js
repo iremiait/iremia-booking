@@ -118,54 +118,42 @@ export const PRESET_THEMES = [
 
 export const themeService = {
   async getTheme() {
-    try {
-      const { data, error } = await supabase
-        .from('theme_settings')
-        .select('*')
-        .maybeSingle();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Errore caricamento tema:', error);
-        return DEFAULT_THEME;
-      }
-      return data || DEFAULT_THEME;
-    } catch (error) {
-      console.error('Errore caricamento tema:', error);
-      return DEFAULT_THEME;
-    }
+    const { data, error } = await supabase
+      .from('theme_settings')
+      .select('*')
+      .maybeSingle();
+    if (error && error.code !== 'PGRST116') return DEFAULT_THEME;
+    return data || DEFAULT_THEME;
   },
 
   async updateTheme(id, themeData) {
-    try {
-      const { data, error } = await supabase
-        .from('theme_settings')
-        .update({ ...themeData, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      return data?.[0];
-    } catch (error) {
-      console.error('Errore salvataggio tema:', error);
-      throw error;
-    }
+    const { data, error } = await supabase
+      .from('theme_settings')
+      .update({ ...themeData, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data?.[0];
   },
 
   applyTheme(theme) {
     const root = document.documentElement;
-    root.style.setProperty('--color-primary', theme.color_primary);
-    root.style.setProperty('--color-primary-dark', theme.color_primary_dark);
-    root.style.setProperty('--color-primary-light', theme.color_primary_light);
-    root.style.setProperty('--color-primary-50', theme.color_primary_50);
-    root.style.setProperty('--color-primary-100', theme.color_primary_100);
-    root.style.setProperty('--color-accent', theme.color_accent);
-    root.style.setProperty('--color-accent-dark', theme.color_accent_dark);
-    root.style.setProperty('--color-accent-light', theme.color_accent_light);
-    root.style.setProperty('--color-text-primary', theme.color_text_primary);
-    root.style.setProperty('--color-text-secondary', theme.color_text_secondary);
-    root.style.setProperty('--color-text-muted', theme.color_text_muted);
-    root.style.setProperty('--color-bg-primary', theme.color_bg_primary);
-    root.style.setProperty('--color-bg-secondary', theme.color_bg_secondary);
-    root.style.setProperty('--color-bg-card', theme.color_bg_card);
+    const vars = {
+      '--color-primary': theme.color_primary,
+      '--color-primary-dark': theme.color_primary_dark,
+      '--color-primary-light': theme.color_primary_light,
+      '--color-primary-50': theme.color_primary_50,
+      '--color-primary-100': theme.color_primary_100,
+      '--color-accent': theme.color_accent,
+      '--color-accent-dark': theme.color_accent_dark,
+      '--color-accent-light': theme.color_accent_light,
+      '--color-text-primary': theme.color_text_primary,
+      '--color-text-secondary': theme.color_text_secondary,
+      '--color-text-muted': theme.color_text_muted,
+      '--color-bg-primary': theme.color_bg_primary,
+      '--color-bg-secondary': theme.color_bg_secondary,
+      '--color-bg-card': theme.color_bg_card,
+    };
+    Object.entries(vars).forEach(([key, val]) => root.style.setProperty(key, val));
   },
 };
