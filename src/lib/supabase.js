@@ -25,29 +25,6 @@ export const popupService = {
     return data
   },
 
-  async uploadImage(file) {
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`
-
-    const { error } = await supabase.storage
-      .from('popup-images')
-      .upload(fileName, file, { cacheControl: '3600', upsert: false })
-
-    if (error) throw error
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('popup-images')
-      .getPublicUrl(fileName)
-
-    return publicUrl
-  },
-
-  async deleteImage(imageUrl) {
-    if (!imageUrl) return
-    const fileName = imageUrl.split('/').pop()
-    await supabase.storage.from('popup-images').remove([fileName])
-  },
-
   async createPopup(popupData) {
     const { data, error } = await supabase
       .from('popup_config')
@@ -70,14 +47,6 @@ export const popupService = {
   },
 
   async deletePopup(id) {
-    const { data: popup } = await supabase
-      .from('popup_config')
-      .select('image_url')
-      .eq('id', id)
-      .single()
-
-    if (popup?.image_url) await this.deleteImage(popup.image_url)
-
     const { error } = await supabase
       .from('popup_config')
       .delete()
