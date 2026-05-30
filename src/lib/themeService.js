@@ -15,6 +15,7 @@ export const DEFAULT_THEME = {
   color_bg_primary: '#f0fdfa',
   color_bg_secondary: '#ffffff',
   color_bg_card: '#ffffff',
+  color_bg_header: '#ffffff',
   theme_name: 'Iremia Default',
 };
 
@@ -36,6 +37,7 @@ export const PRESET_THEMES = [
       color_bg_primary: '#f0fdfa',
       color_bg_secondary: '#ffffff',
       color_bg_card: '#ffffff',
+      color_bg_header: '#ffffff',
     },
   },
   {
@@ -55,6 +57,7 @@ export const PRESET_THEMES = [
       color_bg_primary: '#f0fdf4',
       color_bg_secondary: '#ffffff',
       color_bg_card: '#f9fafb',
+      color_bg_header: '#f0fdf4',
     },
   },
   {
@@ -74,6 +77,7 @@ export const PRESET_THEMES = [
       color_bg_primary: '#f8fafc',
       color_bg_secondary: '#ffffff',
       color_bg_card: '#ffffff',
+      color_bg_header: '#eff6ff',
     },
   },
   {
@@ -93,6 +97,7 @@ export const PRESET_THEMES = [
       color_bg_primary: '#fff7ed',
       color_bg_secondary: '#fffbf5',
       color_bg_card: '#ffffff',
+      color_bg_header: '#fff7ed',
     },
   },
   {
@@ -112,6 +117,7 @@ export const PRESET_THEMES = [
       color_bg_primary: '#f5f3ff',
       color_bg_secondary: '#ffffff',
       color_bg_card: '#faf9ff',
+      color_bg_header: '#f5f3ff',
     },
   },
 ];
@@ -153,6 +159,7 @@ export const themeService = {
       '--color-bg-primary': theme.color_bg_primary,
       '--color-bg-secondary': theme.color_bg_secondary,
       '--color-bg-card': theme.color_bg_card,
+      '--color-bg-header': theme.color_bg_header || '#ffffff',
     };
     Object.entries(vars).forEach(([key, val]) => root.style.setProperty(key, val));
   },
