@@ -1,10 +1,19 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 
 const Gallery = ({ galleryImages }) => {
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [fade, setFade] = useState(true);
+  const [downloading, setDownloading] = useState(false);
   const touchStartX = useRef(null);
+
+  // Identifica il biglietto da visita: per alt (case-insensitive) o ultima immagine
+  const isBusinessCard = useCallback((img, index) => {
+    const alt = (img?.alt || '').toLowerCase();
+    if (alt.includes('biglietto da visita')) return true;
+    if (index === galleryImages.length - 1) return true;
+    return false;
+  }, [galleryImages]);
 
   const openLightbox = (index) => {
     setLightboxIndex(index);
@@ -50,6 +59,31 @@ const Gallery = ({ galleryImages }) => {
   const thumbUrl = (url) => optimizeUrl(url, 600);
   const fullUrl = (url) => optimizeUrl(url, 1400);
 
+  // Download con fetch + blob per forzare il salvataggio
+  const handleDownload = async (e, img) => {
+    e.stopPropagation();
+    setDownloading(true);
+    try {
+      const url = img?.src || img;
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'iremia-biglietto-da-visita.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error('Errore download:', err);
+      // Fallback: apri in nuova tab
+      window.open(img?.src || img, '_blank');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   // Masonry columns con useMemo
   const columns = useMemo(() => {
     const cols = [[], [], []];
@@ -60,6 +94,9 @@ const Gallery = ({ galleryImages }) => {
   if (!galleryImages || galleryImages.length === 0) return null;
 
   const progress = lightboxIndex !== null ? ((lightboxIndex + 1) / galleryImages.length) * 100 : 0;
+
+  const currentImg = lightboxIndex !== null ? galleryImages[lightboxIndex] : null;
+  const currentIsBusinessCard = lightboxIndex !== null && isBusinessCard(currentImg, lightboxIndex);
 
   return (
     <>
@@ -89,6 +126,7 @@ const Gallery = ({ galleryImages }) => {
             <div key={colIndex} className="flex flex-col gap-3 md:gap-4">
               {col.map(({ img, index }) => {
                 const isFeatured = index === 0;
+                const isBizCard = isBusinessCard(img, index);
                 return (
                   <div
                     key={index}
@@ -104,7 +142,7 @@ const Gallery = ({ galleryImages }) => {
                       style={{ minHeight: isFeatured ? '280px' : '180px' }}
                     />
 
-                    {/* Overlay gradiente migliorato */}
+                    {/* Overlay gradiente */}
                     <div
                       className="absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
                       style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)' }}
@@ -133,6 +171,19 @@ const Gallery = ({ galleryImages }) => {
                         In evidenza
                       </div>
                     )}
+
+                    {/* Bottone download biglietto da visita (nella griglia) */}
+                    {isBizCard && (
+                      <button
+                        onClick={(e) => handleDownload(e, img)}
+                        className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-105 active:scale-95"
+                        style={{ backgroundColor: 'var(--color-primary)' }}
+                        title="Scarica biglietto da visita"
+                      >
+                        <Download size={13} />
+                        Scarica
+                      </button>
+                    )}
                   </div>
                 );
               })}
@@ -141,7 +192,7 @@ const Gallery = ({ galleryImages }) => {
         </div>
       </section>
 
-      {/* Lightbox migliorato */}
+      {/* Lightbox */}
       {lightboxIndex !== null && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center"
@@ -171,13 +222,27 @@ const Gallery = ({ galleryImages }) => {
             <X size={20} />
           </button>
 
-          {/* Contatore elegante */}
+          {/* Contatore */}
           <div
             className="absolute top-5 left-1/2 -translate-x-1/2 text-sm px-5 py-1.5 rounded-full font-medium"
             style={{ color: 'white', backgroundColor: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(4px)' }}
           >
             {lightboxIndex + 1} <span style={{ color: 'rgba(255,255,255,0.5)' }}>/ {galleryImages.length}</span>
           </div>
+
+          {/* Bottone download nel lightbox - solo per il biglietto da visita */}
+          {currentIsBusinessCard && (
+            <button
+              onClick={(e) => { e.stopPropagation(); handleDownload(e, currentImg); }}
+              disabled={downloading}
+              className="absolute top-5 left-5 z-10 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-60"
+              style={{ backgroundColor: 'var(--color-primary)', backdropFilter: 'blur(4px)' }}
+              title="Scarica biglietto da visita"
+            >
+              <Download size={16} className={downloading ? 'animate-bounce' : ''} />
+              {downloading ? 'Download...' : 'Scarica biglietto'}
+            </button>
+          )}
 
           {/* Freccia sinistra */}
           <button
@@ -218,7 +283,7 @@ const Gallery = ({ galleryImages }) => {
             <ChevronRight size={24} />
           </button>
 
-          {/* Thumbnail strip migliorata */}
+          {/* Thumbnail strip */}
           <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 max-w-lg overflow-x-auto px-4 pb-1">
             {galleryImages.map((img, i) => (
               <div
