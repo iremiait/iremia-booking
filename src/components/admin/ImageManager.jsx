@@ -291,8 +291,63 @@ const ImageManager = () => {
         </h3>
 
         <div className="space-y-3 mb-6">
+          {/* Upload diretto su Cloudinary */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL Immagine *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Titolo / Descrizione (per l'upload)</label>
+            <input
+              type="text"
+              value={newAlt}
+              onChange={(e) => setNewAlt(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              placeholder="Es: Soggiorno, Camera da letto, Biglietto da visita..."
+            />
+          </div>
+          <label className="block cursor-pointer">
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-500 transition text-center">
+              <Upload className="mx-auto mb-1 text-gray-400" size={24} />
+              <p className="text-sm text-gray-600">
+                {uploading ? '⏳ Caricamento su Cloudinary...' : '📤 Carica foto su Cloudinary'}
+              </p>
+              <p className="text-xs text-gray-400">JPG, PNG, WebP (max 10MB) · Le immagini vengono caricate su Cloudinary</p>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                setUploading(true);
+                try {
+                  const url = await uploadService.uploadImage(file);
+                  if (url) {
+                    const newImage = { url, alt: newAlt.trim() || `Foto ${galleryImages.length + 1}` };
+                    const updated = [...galleryImages, newImage];
+                    setGalleryImages(updated);
+                    galleryRef.current = updated;
+                    setNewAlt('');
+                    alert('✅ Foto caricata! Clicca "💾 Salva Galleria" per confermare.');
+                  }
+                } catch (error) {
+                  alert('❌ Errore upload: ' + error.message);
+                } finally {
+                  setUploading(false);
+                  e.target.value = '';
+                }
+              }}
+              className="hidden"
+              disabled={uploading}
+            />
+          </label>
+
+          {/* Separatore */}
+          <div className="flex items-center gap-4">
+            <div className="flex-1 border-t border-gray-300"></div>
+            <span className="text-sm text-gray-500">oppure aggiungi URL</span>
+            <div className="flex-1 border-t border-gray-300"></div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">URL Immagine</label>
             <input
               type="url"
               value={newUrl}
@@ -302,23 +357,12 @@ const ImageManager = () => {
               placeholder="https://res.cloudinary.com/..."
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Titolo / Descrizione</label>
-            <input
-              type="text"
-              value={newAlt}
-              onChange={(e) => setNewAlt(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && addImage()}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-              placeholder="Es: Soggiorno, Camera da letto, Biglietto da visita..."
-            />
-          </div>
           <button
             onClick={addImage}
             className="w-full px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center justify-center gap-2"
           >
             <Plus size={18} />
-            Aggiungi Foto
+            Aggiungi da URL
           </button>
         </div>
 
