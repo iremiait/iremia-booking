@@ -53,58 +53,66 @@ function App() {
   ];
 
   useEffect(() => {
-    themeService.getTheme().then(themeService.applyTheme).catch(() => {});
-  }, []);
+    // Carica tutto in parallelo con Promise.all
+    const loadAll = async () => {
+      try {
+        const [
+          themeData,
+          contactData,
+          imagesData,
+          reviewsData,
+          sectionsData,
+        ] = await Promise.all([
+          themeService.getTheme().catch(() => null),
+          contentService.getContactInfo().catch(() => null),
+          supabase.from('site_images').select('*').maybeSingle().then(r => r.data).catch(() => null),
+          reviewService.getActiveReviews().catch(() => []),
+          contentService.getSectionVisibility().catch(() => []),
+        ]);
 
-  useEffect(() => {
-    contentService.getContactInfo().then(data => {
-      if (data?.whatsapp_link) {
-        setWhatsappLink(data.whatsapp_link + '?text=Ciao!%20Vorrei%20prenotare');
-      }
-    }).catch(() => {});
-  }, []);
+        // Applica tema
+        if (themeData) themeService.applyTheme(themeData);
 
-  useEffect(() => {
-    const loadImages = async () => {
-      const { data, error } = await supabase
-        .from('site_images')
-        .select('*')
-        .maybeSingle();
-      if (error && error.code !== 'PGRST116') return;
-      if (!data) return;
-      if (data.hero_url) setHeroImage(data.hero_url);
-      if (data.logo_url) setLogoImage(data.logo_url);
-      if (data.gallery_urls?.length > 0) {
-        setGalleryImages(
-          data.gallery_urls.map((item, index) =>
-            typeof item === 'string'
-              ? { src: item, alt: `Foto ${index + 1}` }
-              : { src: item.url, alt: item.alt || `Foto ${index + 1}` }
-          )
+        // Applica contatti
+        if (contactData?.whatsapp_link) {
+          setWhatsappLink(contactData.whatsapp_link + '?text=Ciao!%20Vorrei%20prenotare');
+        }
+
+        // Applica immagini
+        if (imagesData) {
+          if (imagesData.hero_url) setHeroImage(imagesData.hero_url);
+          if (imagesData.logo_url) setLogoImage(imagesData.logo_url);
+          if (imagesData.gallery_urls?.length > 0) {
+            setGalleryImages(
+              imagesData.gallery_urls.map((item, index) =>
+                typeof item === 'string'
+                  ? { src: item, alt: `Foto ${index + 1}` }
+                  : { src: item.url, alt: item.alt || `Foto ${index + 1}` }
+              )
+            );
+          }
+        }
+
+        // Applica recensioni
+        setReviews(reviewsData);
+        setReviewsLoading(false);
+
+        // Applica sezioni
+        setDynamicSections(
+          sectionsData
+            .filter(s => s.is_visible && SECTION_COMPONENTS[s.section_name])
+            .sort((a, b) => (a.order_position || 0) - (b.order_position || 0))
         );
+        setSectionsLoading(false);
+
+      } catch (error) {
+        console.error('Errore caricamento dati:', error);
+        setReviewsLoading(false);
+        setSectionsLoading(false);
       }
     };
-    loadImages();
-  }, []);
 
-  useEffect(() => {
-    reviewService.getActiveReviews()
-      .then(setReviews)
-      .catch(() => {})
-      .finally(() => setReviewsLoading(false));
-  }, []);
-
-  useEffect(() => {
-    const loadSections = async () => {
-      const sections = await contentService.getSectionVisibility().catch(() => []);
-      setDynamicSections(
-        sections
-          .filter(s => s.is_visible && SECTION_COMPONENTS[s.section_name])
-          .sort((a, b) => (a.order_position || 0) - (b.order_position || 0))
-      );
-      setSectionsLoading(false);
-    };
-    loadSections();
+    loadAll();
   }, []);
 
   return (
