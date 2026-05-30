@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Trash2, Image as ImageIcon, GripVertical, Plus, Link, Edit2, Check, X, Upload } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { uploadService } from '../../lib/uploadService';
 
 const ImageManager = () => {
   const [heroImage, setHeroImage] = useState('');
@@ -78,51 +79,37 @@ const ImageManager = () => {
     setSaving(false);
   };
 
-  const uploadToSupabase = async (file, type) => {
-    if (!file) return null;
-    if (file.size > 5 * 1024 * 1024) { alert('❌ File troppo grande. Max 5MB'); return null; }
-    if (!file.type.startsWith('image/')) { alert('❌ Seleziona un\'immagine valida'); return null; }
-
-    setUploading(true);
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${type}_${Date.now()}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage
-        .from('popup-images')
-        .upload(fileName, file);
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('popup-images')
-        .getPublicUrl(fileName);
-
-      return publicUrl;
-    } catch (error) {
-      console.error('❌ Errore upload:', error);
-      alert('❌ Errore upload: ' + error.message);
-      return null;
-    } finally {
-      setUploading(false);
-    }
-  };
-
   const handleHeroUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const url = await uploadToSupabase(file, 'hero');
-    if (url) {
-      setHeroImage(url);
-      await saveField({ hero_url: url });
+    setUploading(true);
+    try {
+      const url = await uploadService.uploadImage(file);
+      if (url) {
+        setHeroImage(url);
+        await saveField({ hero_url: url });
+      }
+    } catch (error) {
+      alert('❌ Errore upload: ' + error.message);
+    } finally {
+      setUploading(false);
     }
   };
 
   const handleLogoUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const url = await uploadToSupabase(file, 'logo');
-    if (url) {
-      setLogoImage(url);
-      await saveField({ logo_url: url });
+    setUploading(true);
+    try {
+      const url = await uploadService.uploadImage(file);
+      if (url) {
+        setLogoImage(url);
+        await saveField({ logo_url: url });
+      }
+    } catch (error) {
+      alert('❌ Errore upload: ' + error.message);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -136,7 +123,6 @@ const ImageManager = () => {
     await saveField({ logo_url: logoImage.trim() });
   };
 
-  // Gallery
   const addImage = () => {
     const trimmed = newUrl.trim();
     if (!trimmed) return;
@@ -162,7 +148,6 @@ const ImageManager = () => {
     setEditingAlt(galleryImages[index].alt);
   };
 
-  // FIX: salva automaticamente su Supabase quando si conferma la modifica alt
   const saveAlt = async (index) => {
     const updated = galleryImages.map((img, i) =>
       i === index ? { ...img, alt: editingAlt.trim() || img.alt } : img
@@ -170,7 +155,6 @@ const ImageManager = () => {
     setGalleryImages(updated);
     galleryRef.current = updated;
     setEditingIndex(null);
-    // Salva subito su Supabase senza bisogno di cliccare "Salva Galleria"
     setSaving(true);
     try {
       const { error } = await supabase
@@ -178,7 +162,6 @@ const ImageManager = () => {
         .update({ gallery_urls: updated })
         .eq('id', dbId);
       if (error) throw error;
-      // Nessun alert per non disturbare, l'utente vede la modifica applicata
     } catch (error) {
       console.error('❌ Errore salvataggio alt:', error);
       alert('❌ Errore nel salvataggio del titolo: ' + error.message);
@@ -191,7 +174,6 @@ const ImageManager = () => {
     await saveField({ gallery_urls: galleryRef.current });
   };
 
-  // Drag & Drop
   const handleDragStart = (index) => setDraggedIndex(index);
   const handleDragOver = (e, index) => {
     e.preventDefault();
@@ -251,9 +233,9 @@ const ImageManager = () => {
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-500 transition text-center">
             <Upload className="mx-auto mb-1 text-gray-400" size={24} />
             <p className="text-sm text-gray-600">
-              {uploading ? '⏳ Caricamento...' : 'oppure carica un file'}
+              {uploading ? '⏳ Caricamento su Cloudinary...' : 'oppure carica un file'}
             </p>
-            <p className="text-xs text-gray-400">JPG, PNG (max 5MB)</p>
+            <p className="text-xs text-gray-400">JPG, PNG, WebP (max 10MB) · Le immagini vengono caricate su Cloudinary</p>
           </div>
           <input type="file" accept="image/*" onChange={handleHeroUpload} className="hidden" disabled={uploading} />
         </label>
@@ -293,9 +275,9 @@ const ImageManager = () => {
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-500 transition text-center">
             <Upload className="mx-auto mb-1 text-gray-400" size={24} />
             <p className="text-sm text-gray-600">
-              {uploading ? '⏳ Caricamento...' : 'oppure carica un file'}
+              {uploading ? '⏳ Caricamento su Cloudinary...' : 'oppure carica un file'}
             </p>
-            <p className="text-xs text-gray-400">PNG trasparente consigliato (max 5MB)</p>
+            <p className="text-xs text-gray-400">JPG, PNG, WebP (max 10MB) · Le immagini vengono caricate su Cloudinary</p>
           </div>
           <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" disabled={uploading} />
         </label>
@@ -358,7 +340,6 @@ const ImageManager = () => {
           </button>
         </div>
 
-        {/* Nota informativa */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
           <p className="text-xs text-blue-700">
             💡 <strong>Modifica titolo:</strong> clicca ✏️ sulla foto, modifica e premi ✓ — salva automaticamente.
@@ -410,7 +391,6 @@ const ImageManager = () => {
                     #{index + 1}
                   </div>
 
-                  {/* Indicatore biglietto da visita */}
                   {image.alt?.toLowerCase().includes('biglietto da visita') && (
                     <div className="absolute top-2 right-2 bg-teal-600 text-white text-xs px-2 py-1 rounded-lg">
                       📇
