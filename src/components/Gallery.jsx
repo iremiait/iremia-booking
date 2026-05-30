@@ -142,11 +142,11 @@ const Gallery = ({ galleryImages }) => {
           </div>
         )}
 
-        {/* Bottone download biglietto */}
+        {/* Bottone download biglietto — sempre visibile su mobile, hover su desktop */}
         {isBizCard && (
           <button
             onClick={(e) => handleDownload(e, img)}
-            className="absolute bottom-2 right-2 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-105 active:scale-95"
+            className="absolute bottom-2 right-2 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white shadow-lg transition-all duration-300 active:scale-95 opacity-100 md:opacity-0 md:group-hover:opacity-100"
             style={{ backgroundColor: 'var(--color-primary)' }}
             title="Scarica biglietto da visita"
           >
