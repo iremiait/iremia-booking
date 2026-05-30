@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Popup from './components/Popup';
+import CookieBanner from './components/CookieBanner';
 import Hero from './components/Hero';
 import Apartment from './components/Apartment';
 import HouseRules from './components/HouseRules';
@@ -113,6 +114,7 @@ function App() {
       style={{ background: 'linear-gradient(to bottom, var(--color-primary-100), var(--color-primary-50), var(--color-primary-100))' }}
     >
       <Popup />
+      <CookieBanner />
 
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
