@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { LogOut } from 'lucide-react';
 import ImageManager from './ImageManager';
 import ReviewManager from './ReviewManager';
 import AboutManager from './AboutManager';
@@ -13,7 +14,7 @@ import HeroSectionManager from './HeroSectionManager';
 import PopupManager from './PopupManager';
 import ThemeManager from './ThemeManager';
 
-const PopupDashboard = () => {
+const PopupDashboard = ({ onLogout }) => {
   const tabs = [
     { id: 'images', label: 'Immagini', icon: '🖼️', component: ImageManager },
     { id: 'reviews', label: 'Recensioni', icon: '⭐', component: ReviewManager },
@@ -35,16 +36,34 @@ const PopupDashboard = () => {
   const activeTabData = tabs.find(tab => tab.id === activeTab);
   const ActiveComponent = activeTabData?.component;
 
+  const handleLogout = async () => {
+    if (confirm('Sei sicuro di voler uscire?')) {
+      await onLogout();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
+
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">📊 Dashboard Admin</h1>
-          <p className="text-gray-600">Gestisci tutti i contenuti del sito Iremia</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">📊 Dashboard Admin</h1>
+            <p className="text-gray-600">Gestisci tutti i contenuti del sito Iremia</p>
+          </div>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-5 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition shadow-sm font-medium"
+          >
+            <LogOut size={18} />
+            Esci
+          </button>
         </div>
 
-        {/* Tab Navigation - Scrollable */}
+        {/* Tab Navigation */}
         <div className="bg-white rounded-lg shadow-lg mb-6 overflow-x-auto">
           <div className="flex gap-2 p-4 min-w-min">
             {tabs.map(tab => (
@@ -83,7 +102,7 @@ const PopupDashboard = () => {
 
         {/* Footer */}
         <div className="mt-8 text-center text-gray-600 text-sm">
-          <p>© {new Date().getFullYear()} Iremia Dashboard - Ultimi aggiornamenti salvati automaticamente</p>
+          <p>© {new Date().getFullYear()} Iremia Dashboard</p>
         </div>
       </div>
     </div>
