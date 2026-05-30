@@ -34,8 +34,14 @@ body {
   box-sizing: border-box;
 }
 
-/* Scroll offset per header fisso */
+/* Scroll offset per header fisso — mobile più basso, desktop più alto */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 175px;
+  scroll-padding-top: 80px;
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 175px;
+  }
 }
