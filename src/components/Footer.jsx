@@ -77,13 +77,33 @@ const Footer = ({ logoImage }) => {
           </div>
         </div>
 
-        <div className="mt-6 pt-6 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }}>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            © {copyrightYear} Iremia.it · Casa Vacanza Lama Mocogno
-          </p>
-          <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            CIR: {cirCode} · CIN: {cinCode}
-          </p>
+        <div className="mt-6 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }}>
+          <div className="text-center">
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              © {copyrightYear} Iremia.it · Casa Vacanza Lama Mocogno
+            </p>
+            <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              CIR: {cirCode} · CIN: {cinCode}
+            </p>
+            {/* Link legali */}
+            <div className="flex items-center justify-center gap-4 mt-3">
+              <a
+                href="/privacy"
+                className="text-xs transition-opacity hover:opacity-80"
+                style={{ color: 'rgba(255,255,255,0.4)' }}
+              >
+                Privacy Policy
+              </a>
+              <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
+              <a
+                href="/cookie"
+                className="text-xs transition-opacity hover:opacity-80"
+                style={{ color: 'rgba(255,255,255,0.4)' }}
+              >
+                Cookie Policy
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
