@@ -26,9 +26,8 @@ const Cookie = () => {
     setCurrentConsent('accepted');
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
-    // Carica GA se non già caricato
     if (!window._gaLoaded) {
-      import('./CookieBanner').then(m => m.loadGoogleAnalytics?.());
+      import('../components/CookieBanner').then(m => m.loadGoogleAnalytics?.());
     }
   };
 
