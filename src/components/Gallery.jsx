@@ -7,11 +7,9 @@ const Gallery = ({ galleryImages }) => {
 
   const openLightbox = (index) => setLightboxIndex(index);
   const closeLightbox = () => setLightboxIndex(null);
-
   const prev = () => setLightboxIndex((lightboxIndex - 1 + galleryImages.length) % galleryImages.length);
   const next = () => setLightboxIndex((lightboxIndex + 1) % galleryImages.length);
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKey = (e) => {
       if (lightboxIndex === null) return;
@@ -23,11 +21,7 @@ const Gallery = ({ galleryImages }) => {
     return () => window.removeEventListener('keydown', handleKey);
   }, [lightboxIndex]);
 
-  // Touch swipe
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
+  const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
   const handleTouchEnd = (e) => {
     if (touchStartX.current === null) return;
     const diff = touchStartX.current - e.changedTouches[0].clientX;
@@ -35,16 +29,13 @@ const Gallery = ({ galleryImages }) => {
     touchStartX.current = null;
   };
 
-  // Cloudinary ottimizzazione URL
   const optimizeUrl = (url, width = 800) => {
     if (!url.includes('cloudinary.com')) return url;
     return url.replace('/upload/', `/upload/w_${width},q_auto,f_auto/`);
   };
-
   const thumbUrl = (url) => optimizeUrl(url, 600);
   const fullUrl = (url) => optimizeUrl(url, 1400);
 
-  // Masonry columns
   const getColumns = () => {
     const cols = [[], [], []];
     galleryImages.forEach((img, i) => cols[i % 3].push({ img, index: i }));
@@ -59,10 +50,12 @@ const Gallery = ({ galleryImages }) => {
     <>
       <section id="galleria" className="mt-20 max-w-7xl mx-auto px-4">
         <div className="text-center mb-10">
-          <h3 className="text-3xl font-light text-gray-800 mb-2">
+          <h3 className="text-3xl font-light mb-2" style={{ color: 'var(--color-text-primary)' }}>
             Scopri gli spazi
           </h3>
-          <p className="text-gray-500 text-sm">Clicca su una foto per ingrandirla</p>
+          <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
+            Clicca su una foto per ingrandirla
+          </p>
         </div>
 
         {/* Masonry Grid */}
@@ -81,12 +74,12 @@ const Gallery = ({ galleryImages }) => {
                     loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4"
+                    style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }}
+                  >
                     {img.alt && (
-                      <span className="text-white text-sm font-medium">
-                        {img.alt}
-                      </span>
+                      <span className="text-white text-sm font-medium">{img.alt}</span>
                     )}
                   </div>
                 </div>
@@ -99,7 +92,8 @@ const Gallery = ({ galleryImages }) => {
       {/* Lightbox */}
       {lightboxIndex !== null && (
         <div
-          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(0,0,0,0.95)' }}
           onClick={closeLightbox}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -107,36 +101,38 @@ const Gallery = ({ galleryImages }) => {
           {/* Chiudi */}
           <button
             onClick={closeLightbox}
-            className="absolute top-4 right-4 text-white/70 hover:text-white transition z-10 bg-white/10 rounded-full p-2"
+            className="absolute top-4 right-4 z-10 p-2 rounded-full transition-all hover:opacity-75"
+            style={{ color: 'rgba(255,255,255,0.7)', backgroundColor: 'rgba(255,255,255,0.1)' }}
           >
             <X size={24} />
           </button>
 
           {/* Contatore */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white/70 text-sm bg-black/40 px-4 py-1 rounded-full">
+          <div
+            className="absolute top-4 left-1/2 -translate-x-1/2 text-sm px-4 py-1 rounded-full"
+            style={{ color: 'rgba(255,255,255,0.7)', backgroundColor: 'rgba(0,0,0,0.4)' }}
+          >
             {lightboxIndex + 1} / {galleryImages.length}
           </div>
 
           {/* Freccia sinistra */}
           <button
             onClick={(e) => { e.stopPropagation(); prev(); }}
-            className="absolute left-4 text-white/70 hover:text-white transition bg-white/10 hover:bg-white/20 rounded-full p-3 z-10"
+            className="absolute left-4 z-10 p-3 rounded-full transition-all hover:opacity-75"
+            style={{ color: 'rgba(255,255,255,0.7)', backgroundColor: 'rgba(255,255,255,0.1)' }}
           >
             <ChevronLeft size={28} />
           </button>
 
           {/* Immagine */}
-          <div
-            className="max-w-5xl max-h-[85vh] px-16"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="max-w-5xl max-h-[85vh] px-16" onClick={(e) => e.stopPropagation()}>
             <img
               src={fullUrl(galleryImages[lightboxIndex]?.src || galleryImages[lightboxIndex])}
               alt={galleryImages[lightboxIndex]?.alt || ''}
               className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
             />
             {galleryImages[lightboxIndex]?.alt && (
-              <p className="text-white/60 text-center text-sm mt-3">
+              <p className="text-center text-sm mt-3" style={{ color: 'rgba(255,255,255,0.6)' }}>
                 {galleryImages[lightboxIndex].alt}
               </p>
             )}
@@ -145,7 +141,8 @@ const Gallery = ({ galleryImages }) => {
           {/* Freccia destra */}
           <button
             onClick={(e) => { e.stopPropagation(); next(); }}
-            className="absolute right-4 text-white/70 hover:text-white transition bg-white/10 hover:bg-white/20 rounded-full p-3 z-10"
+            className="absolute right-4 z-10 p-3 rounded-full transition-all hover:opacity-75"
+            style={{ color: 'rgba(255,255,255,0.7)', backgroundColor: 'rgba(255,255,255,0.1)' }}
           >
             <ChevronRight size={28} />
           </button>
@@ -157,14 +154,11 @@ const Gallery = ({ galleryImages }) => {
                 key={i}
                 onClick={(e) => { e.stopPropagation(); setLightboxIndex(i); }}
                 className={`flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden cursor-pointer transition border-2 ${
-                  i === lightboxIndex ? 'border-white' : 'border-transparent opacity-50 hover:opacity-80'
+                  i === lightboxIndex ? 'opacity-100' : 'opacity-50 hover:opacity-80'
                 }`}
+                style={{ borderColor: i === lightboxIndex ? 'var(--color-primary)' : 'transparent' }}
               >
-                <img
-                  src={thumbUrl(img.src || img)}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
+                <img src={thumbUrl(img.src || img)} alt="" className="w-full h-full object-cover" />
               </div>
             ))}
           </div>
