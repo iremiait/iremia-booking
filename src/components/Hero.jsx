@@ -89,7 +89,7 @@ const Hero = ({ heroImage }) => {
 
         {/* Info Cards — sempre 3 colonne */}
         {data.info_cards && data.info_cards.length > 0 && (
-          <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto mb-12">
+          <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto">
             {data.info_cards.map((card, index) => (
               <div
                 key={index}
@@ -103,22 +103,6 @@ const Hero = ({ heroImage }) => {
             ))}
           </div>
         )}
-
-        {/* CTA Button */}
-        <a
-          href="#contatti"
-          className="inline-block font-bold py-3 px-8 rounded-lg transition-all hover:scale-105 hover:shadow-lg text-white"
-          style={{ backgroundColor: 'var(--color-accent)' }}
-          onMouseEnter={e => e.target.style.backgroundColor = 'var(--color-accent-dark)'}
-          onMouseLeave={e => e.target.style.backgroundColor = 'var(--color-accent)'}
-        >
-          Scopri di più
-        </a>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
-        <div className="animate-bounce text-white text-2xl">↓</div>
       </div>
     </section>
   );
