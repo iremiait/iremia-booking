@@ -42,6 +42,7 @@ const Popup = () => {
   if (!isVisible || !popupData) return null;
 
   const hasImage = !!popupData.image_url;
+  const hasText = !!(popupData.title || popupData.message || popupData.button_text);
 
   return (
     <>
@@ -50,59 +51,88 @@ const Popup = () => {
         style={{ backgroundColor: 'rgba(0,0,0,0.5)', animation: 'fadeIn 0.3s ease-out' }}
         onClick={handleClose}
       >
+        {/* max-w-lg = 512px, più generoso di prima */}
         <div
-          className="rounded-2xl shadow-2xl max-w-md w-full relative overflow-hidden"
+          className="relative overflow-hidden w-full"
           style={{
+            maxWidth: '560px',
             backgroundColor: popupData.bg_color || 'var(--color-primary)',
-            animation: 'slideUp 0.4s ease-out'
+            borderRadius: '1rem',
+            boxShadow: '0 25px 50px rgba(0,0,0,0.35)',
+            animation: 'slideUp 0.4s ease-out',
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Pulsante chiudi — sempre sopra tutto */}
+          {/* Pulsante chiudi */}
           <button
             onClick={handleClose}
             className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full text-xl font-light transition-opacity hover:opacity-75"
             style={{
               color: popupData.text_color || '#FFFFFF',
               backgroundColor: 'rgba(0,0,0,0.25)',
+              lineHeight: 1,
             }}
           >
             ×
           </button>
 
-          {/* Immagine full-width in cima, senza testo sopra */}
+          {/* Immagine: larghezza piena, centrata, senza tagli */}
           {hasImage && (
-            <div className="w-full">
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0,0,0,0.08)',
+              }}
+            >
               <img
                 src={popupData.image_url}
                 alt={popupData.title || 'Popup'}
-                className="w-full object-contain"
-                style={{ maxHeight: '280px', display: 'block' }}
+                style={{
+                  width: '100%',
+                  maxHeight: '320px',
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
               />
             </div>
           )}
 
-          {/* Testo e pulsante — sempre sotto l'immagine */}
-          {(popupData.title || popupData.message || popupData.button_text) && (
+          {/* Testo e CTA — sotto l'immagine */}
+          {hasText && (
             <div
-              className="p-6 text-center"
-              style={{ color: popupData.text_color || '#FFFFFF' }}
+              className="text-center"
+              style={{
+                padding: '1.5rem 2rem 2rem',
+                color: popupData.text_color || '#FFFFFF',
+              }}
             >
               {popupData.title && (
-                <h3 className="text-2xl font-light mb-3">{popupData.title}</h3>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 300, marginBottom: '0.75rem' }}>
+                  {popupData.title}
+                </h3>
               )}
 
               {popupData.message && (
-                <p className="text-base mb-5 opacity-90 leading-relaxed">{popupData.message}</p>
+                <p style={{ fontSize: '1rem', opacity: 0.9, lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                  {popupData.message}
+                </p>
               )}
 
               {popupData.button_text && (
                 <button
                   onClick={handleClick}
-                  className="px-8 py-3 rounded-lg font-medium transition-all hover:scale-105 hover:shadow-lg"
+                  className="transition-all hover:scale-105 hover:shadow-lg"
                   style={{
                     backgroundColor: 'white',
-                    color: popupData.bg_color || 'var(--color-primary)'
+                    color: popupData.bg_color || 'var(--color-primary)',
+                    padding: '0.75rem 2rem',
+                    borderRadius: '0.5rem',
+                    fontWeight: 500,
+                    border: 'none',
+                    cursor: 'pointer',
                   }}
                 >
                   {popupData.button_text}
@@ -116,11 +146,11 @@ const Popup = () => {
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; }
-          to { opacity: 1; }
+          to   { opacity: 1; }
         }
         @keyframes slideUp {
           from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+          to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </>
