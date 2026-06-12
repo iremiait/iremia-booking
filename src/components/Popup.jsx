@@ -51,7 +51,6 @@ const Popup = () => {
         style={{ backgroundColor: 'rgba(0,0,0,0.5)', animation: 'fadeIn 0.3s ease-out' }}
         onClick={handleClose}
       >
-        {/* max-w-lg = 512px, più generoso di prima */}
         <div
           className="relative overflow-hidden w-full"
           style={{
@@ -76,7 +75,7 @@ const Popup = () => {
             ×
           </button>
 
-          {/* Immagine: larghezza piena, centrata, senza tagli */}
+          {/* Immagine full-width centrata */}
           {hasImage && (
             <div
               style={{
@@ -100,7 +99,7 @@ const Popup = () => {
             </div>
           )}
 
-          {/* Testo e CTA — sotto l'immagine */}
+          {/* Testo e CTA sotto l'immagine */}
           {hasText && (
             <div
               className="text-center"
