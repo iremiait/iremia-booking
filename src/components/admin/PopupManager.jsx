@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Images } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Image } from 'lucide-react';
 import { popupService } from '../../lib/supabase';
 
 const CLOUD_NAME = 'ddxyxcanp';
@@ -382,7 +382,7 @@ const PopupManager = () => {
                   onClick={openCloudinaryWidget}
                   className="w-full flex items-center justify-center gap-3 px-4 py-4 border-2 border-dashed border-teal-300 rounded-xl hover:border-teal-500 hover:bg-teal-50 transition group"
                 >
-                  <Images size={22} className="text-teal-500 group-hover:text-teal-700 transition" />
+                  <Image size={22} className="text-teal-500 group-hover:text-teal-700 transition" />
                   <div className="text-left">
                     <p className="text-sm font-medium text-teal-700">Scegli o carica immagine</p>
                     <p className="text-xs text-teal-500">Apre la libreria Cloudinary — sfoglia immagini esistenti o caricane una nuova</p>
