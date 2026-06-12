@@ -7,16 +7,13 @@ const Popup = () => {
 
   useEffect(() => {
     const checkPopup = async () => {
-      // Una sola chiamata per ottenere il popup
       const popup = await popupService.getActivePopup();
       if (!popup) return;
 
-      // Controlla date validità
       const now = new Date();
       if (popup.start_date && new Date(popup.start_date) > now) return;
       if (popup.end_date && new Date(popup.end_date) < now) return;
 
-      // Controlla frequenza
       const lastShown = localStorage.getItem('iremia_popup_last_shown');
       if (lastShown) {
         const daysSinceShown = Math.floor((Date.now() - parseInt(lastShown)) / (1000 * 60 * 60 * 24));
@@ -44,6 +41,8 @@ const Popup = () => {
 
   if (!isVisible || !popupData) return null;
 
+  const hasImage = !!popupData.image_url;
+
   return (
     <>
       <div
@@ -52,53 +51,65 @@ const Popup = () => {
         onClick={handleClose}
       >
         <div
-          className="rounded-2xl shadow-2xl max-w-md w-full p-8 relative"
+          className="rounded-2xl shadow-2xl max-w-md w-full relative overflow-hidden"
           style={{
             backgroundColor: popupData.bg_color || 'var(--color-primary)',
             animation: 'slideUp 0.4s ease-out'
           }}
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Pulsante chiudi — sempre sopra tutto */}
           <button
             onClick={handleClose}
-            className="absolute top-4 right-4 text-3xl font-light transition-opacity hover:opacity-75"
-            style={{ color: popupData.text_color || '#FFFFFF' }}
+            className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full text-xl font-light transition-opacity hover:opacity-75"
+            style={{
+              color: popupData.text_color || '#FFFFFF',
+              backgroundColor: 'rgba(0,0,0,0.25)',
+            }}
           >
             ×
           </button>
 
-          <div className="text-center" style={{ color: popupData.text_color || '#FFFFFF' }}>
-            {popupData.image_url && (
-              <div className="mb-6">
-                <img
-                  src={popupData.image_url}
-                  alt={popupData.title || 'Popup'}
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-              </div>
-            )}
+          {/* Immagine full-width in cima, senza testo sopra */}
+          {hasImage && (
+            <div className="w-full">
+              <img
+                src={popupData.image_url}
+                alt={popupData.title || 'Popup'}
+                className="w-full object-contain"
+                style={{ maxHeight: '280px', display: 'block' }}
+              />
+            </div>
+          )}
 
-            {popupData.title && (
-              <h3 className="text-3xl font-light mb-4">{popupData.title}</h3>
-            )}
+          {/* Testo e pulsante — sempre sotto l'immagine */}
+          {(popupData.title || popupData.message || popupData.button_text) && (
+            <div
+              className="p-6 text-center"
+              style={{ color: popupData.text_color || '#FFFFFF' }}
+            >
+              {popupData.title && (
+                <h3 className="text-2xl font-light mb-3">{popupData.title}</h3>
+              )}
 
-            {popupData.message && (
-              <p className="text-lg mb-6 opacity-90">{popupData.message}</p>
-            )}
+              {popupData.message && (
+                <p className="text-base mb-5 opacity-90 leading-relaxed">{popupData.message}</p>
+              )}
 
-            {popupData.button_text && (
-              <button
-                onClick={handleClick}
-                className="px-8 py-3 rounded-lg font-medium transition-all hover:scale-105 hover:shadow-lg"
-                style={{
-                  backgroundColor: 'white',
-                  color: popupData.bg_color || 'var(--color-primary)'
-                }}
-              >
-                {popupData.button_text}
-              </button>
-            )}
-          </div>
+              {popupData.button_text && (
+                <button
+                  onClick={handleClick}
+                  className="px-8 py-3 rounded-lg font-medium transition-all hover:scale-105 hover:shadow-lg"
+                  style={{
+                    backgroundColor: 'white',
+                    color: popupData.bg_color || 'var(--color-primary)'
+                  }}
+                >
+                  {popupData.button_text}
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
