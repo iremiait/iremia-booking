@@ -75,28 +75,18 @@ const Popup = () => {
             ×
           </button>
 
-          {/* Immagine full-width centrata */}
+          {/* Immagine: occupa tutta la larghezza, nessun wrapper con sfondo */}
           {hasImage && (
-            <div
+            <img
+              src={popupData.image_url}
+              alt={popupData.title || 'Popup'}
               style={{
                 width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(0,0,0,0.08)',
+                height: 'auto',
+                display: 'block',
+                borderRadius: hasText ? '1rem 1rem 0 0' : '1rem',
               }}
-            >
-              <img
-                src={popupData.image_url}
-                alt={popupData.title || 'Popup'}
-                style={{
-                  width: '100%',
-                  maxHeight: '320px',
-                  objectFit: 'contain',
-                  display: 'block',
-                }}
-              />
-            </div>
+            />
           )}
 
           {/* Testo e CTA sotto l'immagine */}
