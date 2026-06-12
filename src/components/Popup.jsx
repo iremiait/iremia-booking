@@ -54,7 +54,7 @@ const Popup = () => {
         <div
           className="relative overflow-hidden w-full"
           style={{
-            maxWidth: '560px',
+            maxWidth: '420px',
             backgroundColor: popupData.bg_color || 'var(--color-primary)',
             borderRadius: '1rem',
             boxShadow: '0 25px 50px rgba(0,0,0,0.35)',
@@ -94,18 +94,18 @@ const Popup = () => {
             <div
               className="text-center"
               style={{
-                padding: '1.5rem 2rem 2rem',
+                padding: '1.25rem 1.5rem 1.75rem',
                 color: popupData.text_color || '#FFFFFF',
               }}
             >
               {popupData.title && (
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 300, marginBottom: '0.75rem' }}>
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 300, marginBottom: '0.6rem' }}>
                   {popupData.title}
                 </h3>
               )}
 
               {popupData.message && (
-                <p style={{ fontSize: '1rem', opacity: 0.9, lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                <p style={{ fontSize: '0.95rem', opacity: 0.9, lineHeight: 1.6, marginBottom: '1rem' }}>
                   {popupData.message}
                 </p>
               )}
@@ -117,7 +117,7 @@ const Popup = () => {
                   style={{
                     backgroundColor: 'white',
                     color: popupData.bg_color || 'var(--color-primary)',
-                    padding: '0.75rem 2rem',
+                    padding: '0.6rem 1.75rem',
                     borderRadius: '0.5rem',
                     fontWeight: 500,
                     border: 'none',
