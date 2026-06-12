@@ -1,7 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Upload } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Images } from 'lucide-react';
 import { popupService } from '../../lib/supabase';
-import { uploadService } from '../../lib/uploadService';
+
+const CLOUD_NAME = 'ddxyxcanp';
+const UPLOAD_PRESET = 'ml_default';
+
+// Carica lo script Cloudinary Upload Widget una sola volta
+const loadCloudinaryScript = () => {
+  return new Promise((resolve) => {
+    if (window.cloudinary) { resolve(); return; }
+    const script = document.createElement('script');
+    script.src = 'https://upload-widget.cloudinary.com/global/all.js';
+    script.onload = resolve;
+    document.head.appendChild(script);
+  });
+};
 
 const PopupManager = () => {
   const [popups, setPopups] = useState([]);
@@ -9,8 +22,8 @@ const PopupManager = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingPopup, setEditingPopup] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const widgetRef = useRef(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -50,7 +63,82 @@ const PopupManager = () => {
       .toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
+  // Apre il widget Cloudinary (upload + media library)
+  const openCloudinaryWidget = async () => {
+    await loadCloudinaryScript();
+
+    if (widgetRef.current) {
+      widgetRef.current.open();
+      return;
+    }
+
+    widgetRef.current = window.cloudinary.createUploadWidget(
+      {
+        cloudName: CLOUD_NAME,
+        uploadPreset: UPLOAD_PRESET,
+        sources: ['local', 'url', 'camera'],
+        multiple: false,
+        maxFileSize: 10000000,
+        resourceType: 'image',
+        language: 'it',
+        text: {
+          it: {
+            or: 'oppure',
+            back: 'Indietro',
+            advanced: 'Avanzate',
+            close: 'Chiudi',
+            no_results: 'Nessun risultato',
+            search_placeholder: 'Cerca file...',
+            about_uw: 'Widget di upload',
+            menu: { files: 'File', web: 'Web', camera: 'Fotocamera' },
+            selection_counter: { file: 'file', files: 'file' },
+            actions: { upload: 'Carica', next: 'Avanti', cancel: 'Annulla' },
+            local: {
+              browse: 'Sfoglia',
+              dd_title_single: 'Trascina un\'immagine qui',
+              dd_title_multi: 'Trascina le immagini qui',
+              drop_title_single: 'Rilascia il file per caricarlo',
+              drop_title_multi: 'Rilascia i file per caricarli',
+            },
+          },
+        },
+        styles: {
+          palette: {
+            window: '#FFFFFF',
+            windowBorder: '#E5E7EB',
+            tabIcon: '#1B7B7E',
+            menuIcons: '#6B7280',
+            textDark: '#111827',
+            textLight: '#FFFFFF',
+            link: '#1B7B7E',
+            action: '#1B7B7E',
+            inactiveTabIcon: '#9CA3AF',
+            error: '#EF4444',
+            inProgress: '#1B7B7E',
+            complete: '#10B981',
+            sourceBg: '#F9FAFB',
+          },
+          frame: { background: 'rgba(0,0,0,0.5)' },
+        },
+      },
+      (error, result) => {
+        if (error) {
+          console.error('Cloudinary widget error:', error);
+          return;
+        }
+        if (result.event === 'success') {
+          const url = result.info.secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
+          updateField('image_url', url);
+          widgetRef.current = null; // reset per prossima apertura
+        }
+      }
+    );
+
+    widgetRef.current.open();
+  };
+
   const openModal = (popup = null) => {
+    widgetRef.current = null;
     if (popup) {
       setEditingPopup(popup);
       setFormData({
@@ -89,6 +177,10 @@ const PopupManager = () => {
   };
 
   const closeModal = () => {
+    if (widgetRef.current) {
+      try { widgetRef.current.close(); } catch {}
+      widgetRef.current = null;
+    }
     setShowModal(false);
     setEditingPopup(null);
     setShowPreview(false);
@@ -151,21 +243,6 @@ const PopupManager = () => {
     } catch (error) {
       console.error('Errore toggle:', error);
       alert('❌ Errore nel cambio stato');
-    }
-  };
-
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const url = await uploadService.uploadImage(file);
-      if (url) updateField('image_url', url);
-      alert('✅ Immagine caricata su Cloudinary!');
-    } catch (error) {
-      alert('❌ Errore durante l\'upload: ' + error.message);
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -271,6 +348,8 @@ const PopupManager = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
+
+              {/* Contenuto */}
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-900 border-b pb-2">Contenuto</h4>
                 <div>
@@ -293,23 +372,58 @@ const PopupManager = () => {
                 </div>
               </div>
 
+              {/* Immagine */}
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-900 border-b pb-2">Immagine (opzionale)</h4>
-                <label className="block cursor-pointer">
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-teal-500 transition text-center">
-                    <Upload className="mx-auto mb-2 text-gray-400" size={28} />
-                    <p className="text-sm text-gray-600">{uploading ? '⏳ Caricamento su Cloudinary...' : '📤 Carica immagine'}</p>
-                    <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP (max 10MB)</p>
+
+                {/* Bottone Cloudinary widget */}
+                <button
+                  type="button"
+                  onClick={openCloudinaryWidget}
+                  className="w-full flex items-center justify-center gap-3 px-4 py-4 border-2 border-dashed border-teal-300 rounded-xl hover:border-teal-500 hover:bg-teal-50 transition group"
+                >
+                  <Images size={22} className="text-teal-500 group-hover:text-teal-700 transition" />
+                  <div className="text-left">
+                    <p className="text-sm font-medium text-teal-700">Scegli o carica immagine</p>
+                    <p className="text-xs text-teal-500">Apre la libreria Cloudinary — sfoglia immagini esistenti o caricane una nuova</p>
                   </div>
-                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
-                </label>
+                </button>
+
+                {/* Anteprima immagine selezionata */}
+                {formData.image_url && (
+                  <div className="relative group">
+                    <img
+                      src={formData.image_url}
+                      alt="Preview"
+                      className="w-full h-48 object-contain rounded-xl bg-gray-50 border border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => updateField('image_url', '')}
+                      className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-red-600"
+                    >
+                      <X size={14} />
+                    </button>
+                    <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded-lg backdrop-blur-sm">
+                      ✅ Immagine selezionata
+                    </div>
+                  </div>
+                )}
+
+                {/* Fallback URL manuale */}
                 <div>
-                  <label className="block text-xs text-gray-600 mb-2">oppure inserisci URL</label>
-                  <input type="url" value={formData.image_url} onChange={(e) => updateField('image_url', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" placeholder="https://..." />
+                  <label className="block text-xs text-gray-500 mb-1">oppure incolla un URL direttamente</label>
+                  <input
+                    type="url"
+                    value={formData.image_url}
+                    onChange={(e) => updateField('image_url', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                    placeholder="https://res.cloudinary.com/..."
+                  />
                 </div>
-                {formData.image_url && <img src={formData.image_url} alt="Preview" className="w-full h-40 object-contain rounded-lg bg-black/5" />}
               </div>
 
+              {/* Stile */}
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-900 border-b pb-2">Stile</h4>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -330,6 +444,7 @@ const PopupManager = () => {
                 </div>
               </div>
 
+              {/* Impostazioni */}
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-900 border-b pb-2">Impostazioni</h4>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -361,6 +476,7 @@ const PopupManager = () => {
                 </div>
               </div>
 
+              {/* Anteprima */}
               <div className="space-y-4">
                 <button type="button" onClick={() => setShowPreview(!showPreview)} className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm font-medium">
                   {showPreview ? '🙈 Nascondi Anteprima' : '👁️ Mostra Anteprima'}
@@ -391,7 +507,7 @@ const PopupManager = () => {
 
               <div className="flex justify-end gap-3 pt-6 border-t">
                 <button type="button" onClick={closeModal} className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">Annulla</button>
-                <button type="submit" disabled={saving || uploading} className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2 disabled:opacity-50">
+                <button type="submit" disabled={saving} className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2 disabled:opacity-50">
                   {saving ? <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>Salvataggio...</> : <><Save size={18} />Salva Popup</>}
                 </button>
               </div>
