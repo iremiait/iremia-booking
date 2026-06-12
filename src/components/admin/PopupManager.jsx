@@ -41,6 +41,15 @@ const PopupManager = () => {
     setLoading(false);
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return '—';
+    const cleaned = String(dateString).slice(0, 10);
+    const [year, month, day] = cleaned.split('-');
+    if (!year || !month || !day) return '—';
+    return new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
+      .toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
   const openModal = (popup = null) => {
     if (popup) {
       setEditingPopup(popup);
@@ -55,8 +64,8 @@ const PopupManager = () => {
         is_active: popup.is_active || false,
         delay_seconds: popup.delay_seconds || 3,
         show_frequency_days: popup.show_frequency_days || 7,
-        start_date: popup.start_date ? popup.start_date.split('T')[0] : '',
-        end_date: popup.end_date ? popup.end_date.split('T')[0] : ''
+        start_date: popup.start_date ? String(popup.start_date).slice(0, 10) : '',
+        end_date: popup.end_date ? String(popup.end_date).slice(0, 10) : ''
       });
     } else {
       setEditingPopup(null);
@@ -164,13 +173,6 @@ const PopupManager = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return '—';
-    return new Date(dateString + 'T00:00:00').toLocaleDateString('it-IT', {
-      day: '2-digit', month: '2-digit', year: 'numeric'
-    });
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -226,8 +228,12 @@ const PopupManager = () => {
                       <div className="flex flex-wrap gap-4 text-xs text-gray-500">
                         <span>⏱️ Ritardo: {popup.delay_seconds || 3}s</span>
                         <span>🔁 Ogni {popup.show_frequency_days || 7} giorni</span>
-                        {popup.start_date && <span>📅 Dal {formatDate(popup.start_date)}</span>}
-                        {popup.end_date && <span>📅 Al {formatDate(popup.end_date)}</span>}
+                        {popup.start_date && formatDate(popup.start_date) !== '—' && (
+                          <span>📅 Dal {formatDate(popup.start_date)}</span>
+                        )}
+                        {popup.end_date && formatDate(popup.end_date) !== '—' && (
+                          <span>📅 Al {formatDate(popup.end_date)}</span>
+                        )}
                         {popup.button_text && <span>🔘 Pulsante: "{popup.button_text}"</span>}
                       </div>
                     </div>
@@ -293,7 +299,7 @@ const PopupManager = () => {
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-teal-500 transition text-center">
                     <Upload className="mx-auto mb-2 text-gray-400" size={28} />
                     <p className="text-sm text-gray-600">{uploading ? '⏳ Caricamento su Cloudinary...' : '📤 Carica immagine'}</p>
-                    <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP (max 10MB) · Le immagini vengono caricate su Cloudinary</p>
+                    <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP (max 10MB)</p>
                   </div>
                   <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
                 </label>
@@ -301,7 +307,7 @@ const PopupManager = () => {
                   <label className="block text-xs text-gray-600 mb-2">oppure inserisci URL</label>
                   <input type="url" value={formData.image_url} onChange={(e) => updateField('image_url', e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" placeholder="https://..." />
                 </div>
-                {formData.image_url && <img src={formData.image_url} alt="Preview" className="w-full h-40 object-cover rounded-lg" />}
+                {formData.image_url && <img src={formData.image_url} alt="Preview" className="w-full h-40 object-contain rounded-lg bg-black/5" />}
               </div>
 
               <div className="space-y-4">
@@ -362,13 +368,20 @@ const PopupManager = () => {
                 {showPreview && (
                   <div className="rounded-xl overflow-hidden border border-gray-200">
                     <div className="bg-black/50 p-8 flex items-center justify-center">
-                      <div className="rounded-2xl shadow-2xl max-w-sm w-full p-8 relative" style={{ backgroundColor: formData.bg_color }}>
-                        <button className="absolute top-4 right-4 text-3xl font-light" style={{ color: formData.text_color }}>×</button>
-                        <div className="text-center" style={{ color: formData.text_color }}>
-                          {formData.image_url && <img src={formData.image_url} alt="Preview" className="w-full h-36 object-cover rounded-lg mb-4" />}
+                      <div className="rounded-2xl shadow-2xl w-full overflow-hidden" style={{ maxWidth: '560px', backgroundColor: formData.bg_color }}>
+                        {formData.image_url && (
+                          <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.08)' }}>
+                            <img src={formData.image_url} alt="Preview" style={{ width: '100%', maxHeight: '280px', objectFit: 'contain', display: 'block' }} />
+                          </div>
+                        )}
+                        <div className="p-6 text-center" style={{ color: formData.text_color }}>
                           {formData.title && <h3 className="text-2xl font-light mb-3">{formData.title}</h3>}
                           {formData.message && <p className="text-base mb-5 opacity-90">{formData.message}</p>}
-                          {formData.button_text && <button className="bg-white text-teal-700 px-6 py-2 rounded-lg font-medium">{formData.button_text}</button>}
+                          {formData.button_text && (
+                            <button className="px-6 py-2 rounded-lg font-medium" style={{ backgroundColor: 'white', color: formData.bg_color }}>
+                              {formData.button_text}
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
