@@ -1,20 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Image } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Image, Upload } from 'lucide-react';
 import { popupService } from '../../lib/supabase';
 
 const CLOUD_NAME = 'ddxyxcanp';
 const UPLOAD_PRESET = 'ml_default';
-
-// Carica lo script Cloudinary Upload Widget una sola volta
-const loadCloudinaryScript = () => {
-  return new Promise((resolve) => {
-    if (window.cloudinary) { resolve(); return; }
-    const script = document.createElement('script');
-    script.src = 'https://upload-widget.cloudinary.com/global/all.js';
-    script.onload = resolve;
-    document.head.appendChild(script);
-  });
-};
 
 const PopupManager = () => {
   const [popups, setPopups] = useState([]);
@@ -23,7 +12,8 @@ const PopupManager = () => {
   const [editingPopup, setEditingPopup] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const widgetRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -63,82 +53,41 @@ const PopupManager = () => {
       .toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
-  // Apre il widget Cloudinary (upload + media library)
-  const openCloudinaryWidget = async () => {
-    await loadCloudinaryScript();
+  // Upload diretto a Cloudinary senza widget
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    if (widgetRef.current) {
-      widgetRef.current.open();
-      return;
+    // Reset input così si può ricaricare lo stesso file
+    e.target.value = '';
+
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', UPLOAD_PRESET);
+      fd.append('folder', 'iremia/popup');
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+        method: 'POST',
+        body: fd,
+      });
+
+      if (!res.ok) throw new Error(`Errore upload: ${res.status}`);
+
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message);
+
+      const url = data.secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
+      updateField('image_url', url);
+    } catch (error) {
+      console.error('Errore upload Cloudinary:', error);
+      alert('❌ Errore nel caricamento immagine: ' + error.message);
     }
-
-    widgetRef.current = window.cloudinary.createUploadWidget(
-      {
-        cloudName: CLOUD_NAME,
-        uploadPreset: UPLOAD_PRESET,
-        sources: ['local', 'url', 'camera'],
-        multiple: false,
-        maxFileSize: 10000000,
-        resourceType: 'image',
-        language: 'it',
-        text: {
-          it: {
-            or: 'oppure',
-            back: 'Indietro',
-            advanced: 'Avanzate',
-            close: 'Chiudi',
-            no_results: 'Nessun risultato',
-            search_placeholder: 'Cerca file...',
-            about_uw: 'Widget di upload',
-            menu: { files: 'File', web: 'Web', camera: 'Fotocamera' },
-            selection_counter: { file: 'file', files: 'file' },
-            actions: { upload: 'Carica', next: 'Avanti', cancel: 'Annulla' },
-            local: {
-              browse: 'Sfoglia',
-              dd_title_single: 'Trascina un\'immagine qui',
-              dd_title_multi: 'Trascina le immagini qui',
-              drop_title_single: 'Rilascia il file per caricarlo',
-              drop_title_multi: 'Rilascia i file per caricarli',
-            },
-          },
-        },
-        styles: {
-          palette: {
-            window: '#FFFFFF',
-            windowBorder: '#E5E7EB',
-            tabIcon: '#1B7B7E',
-            menuIcons: '#6B7280',
-            textDark: '#111827',
-            textLight: '#FFFFFF',
-            link: '#1B7B7E',
-            action: '#1B7B7E',
-            inactiveTabIcon: '#9CA3AF',
-            error: '#EF4444',
-            inProgress: '#1B7B7E',
-            complete: '#10B981',
-            sourceBg: '#F9FAFB',
-          },
-          frame: { background: 'rgba(0,0,0,0.5)' },
-        },
-      },
-      (error, result) => {
-        if (error) {
-          console.error('Cloudinary widget error:', error);
-          return;
-        }
-        if (result.event === 'success') {
-          const url = result.info.secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
-          updateField('image_url', url);
-          widgetRef.current = null; // reset per prossima apertura
-        }
-      }
-    );
-
-    widgetRef.current.open();
+    setUploading(false);
   };
 
   const openModal = (popup = null) => {
-    widgetRef.current = null;
     if (popup) {
       setEditingPopup(popup);
       setFormData({
@@ -177,10 +126,6 @@ const PopupManager = () => {
   };
 
   const closeModal = () => {
-    if (widgetRef.current) {
-      try { widgetRef.current.close(); } catch {}
-      widgetRef.current = null;
-    }
     setShowModal(false);
     setEditingPopup(null);
     setShowPreview(false);
@@ -376,17 +321,36 @@ const PopupManager = () => {
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-900 border-b pb-2">Immagine (opzionale)</h4>
 
-                {/* Bottone Cloudinary widget */}
+                {/* Input file nascosto */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+
+                {/* Area upload */}
                 <button
                   type="button"
-                  onClick={openCloudinaryWidget}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-4 border-2 border-dashed border-teal-300 rounded-xl hover:border-teal-500 hover:bg-teal-50 transition group"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="w-full flex items-center justify-center gap-3 px-4 py-4 border-2 border-dashed border-teal-300 rounded-xl hover:border-teal-500 hover:bg-teal-50 transition group disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <Image size={22} className="text-teal-500 group-hover:text-teal-700 transition" />
-                  <div className="text-left">
-                    <p className="text-sm font-medium text-teal-700">Scegli o carica immagine</p>
-                    <p className="text-xs text-teal-500">Apre la libreria Cloudinary — sfoglia immagini esistenti o caricane una nuova</p>
-                  </div>
+                  {uploading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-teal-600 border-t-transparent" />
+                      <span className="text-sm font-medium text-teal-700">Caricamento in corso...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={22} className="text-teal-500 group-hover:text-teal-700 transition" />
+                      <div className="text-left">
+                        <p className="text-sm font-medium text-teal-700">Carica immagine</p>
+                        <p className="text-xs text-teal-500">JPG, PNG, WebP — max 10MB</p>
+                      </div>
+                    </>
+                  )}
                 </button>
 
                 {/* Anteprima immagine selezionata */}
@@ -405,7 +369,7 @@ const PopupManager = () => {
                       <X size={14} />
                     </button>
                     <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded-lg backdrop-blur-sm">
-                      ✅ Immagine selezionata
+                      ✅ Immagine caricata
                     </div>
                   </div>
                 )}
