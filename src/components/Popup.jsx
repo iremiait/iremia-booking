@@ -47,9 +47,10 @@ const Popup = () => {
   return (
     <>
       <div
-        className="fixed inset-0 z-50 flex items-start justify-center p-4"
+        className="fixed inset-0 flex items-start justify-center p-4"
         style={{
-          paddingTop: '5rem',
+          zIndex: 60,
+          paddingTop: 'calc(var(--header-height, 80px) + 1.5rem)',
           backgroundColor: 'rgba(0,0,0,0.5)',
           animation: 'fadeIn 0.3s ease-out',
         }}
@@ -79,7 +80,7 @@ const Popup = () => {
             ×
           </button>
 
-          {/* Immagine: occupa tutta la larghezza, nessun wrapper con sfondo */}
+          {/* Immagine */}
           {hasImage && (
             <img
               src={popupData.image_url}
@@ -93,7 +94,7 @@ const Popup = () => {
             />
           )}
 
-          {/* Testo e CTA sotto l'immagine */}
+          {/* Testo e CTA */}
           {hasText && (
             <div
               className="text-center"
