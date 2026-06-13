@@ -47,8 +47,12 @@ const Popup = () => {
   return (
     <>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        style={{ backgroundColor: 'rgba(0,0,0,0.5)', animation: 'fadeIn 0.3s ease-out' }}
+        className="fixed inset-0 z-50 flex items-start justify-center p-4"
+        style={{
+          paddingTop: '5rem',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          animation: 'fadeIn 0.3s ease-out',
+        }}
         onClick={handleClose}
       >
         <div
