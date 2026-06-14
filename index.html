@@ -39,7 +39,62 @@
     <meta name="geo.region" content="IT-MO" />
     <meta name="geo.placename" content="Lama Mocogno" />
     <meta name="geo.position" content="44.3088135;10.7330137" />
-    
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LodgingBusiness",
+      "name": "Iremia - Casa Vacanza",
+      "description": "Casa vacanza a Lama Mocogno nell'Appennino Modenese. Appartamento di 55m² per massimo 3 persone, con terrazzo, parcheggio gratuito e cucina attrezzata. Ideale per vacanze in montagna vicino al Cimone e alle Piane di Mocogno.",
+      "url": "https://www.iremia.it/",
+      "telephone": "+393474160611",
+      "email": "iremiait@gmail.com",
+      "image": "https://www.iremia.it/images/lama.jpg",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Via per Palagano 28",
+        "addressLocality": "Lama Mocogno",
+        "addressRegion": "MO",
+        "postalCode": "41023",
+        "addressCountry": "IT"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 44.3088135,
+        "longitude": 10.7330137
+      },
+      "checkinTime": "16:00",
+      "checkoutTime": "10:00",
+      "priceRange": "A partire da €50 a notte",
+      "amenityFeature": [
+        { "@type": "LocationFeatureSpecification", "name": "Parcheggio gratuito", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Cucina attrezzata", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Riscaldamento", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Terrazzo con arredo da giardino", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Ombrellone", "value": true }
+      ],
+      "numberOfRooms": 1,
+      "floorSize": {
+        "@type": "QuantitativeValue",
+        "value": 55,
+        "unitCode": "MTK"
+      },
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 3
+      },
+      "owner": {
+        "@type": "Person",
+        "name": "Andrea e Iza"
+      },
+      "areaServed": {
+        "@type": "Place",
+        "name": "Appennino Modenese"
+      }
+    }
+    </script>
+
     <!-- EmailJS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -47,7 +102,6 @@
         emailjs.init('GF7_kONoo8HL9IqWX');
       })();
     </script>
-
     <!-- Google Analytics viene caricato SOLO dopo consenso esplicito tramite CookieBanner.jsx -->
   </head>
   <body>
