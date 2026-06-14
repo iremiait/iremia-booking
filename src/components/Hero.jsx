@@ -3,7 +3,6 @@ import { contentService } from '../lib/contentService';
 
 const Hero = ({ heroImage }) => {
   const [heroData, setHeroData] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHeroData = async () => {
@@ -12,8 +11,6 @@ const Hero = ({ heroImage }) => {
         setHeroData(data);
       } catch (error) {
         console.error('Errore caricamento hero data:', error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchHeroData();
@@ -35,14 +32,6 @@ const Hero = ({ heroImage }) => {
   };
 
   const data = heroData || defaultHeroData;
-
-  if (loading) {
-    return (
-      <section className="relative h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-primary)' }}>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: 'var(--color-accent)' }}></div>
-      </section>
-    );
-  }
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10 md:pt-0 md:pb-0 md:h-screen">
