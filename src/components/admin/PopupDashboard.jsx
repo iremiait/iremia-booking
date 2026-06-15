@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogOut } from 'lucide-react';
+import { LogOut, ExternalLink } from 'lucide-react';
 import ImageManager from './ImageManager';
 import ReviewManager from './ReviewManager';
 import AboutManager from './AboutManager';
@@ -55,13 +55,24 @@ const PopupDashboard = ({ onLogout }) => {
             <h1 className="text-4xl font-bold text-gray-900 mb-2">📊 Dashboard Admin</h1>
             <p className="text-gray-600">Gestisci tutti i contenuti del sito Iremia</p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-5 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition shadow-sm font-medium"
-          >
-            <LogOut size={18} />
-            Esci
-          </button>
+          <div className="flex items-center gap-3">
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-5 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition shadow-sm font-medium"
+            >
+              <ExternalLink size={18} />
+              Vai al sito
+            </a>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-5 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition shadow-sm font-medium"
+            >
+              <LogOut size={18} />
+              Esci
+            </button>
+          </div>
         </div>
 
         <div className="bg-white rounded-lg shadow-lg mb-6 overflow-x-auto">
