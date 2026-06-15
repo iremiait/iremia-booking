@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { contentService } from '../lib/contentService';
 
+const formatTime = (time) => {
+  if (!time) return '';
+  return time.slice(0, 5); // "16:00:00" → "16:00"
+};
+
 const HouseRules = () => {
   const [rulesData, setRulesData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,9 +26,9 @@ const HouseRules = () => {
   };
 
   const title = rulesData?.title || 'Regole della Casa';
-  const checkinStart = rulesData?.checkin_start || '16:00';
-  const checkinEnd = rulesData?.checkin_end || '21:00';
-  const checkoutTime = rulesData?.checkout_time || '11:00';
+  const checkinStart = formatTime(rulesData?.checkin_start) || '16:00';
+  const checkinEnd = formatTime(rulesData?.checkin_end) || '21:00';
+  const checkoutTime = formatTime(rulesData?.checkout_time) || '11:00';
   const rules = rulesData?.rules || [
     { icon: '🚭', title: 'Vietato fumare', description: 'È vietato fumare all\'interno dell\'appartamento' },
     { icon: '🐾', title: 'Animali non ammessi', description: 'Spiacenti, non possiamo accettare animali domestici' },
